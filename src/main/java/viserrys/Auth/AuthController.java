@@ -34,12 +34,10 @@ public class AuthController {
       @RequestParam String username, @RequestParam String password, @RequestParam String profileHandle)
       throws Exception {
 
-    if (bindingResult.hasErrors()) {
+    if (bindingResult.hasErrors())
       return "redirect:/register";
-    }
 
-    Account a = accountService.createAccount(username, password, profileHandle);
-    return login(a);
+    return "redirect:/login";
   }
 
 }
