@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+  <title th:text="Login">Title</title>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="stylesheet"
+        type="text/css"
+        th:href="@{css/signin.css}" />
+</head>
+
+<body class="text-center">
+
+  <form class="form-signin"
+        th:action="@{/login}"
+        method="post">
+
+    <img class="img-fluid"
+         th:src="@{/img/chatting.svg}" />
+
+    <h1 class="mb-3">
+      Viserrys
+    </h1>
+
+    <div th:if="${param.error}"
+         class="alert alert-danger"
+         role="alert">
+      <span th:text="${param.error}"></span>
+    </div>
+    <div th:if="${param.logout}"
+         class="alert alert-success"
+         role="alert">
+      You have been signed out.
+    </div>
+
+    <h3 class="mb-3 text-muted font-weight-normal">Please sign in</h3>
+
+    <input type="text"
+           id="username"
+           name="username"
+           class="form-control"
+           placeholder="Username"
+           required
+           autofocus />
+
+    <input type="password"
+           id="password"
+           name="password"
+           class="form-control"
+           placeholder="Password"
+           required />
+
+    <div class="checkbox mb-3 float-left">
+      <label>
+        <input type="checkbox"
+               value="remember-me"></input> Remember me?
+      </label>
+    </div>
+
+    <button class="btn btn-lg btn-primary btn-block"
+            type="submit">Sign in</button>
+
+    <p class="mt-5 mb-3">
+      <a class="text-muted"
+         th:href="@{/register}">
+        Not registered yet?
+      </a>
+    </p>
+
+  </form>
+
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head(title=|Photos of ${currentAccount.profileHandle}|)"></head>
+
+<body>
+
+  <navbar th:replace="fragments/navbar :: navbar"></navbar>
+
+  <jumbotron th:replace="fragments/jumbotron :: jumbotron(jumbotronTitle='Profile page')"></jumbotron>
+
+  <div class="container">
+
+    <div th:if="${#lists.isEmpty(currentAccount?.photos)}">
+      <div class="alert alert-primary mb-3" role="alert">No uploaded images yet!</div>
+    </div>
+
+    <div class="row">
+
+      <div class="col">
+
+        <!-- Add Photo Form -->
+        <div class="card">
+
+          <div class="card-header">
+            <h2>Add a new photo</h1>
+          </div>
+
+          <div class="card-body">
+
+            <form method="POST" th:action="@{/accounts/{profileHandle}/photos(profileHandle=${currentAccount.profileHandle})}" enctype="multipart/form-data">
+
+              <div class="form-group">
+                <input type="file" class="form-control-file" id="file" name="file">
+              </div>
+    
+              <div class="form-group">
+                <label for="description">Include a description for your photo.</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required minlength="1"
+                  maxlength="200"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </form>
+          </div>
+
+        </div>
+
+        <div th:each="photo : ${photos}">
+          
+          <div class="card mt-2">
+
+            <div class="card-body">
+
+              <div class="row">
+                <div class="col-md">
+                  <img class="img-thumbnail" th:src="@{|/photos/${photo.id}/content|}">
+                </div>
+                <div class="col-md">
+                  <span th:text="${photo.description}"></span>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+</body>
+
+</html>
