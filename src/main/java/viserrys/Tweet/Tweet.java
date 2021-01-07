@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,9 +21,11 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @AllArgsConstructor
 public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet> {
 
+    @NotNull
     @ManyToOne
     private Account sender;
 
+    @NotNull
     @ManyToOne
     private Account recipient;
 

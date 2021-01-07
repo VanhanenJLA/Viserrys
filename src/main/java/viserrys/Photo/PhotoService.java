@@ -18,11 +18,13 @@ public class PhotoService {
 
   public Photo uploadPhoto(MultipartFile file, String description, Account uploader) throws Exception {
 
-    if (!file.getContentType().equals("image/jpeg"))
-      if (!file.getContentType().equals("image/png"))
-        throw new Exception("Unsupported file type: " + file.getContentType());
+    var type = file.getContentType();
 
-    Photo photo = new Photo(description, file.getBytes());
+    if (!type.equals("image/jpeg"))
+      if (!type.equals("image/png"))
+        throw new Exception("Unsupported file type: " + type);
+
+    var photo = new Photo(description, file.getBytes());
     photoRepository.save(photo);
 
     uploader.getPhotos().add(photo);

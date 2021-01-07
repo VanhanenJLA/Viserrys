@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/head :: head(title=${account.profileHandle})"></head>
+<head th:replace="fragments/head :: head(title=${account.username})"></head>
 
 <body>
 
@@ -10,7 +10,8 @@
 
   <main role="main">
 
-    <jumbotron th:replace="fragments/jumbotron :: jumbotron(jumbotronTitle='Profile page')"></jumbotron>
+    <jumbotron th:replace="fragments/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s profile|)">
+    </jumbotron>
 
     <div class="container">
       <div class="row">
@@ -26,22 +27,20 @@
           </div>
 
           <h2 th:text="${account.username}"></h2>
-          <p th:text="${account.profileHandle}"></p>
+          <p th:text="${account.username}"></p>
 
           <!-- Following -->
-          <a th:href="@{|/accounts/${profileHandle}/following|}">
+          <a th:href="@{|/accounts/${username}/following|}">
             <p th:text="|${account.getFollowing().size()} following|"></p>
           </a>
 
           <!-- Followers -->
-          <a th:href="@{/accounts/{profileHandle}/followers(profileHandle=${account.profileHandle})}">
+          <a th:href="@{/accounts/{username}/followers(username=${account.username})}">
             <p th:text="|${account.getFollowers().size()} followers|"></p>
           </a>
 
-          <span></span>
-
           <!-- Photos -->
-          <a th:href="@{/accounts/{profileHandle}/photos(profileHandle=${account.profileHandle})}">
+          <a th:href="@{/accounts/{username}/photos(username=${account.username})}">
             <p th:text="|${account.getPhotos().size()} photos|"></p>
           </a>
 
@@ -50,7 +49,15 @@
         <!-- Tweets -->
         <div class="col-md-8">
           <h2>Tweets</h2>
-          <p>TBA</p>
+          <button data-toggle="collapse"
+                  data-target="new-tweet"
+                  class="btn btn-block btn-outline-primary mb-2">Leave a tweet!</button>
+          <new-tweet th:replace="components/new-tweet.html :: new-tweet"></new-tweet>
+
+          <div th:each="tweet : ${tweets}">
+            <tweet th:replace="components/tweet.html :: tweet(tweet=${tweet})"></tweet>
+          </div>
+
         </div>
 
       </div>

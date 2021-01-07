@@ -1,0 +1,45 @@
+<tweet class="card">
+
+  <tweet-header class="card-header py-1">
+
+    <style>
+      .tweet-profile-picture {
+        height: 50px;
+        min-height: 50px;
+        width: 50px;
+        min-width: 50px;
+      }
+    </style>
+
+    <div class="row">
+      <div class="col-auto">
+        <img class="img-fluid rounded-circle tweet-profile-picture"
+             th:src="@{|/photos/${account.getPhotos().get(0).id}/content|}">
+      </div>
+
+      <div class="col align-self-center">
+        <div class="row justify-content-between">
+          <span class="header-text"
+                th:text="${tweet.sender.username}"></span>
+
+          <span class="header-text text-muted pr-3"
+                th:text="${tweet.timestamp}"></span>
+        </div>
+      </div>
+    </div>
+
+  </tweet-header>
+
+  <div class="card-body pb-1">
+    <span th:text="${tweet.content}"></span>
+
+    <div class="row">
+      <div class="col">
+        <div class="row justify-content-end pt-1">
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</tweet>

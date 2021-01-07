@@ -32,11 +32,6 @@ public class Account extends AbstractPersistable<Long> {
     @NotEmpty
     private String password;
 
-    @NotEmpty
-    @Size(min = 3, max = 12)
-    @Column(unique = true)
-    private String profileHandle;
-
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Account> following = new ArrayList<>();
 

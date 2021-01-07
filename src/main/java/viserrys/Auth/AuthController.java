@@ -4,11 +4,11 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import viserrys.Account.Account;
 import viserrys.Account.AccountService;
@@ -17,7 +17,7 @@ import viserrys.Account.AccountService;
 public class AuthController {
 
   @Autowired
-  private AccountService accountService;
+  AccountService accountService;
 
   @GetMapping("/login")
   public String login(@ModelAttribute Account account) {
@@ -30,12 +30,14 @@ public class AuthController {
   }
 
   @PostMapping("/register")
-  public String register(@ModelAttribute Account account, @Valid BindingResult bindingResult,
-      @RequestParam String username, @RequestParam String password, @RequestParam String profileHandle)
-      throws Exception {
+  public String register(Model model, @ModelAttribute Account account, @Valid BindingResult bindingResult) {
 
-    if (bindingResult.hasErrors())
+    try {
+      accountService.createAccount(account.getUsername(), account.getPassword());
+    } catch (Exception e) {
+      model.addAttribute("error", e.getMessage());
       return "redirect:/register";
+    }
 
     return "redirect:/login";
   }

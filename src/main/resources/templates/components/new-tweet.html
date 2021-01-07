@@ -1,0 +1,54 @@
+<new-tweet class="card mb-2 collapse">
+
+  <new-tweet-header class="card-header py-1">
+    <style>
+      .new-tweet-profile-picture {
+        height: 25px;
+        min-height: 25px;
+        width: 25px;
+        min-width: 25px;
+      }
+    </style>
+
+    <div class="row">
+      <div class="col">
+        <span class="header-text text-muted">From: </span>
+        <img class="img-fluid rounded-circle new-tweet-profile-picture"
+             th:src="@{|/photos/${currentAccount.getPhotos().get(0).id}/content|}">
+        <span class="header-text"
+              th:text="${currentAccount.username}"></span>
+      </div>
+
+      <div class="col">
+        <span class="header-text text-muted">To: </span>
+        <img class="img-fluid rounded-circle new-tweet-profile-picture"
+             th:src="@{|/photos/${account.getPhotos().get(0).id}/content|}">
+        <span class="header-text"
+              th:text="${account.username}"></span>
+      </div>
+    </div>
+
+  </new-tweet-header>
+
+  <form th:action="@{|/accounts/${account.username}/tweet|}"
+        method="POST">
+
+    <div class="card-body">
+      <textarea name="content"
+                class="form-control"
+                placeholder="Type out a tweet."></textarea>
+    </div>
+
+    <div class="card-footer justify-content-between">
+      <button class="btn btn-outline-success"
+              type="submit">Send</button>
+
+      <button data-target="new-tweet"
+              data-toggle="collapse"
+              class="btn btn-outline-danger"
+              type="reset">Cancel</button>
+    </div>
+
+  </form>
+
+</new-tweet>

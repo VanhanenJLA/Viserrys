@@ -4,17 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import viserrys.Account.Account;
 import viserrys.Account.AccountService;
-import viserrys.Auth.AuthService;
 import viserrys.Photo.PhotoService;
 
 @RunWith(SpringRunner.class)
@@ -29,9 +33,6 @@ public class ApplicationTest {
   private AccountService accountService;
 
   @Autowired
-  private AuthService authService;
-
-  @Autowired
   private PhotoService photoService;
 
   @Before
@@ -41,14 +42,24 @@ public class ApplicationTest {
   }
 
   @Test
+  public void clearDatabase() {
+    try {
+      var db = new File("C:\\Repos\\VanhanenJLA\\Viserrys\\database.mv.db");
+      var success = db.delete();
+      assertTrue(success);
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+  }
+
+  @Test
   public void accountCreation() {
 
     try {
       Account jouni = testService.jouni;
       Account a = accountService.createAccount(jouni);
+      testService.createTesters();
       assertEquals(jouni.getUsername(), a.getUsername());
-      assertEquals(jouni.getProfileHandle(), a.getProfileHandle());
-
     } catch (Exception e) {
       fail(e.getMessage());
     }
@@ -59,8 +70,8 @@ public class ApplicationTest {
   public void follow() {
 
     try {
-      Account juoni = accountService.createAccount("Juoni", "salasana", "VanhanenJLU");
-      Account jauni = accountService.createAccount("Jauni", "salasana", "VanhanenJLO");
+      var juoni = accountService.createAccount("Juoni", "salasana");
+      var jauni = accountService.createAccount("Jauni", "salasana");
       accountService.follow(juoni, jauni);
 
       assertTrue("Juoni following contains Jauni", accountService.getAccount("Juoni").getFollowing().stream()
@@ -76,22 +87,26 @@ public class ApplicationTest {
   }
 
   @Test
-  public void uploadPhoto() {
-    // photoService.uploadPhoto("Testi avatar.", testService.avatarInBase64(),
-    // accountService.getAccount("Jouni"));
+  public void uploadPhoto() throws Exception {
+
+    var jouni = accountService.getAccount("Jouni");
+
+    var path = "C:\\Repos\\VanhanenJLA\\Viserrys\\src\\main\\resources\\static\\img\\avatars\\1.png";
+    var image = ImageIO.read(new File(path));
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ImageIO.write(image, "png", baos);
+    baos.flush();
+    var bytes = baos.toByteArray();
+    baos.close();
+
+    var mp = new MockMultipartFile("eka", "1", "image/png", bytes);
+
+    photoService.uploadPhoto(mp, "Test photo.", jouni);
+    photoService.uploadPhoto(mp, "Test photo.", jouni);
+    photoService.uploadPhoto(mp, "Test photo.", jouni);
+    photoService.uploadPhoto(mp, "Test photo.", jouni);
+    photoService.uploadPhoto(mp, "Test photo.", jouni);
+
   }
-
-  @Test
-  public void login() {
-
-    try {
-      Account j = testService.jouni;
-      authService.login(j.getUsername(), j.getPassword());
-    } catch (Exception e) {
-      fail(e.getMessage());
-    }
-
-  }
-
 
 }

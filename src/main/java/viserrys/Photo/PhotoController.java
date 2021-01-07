@@ -22,7 +22,7 @@ public class PhotoController {
 
   @Autowired
   private AccountService accountService;
-  
+
   @Autowired
   private AuthService authService;
 
@@ -30,20 +30,6 @@ public class PhotoController {
   @ResponseBody
   public byte[] getContent(@PathVariable Long id) {
     return photoService.getOne(id).getContent();
-  }
-
-  @PostMapping("/accounts/{profileHandle}/photos")
-  public String uploadPhoto(@PathVariable String profileHandle, @RequestParam MultipartFile file,
-      @RequestParam String description) throws Exception {
-
-    Account target = accountService.getAccountBy(profileHandle);
-    Account uploader = authService.getAuthenticatedAccount();
-
-    if (!uploader.equals(target))
-      throw new Exception("Uploader doesn't match upload target account!");
-
-    photoService.uploadPhoto(file, description, uploader);
-    return "redirect:/accounts/" + profileHandle + "/photos";
   }
 
 }

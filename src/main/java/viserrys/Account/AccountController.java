@@ -1,5 +1,7 @@
 package viserrys.Account;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,17 +9,32 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import viserrys.Auth.AuthService;
+import viserrys.Photo.PhotoController;
+import viserrys.Photo.PhotoService;
+import viserrys.Tweet.Tweet;
+import viserrys.Tweet.TweetRepository;
 
 @Controller
 public class AccountController {
 
     @Autowired
-    private AccountService accountService;
+    AccountService accountService;
 
     @Autowired
-    private AuthService authService;
+    AuthService authService;
+
+    @Autowired
+    PhotoService photoService;
+
+    @Autowired
+    TweetRepository tweetRepository;
+
+    @Autowired
+    PhotoController photoController;
 
     private Account current() {
         return authService.getAuthenticatedAccount();
@@ -25,19 +42,22 @@ public class AccountController {
 
     @GetMapping("/me")
     private String me(Model model) {
-        return account(model, current().getProfileHandle());
+        return account(model, current().getUsername());
     }
 
     @GetMapping("/my-photos")
     private String myPhotos(Model model) {
-        return photos(model, current().getProfileHandle());
+        return photos(model, current().getUsername());
     }
 
-    @GetMapping("/accounts/{profileHandle}")
-    private String account(Model model, @PathVariable String profileHandle) {
+    @GetMapping("/accounts/{username}")
+    private String account(Model model, @PathVariable String username) {
+        var account = accountService.accountRepository.findByUsername(username);
 
-        Account a = accountService.accountRepository.findByProfileHandle(profileHandle);
-        model.addAttribute("account", a);
+        var tweets = tweetRepository.findAll();
+
+        model.addAttribute("tweets", tweets);
+        model.addAttribute("account", account);
         model.addAttribute("currentAccount", current());
         return "account";
     }
@@ -50,42 +70,85 @@ public class AccountController {
         return "accounts";
     }
 
-    @PostMapping("/accounts/{profileHandle}/follow")
-    private String follow(Model model, @PathVariable String profileHandle) throws Exception {
+    List<Tweet> FakeTweets() {
+        var asd = "Improve your goldfish's physical fitness by getting him a bicycle.";
+        var tweet = new Tweet(current(), current(), LocalDateTime.now(), asd);
+        var tweets = new ArrayList<Tweet>();
+
+        for (int i = 0; i < 10; i++) {
+            tweets.add(tweet);
+        }
+        return tweets;
+    }
+
+    @GetMapping("/others")
+    private String others(Model model) {
+        List<Account> accounts = accountService.getAccounts();
+        var me = current();
+        accounts.remove(me);
+        model.addAttribute("accounts", accounts);
+        model.addAttribute("currentAccount", me);
+        return "others";
+    }
+
+    @PostMapping("/accounts/{username}/follow")
+    private String follow(Model model, @PathVariable String username) throws Exception {
         Account sender = current();
-        Account recipient = accountService.accountRepository.findByProfileHandle(profileHandle);
+        Account recipient = accountService.accountRepository.findByUsername(username);
 
         accountService.follow(sender, recipient);
 
         model.addAttribute("currentAccount", sender);
         model.addAttribute("account", recipient);
-        return "redirect:/accounts/{profileHandle}";
+        return account(model, username);
     }
 
-    @GetMapping("/accounts/{profileHandle}/followers")
-    private String followers(Model model, @PathVariable String profileHandle) {
-        Account a = accountService.accountRepository.findByProfileHandle(profileHandle);
+    @PostMapping("/accounts/{username}/tweet")
+    private String tweet(Model model, @PathVariable String username, @RequestParam String content) throws Exception {
+
+        var sender = current();
+        var recipient = accountService.accountRepository.findByUsername(username);
+
+        tweetRepository.save(new Tweet(sender, recipient, LocalDateTime.now(), content));
+
+        return account(model, username);
+    }
+
+    @GetMapping("/accounts/{username}/followers")
+    private String followers(Model model, @PathVariable String username) {
+        Account a = accountService.accountRepository.findByUsername(username);
         List<Account> accounts = a.getFollowers();
         model.addAttribute("accounts", accounts);
         model.addAttribute("currentAccount", current());
         return "follows";
     }
 
-    @GetMapping("/accounts/{profileHandle}/following")
-    private String following(Model model, @PathVariable String profileHandle) {
-        Account a = accountService.accountRepository.findByProfileHandle(profileHandle);
+    @GetMapping("/accounts/{username}/following")
+    private String following(Model model, @PathVariable String username) {
+        Account a = accountService.accountRepository.findByUsername(username);
         List<Account> accounts = a.getFollowing();
         model.addAttribute("accounts", accounts);
         model.addAttribute("currentAccount", current());
         return "follows";
     }
 
-    @GetMapping("/accounts/{profileHandle}/photos")
-    private String photos(Model model, @PathVariable String profileHandle) {
-        Account a = accountService.accountRepository.findByProfileHandle(profileHandle);
-        model.addAttribute("photos", a.getPhotos());
-        model.addAttribute("currentAccount", current());
+    @GetMapping("/accounts/{username}/photos")
+    private String photos(Model model, @PathVariable String username) {
+        var account = accountService.accountRepository.findByUsername(username);
+        var currentAccount = current();
+        model.addAttribute("account", account);
+        model.addAttribute("currentAccount", currentAccount);
         return "photos";
+    }
+
+    @PostMapping("/accounts/{username}/photos")
+    private String uploadPhoto(@PathVariable String username, @RequestParam MultipartFile file,
+            @RequestParam String description) throws Exception {
+
+        var uploader = authService.getAuthenticatedAccount();
+
+        photoService.uploadPhoto(file, description, uploader);
+        return "redirect:/accounts/" + username + "/photos";
     }
 
 }

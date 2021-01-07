@@ -15,20 +15,14 @@ public class AccountService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public Account createAccount(String username, String password, String profileHandle) throws Exception {
+    public Account createAccount(String username, String password) throws Exception {
 
-        if (accountRepository.findByUsername(username) != null) {
+        if (accountRepository.findByUsername(username) != null)
             throw new Exception("Username taken.");
-        }
-
-        if (accountRepository.findByProfileHandle(profileHandle) != null) {
-            throw new Exception("Profile Handle unavailable.");
-        }
 
         Account a = new Account();
         a.setUsername(username);
         a.setPassword(passwordEncoder.encode(password));
-        a.setProfileHandle(profileHandle.trim());
 
         return accountRepository.save(a);
     }
@@ -42,17 +36,9 @@ public class AccountService {
         return accountRepository.findByUsername(username);
     }
 
-    public Account getAccountBy(String profileHandle) {
-        return accountRepository.findByProfileHandle(profileHandle);
-    }
-
     public List<Account> getAccounts() {
         return accountRepository.findAll();
     }
-
-    // public Account saveAccount(Account account) {
-    // return accountRepository.save(account);
-    // }
 
     public void follow(Account sender, Account recipient) throws Exception {
 

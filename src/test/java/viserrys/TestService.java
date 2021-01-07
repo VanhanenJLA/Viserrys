@@ -1,7 +1,5 @@
 package viserrys;
 
-import java.util.Base64;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,35 +10,27 @@ import viserrys.Account.AccountService;
 public class TestService {
 
   public Account jouni = makeJouni();
-  public String avatar = "data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDYxLjc5OTggNjEuNzk5OCI+PHRpdGxlPkF2YXRhciBVc2VyIHN0dWRlbnQ8L3RpdGxlPjxnIGlkPSJMYXllcl8yIiBkYXRhLW5hbWU9IkxheWVyIDIiPjxnIGlkPSJfw47Dk8OIXzEiIGRhdGEtbmFtZT0i4oCUw47Dk8OIIDEiPjxjaXJjbGUgY3g9IjMwLjg5OTkiIGN5PSIzMC44OTk5IiByPSIzMC44OTk5IiBmaWxsPSIjNDg1YTY5Ii8+PHBhdGggZmlsbD0iI2Y5ZGNhNCIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMjMuMjQyIDM4LjU5MmwxNS45Mi4yMDl2MTIuOTE4bC0xNS45MDctLjEyMS0uMDEzLTEzLjAwNnoiLz48cGF0aCBkPSJNNTMuNDc4IDUxLjk5M0EzMC44MTQgMzAuODE0IDAgMCAxIDMwLjkgNjEuOGEzMS4yMjUgMzEuMjI1IDAgMCAxLTMuODM3LS4yMzdBMzAuNjk5IDMwLjY5OSAwIDAgMSAxNS45IDU3LjkxOWEzMS4wMzMgMzEuMDMzIDAgMCAxLTcuODU3LTYuMjI1bDEuMjg0LTMuMSAxMy45MjUtNi4yMTJjMCA0LjUzNSAxLjg0IDYuMTUyIDcuOTcgNi4yNDQgNy41Ny4xMTMgNy45NC0xLjYwNiA3Ljk0LTYuMjhsMTIuNzkgNi4yODF6IiBmaWxsPSIjZDVlMWVkIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48cGF0aCBkPSJNMzkuMTY1IDM4Ljc3OHYzLjQwNGMtMi43NSA0LjkxNC0xNCA0Ljk5OC0xNS45MjMtMy41OXoiIGZpbGwtcnVsZT0iZXZlbm9kZCIgb3BhY2l0eT0iMC4xMSIvPjxwYXRoIGQ9Ik0zMS4xMjkgOC40MzJjMjEuMjgxIDAgMTIuOTg3IDM1LjI2NiAwIDM1LjI2Ni0xMi4yNjcgMC0yMS4yODEtMzUuMjY2IDAtMzUuMjY2eiIgZmlsbD0iI2ZmZThiZSIgZmlsbC1ydWxlPSJldmVub2RkIi8+PHBhdGggZD0iTTE4LjM2NSAyNC4wNDVjLTMuMDcgMS4zNC0uNDYgNy42ODcgMS40NzIgNy42NThhMzEuOTczIDMxLjk3MyAwIDAgMS0xLjQ3Mi03LjY1OHoiIGZpbGw9IiNmOWRjYTQiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjxwYXRoIGQ9Ik00NC4xNCAyNC4wNDVjMy4wNyAxLjMzOS40NiA3LjY4Ny0xLjQ3MSA3LjY1OGEzMS45OTIgMzEuOTkyIDAgMCAwIDEuNDcxLTcuNjU4eiIgZmlsbD0iI2Y5ZGNhNCIgZmlsbC1ydWxlPSJldmVub2RkIi8+PHBhdGggZD0iTTQzLjQwOSAyOS41ODRzMS4wNjYtOC43MTYtMi4wMTUtMTEuNzUyYy0xLjM0IDMuNTI4LTcuNTAyIDQuNzMzLTcuNTAyIDQuNzMzYTE2LjYyIDE2LjYyIDAgMCAwIDMuMjE1LTIuOTQ3Yy0xLjY1Mi43MTUtNi44NzYgMi44NTgtMTEuNjEgMS4xNjFhMjMuNzE1IDIzLjcxNSAwIDAgMCAzLjYxNy0yLjY3OXMtNC4yODcgMi4zMjItOC40NCAxLjc0MmMtMi45OTEgMi4yMzItMS42NiA5LjE2Mi0xLjY2IDkuMTYyQzE1IDE4LjQxNyAxOC42OTcgNi4yOTYgMzEuMzkgNi4yMjZjMTIuMzU4LS4wNjkgMTYuMTcgMTEuODQ3IDEyLjAxOCAyMy4zNTh6IiBmaWxsPSIjZWNiZTZhIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48cGF0aCBkPSJNMjMuMjU1IDQyLjE3OWExNy4zOSAxNy4zOSAwIDAgMCA3Ljk1OCA2LjQ0NmwtNS4xODIgNS4zNDlMMTkuNDQgNDMuODd6IiBmaWxsPSIjZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48cGF0aCBkPSJNMzkuMTYgNDIuMTc5YTE3LjM5MSAxNy4zOTEgMCAwIDEtNy45NTggNi40NDZsNS4xODEgNS4zNDkgNi41OTItMTAuMTAzeiIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIi8+PHBhdGggZD0iTTMzLjM2NiA2MS43cS0xLjIzOS4wOTctMi41MDQuMDk4LS45NTQgMC0xLjg5NS0uMDU2bDEuMDMxLTguNzU3aDIuNDF6IiBmaWxsPSIjM2RiYzkzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48cGF0aCBmaWxsPSIjM2RiYzkzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yOC40NzIgNTEuNDU2bDIuNzM3LTIuODE3IDIuNzM2IDIuODE3LTIuNzM2IDIuODE3LTIuNzM3LTIuODE3eiIvPjwvZz48L2c+PG1ldGFkYXRhPjxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6cmRmcz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wMS9yZGYtc2NoZW1hIyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIj48cmRmOkRlc2NyaXB0aW9uIGFib3V0PSJodHRwczovL2ljb25zY291dC5jb20vbGVnYWwjbGljZW5zZXMiIGRjOnRpdGxlPSJhdmF0YXIsdXNlcixzdHVkZW50IiBkYzpkZXNjcmlwdGlvbj0iYXZhdGFyLHVzZXIsc3R1ZGVudCIgZGM6cHVibGlzaGVyPSJJY29uc2NvdXQiIGRjOmRhdGU9IjIwMTctMDktMjIiIGRjOmZvcm1hdD0iaW1hZ2Uvc3ZnK3htbCIgZGM6bGFuZ3VhZ2U9ImVuIj48ZGM6Y3JlYXRvcj48cmRmOkJhZz48cmRmOmxpPkRtaXRyaXkgQm9uZGFyY2h1azwvcmRmOmxpPjwvcmRmOkJhZz48L2RjOmNyZWF0b3I+PC9yZGY6RGVzY3JpcHRpb24+PC9yZGY6UkRGPjwvbWV0YWRhdGE+PC9zdmc+";
-  
-  public void clearDatabase() {
-
-  }
 
   public Account makeJouni() {
     Account a = new Account();
     a.setUsername("Jouni");
-    a.setProfileHandle("VanhanenJLA");
     a.setPassword("salasana");
     return a;
   }
 
   @Autowired
   AccountService accountService;
-
   public void createTesters() {
     try {
-      accountService.createAccount("Jouni", "salasana", "VanhanenJLA");
-      accountService.createAccount("Jauni", "salasana", "VanhanenJLO");
-      accountService.createAccount("Juoni", "salasana", "VanhanenJLU");
+      accountService.createAccount("Jauni", "salasana");
+      accountService.createAccount("Jioni", "salasana");
+      accountService.createAccount("Jaoni", "salasana");
+      accountService.createAccount("Jooni", "salasana");
+      accountService.createAccount("Jöoni", "salasana");
+      accountService.createAccount("Jyoni", "salasana");
     } catch (Exception e) {
-
+      System.out.println(e);
     }
-  }
-
-  public byte[] avatarInBase64() {
-    return Base64.getDecoder().decode(avatar);
   }
 
 }
