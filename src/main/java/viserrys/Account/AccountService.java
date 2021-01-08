@@ -6,11 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import viserrys.Photo.PhotoService;
+
 @Service
 public class AccountService {
 
     @Autowired
-    public AccountRepository accountRepository;
+    AccountRepository accountRepository;
+
+    @Autowired
+    PhotoService photoService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -59,6 +64,16 @@ public class AccountService {
         recipient.getFollowers().remove(sender);
         accountRepository.save(sender);
         accountRepository.save(recipient);
+    }
+
+    public byte[] getProfilePicture(Account account) {
+        return account.getProfilePicture().getContent();
+    }
+
+    public Account setProfilePicture(Account account, long photoId) {
+        var photo = photoService.getOne(photoId);
+        account.profilePicture = photo;
+        return accountRepository.save(account);
     }
 
 }

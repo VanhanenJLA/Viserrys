@@ -2,11 +2,14 @@ package viserrys.Account;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -38,16 +41,14 @@ public class Account extends AbstractPersistable<Long> {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Account> followers = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "uploader")
     private List<Photo> photos = new ArrayList<>();
 
-    // @OneToMany
-    // private List<Tweet> tweets = new ArrayList<>();
+    @OneToOne
+    public Photo profilePicture;
 
-    public Photo getProfilePicture() {
-        if (photos.size() < 1)
-            return null;
-        return photos.get(0);
+    public boolean hasProfilePicture() {
+        return profilePicture != null;
     }
 
 }

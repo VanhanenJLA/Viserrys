@@ -13,31 +13,35 @@
     <jumbotron th:replace="fragments/jumbotron :: jumbotron(jumbotronTitle='Others')"></jumbotron>
 
     <div class="container">
+      <div class="col">
 
-      <div class="row"
-           th:each="account : ${accounts}">
-        <div class="col">
+        <div class="row"
+             th:each="account : ${accounts}">
 
-          <div class="row">
+          <div class="col-auto">
+            <img class="img-fluid rounded-circle small-profile-picture"
+                 th:if="${account.profilePicture}"
+                 th:src="@{|/photos/${account.profilePicture.id}/content|}">
 
-            <div class="col">
-              <a th:href="@{|/accounts/${account.username}|}">
-                <span th:text="${account.username}"></span>
-              </a>
-            </div>
-
-            <div class="col">
-              <form class="form"
-                    th:action="@{/accounts/{username}/follow(username=${account.username})}"
-                    method="POST">
-                <button class="btn btn-outline-primary"
-                        type="submit">
-                  Follow
-                </button>
-              </form>
-            </div>
-
+            <a th:href="@{|/accounts/${account.username}|}">
+              <span class="form-label"
+                     th:text="${account.username}"></span>
+            </a>
           </div>
+
+          <div class="col-auto">
+            <form class="form"
+                  th:action="@{|/accounts/${account.username}/follow|}"
+                  method="POST">
+              <button class="btn btn-outline-primary"
+                      type="submit">
+                Follow
+              </button>
+            </form>
+          </div>
+
+
+
 
         </div>
 
@@ -51,6 +55,15 @@
 </body>
 
 </html>
+
+<style>
+  .small-profile-picture {
+    height: 40px;
+    min-height: 40px;
+    width: 40px;
+    min-width: 40px;
+  }
+</style>
 
 
 <!-- Unfollow -->

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import viserrys.Account.Account;
-import viserrys.Account.AccountRepository;
 
 @Service
 public class PhotoService {
@@ -13,8 +12,6 @@ public class PhotoService {
   @Autowired
   private PhotoRepository photoRepository;
 
-  @Autowired
-  private AccountRepository accountRepository;
 
   public Photo uploadPhoto(MultipartFile file, String description, Account uploader) throws Exception {
 
@@ -24,11 +21,8 @@ public class PhotoService {
       if (!type.equals("image/png"))
         throw new Exception("Unsupported file type: " + type);
 
-    var photo = new Photo(description, file.getBytes());
+    var photo = new Photo(uploader, description, file.getBytes());
     photoRepository.save(photo);
-
-    uploader.getPhotos().add(photo);
-    accountRepository.save(uploader);
 
     return photo;
   }

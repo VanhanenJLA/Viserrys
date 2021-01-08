@@ -37,8 +37,63 @@ public class ApplicationTest {
 
   @Before
   public void init() {
-    // testService.clearDatabase();
-    // testService.createTesters();
+
+  }
+
+  @Test
+  public void initDatabase() throws Exception {
+
+    accountService.createAccount("Jouni", "salasana");
+    accountService.createAccount("Jauni", "salasana");
+    accountService.createAccount("Jaoni", "salasana");
+    accountService.createAccount("Jooni", "salasana");
+    accountService.createAccount("Jyoni", "salasana");
+
+    var accounts = accountService.getAccounts();
+
+    accounts.forEach(a -> {
+      try {
+        uploadPhotos(a);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    });
+
+  }
+
+  @Test
+  public void setProfilePictures() {
+    var accounts = accountService.getAccounts();
+    for (int i = 1; i < 6; i++) {
+      var a = accounts.get(i);
+      var p = a.getPhotos().get(i);
+      accountService.setProfilePicture(a, p.getId());
+    }
+  }
+
+  void uploadPhotos(Account account) throws Exception {
+
+    for (int i = 1; i < 6; i++) {
+
+      // var path =
+      // "C:\\Repos\\VanhanenJLA\\Viserrys\\src\\main\\resources\\static\\img\\avatars\\"
+      // + i + "png";
+      var path = "C:/Repos/VanhanenJLA/Viserrys/src/main/resources/static/img/avatars/" + i + ".png";
+
+      var image = ImageIO.read(new File(path));
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ImageIO.write(image, "png", baos);
+      baos.flush();
+      var bytes = baos.toByteArray();
+      image.flush();
+      baos.close();
+
+      var mp = new MockMultipartFile("eka", String.valueOf(i), "image/png", bytes);
+
+      photoService.uploadPhoto(mp, "Test photo.", account);
+
+    }
+
   }
 
   @Test
@@ -56,10 +111,9 @@ public class ApplicationTest {
   public void accountCreation() {
 
     try {
-      Account jouni = testService.jouni;
-      Account a = accountService.createAccount(jouni);
+      var a = accountService.createAccount("Jouni", "salasana");
       testService.createTesters();
-      assertEquals(jouni.getUsername(), a.getUsername());
+      assertEquals(a.getUsername(), a.getUsername());
     } catch (Exception e) {
       fail(e.getMessage());
     }

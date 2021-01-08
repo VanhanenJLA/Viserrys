@@ -5,26 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import viserrys.Account.Account;
-import viserrys.Account.AccountService;
 import viserrys.Auth.AuthService;
 
 @Controller
 public class PhotoController {
 
   @Autowired
-  private PhotoService photoService;
+  PhotoService photoService;
 
   @Autowired
-  private AccountService accountService;
-
-  @Autowired
-  private AuthService authService;
+  AuthService authService;
 
   @GetMapping(path = "/photos/{id}/content", produces = "image/jpg")
   @ResponseBody

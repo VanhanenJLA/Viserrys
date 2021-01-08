@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import viserrys.Auth.AuthService;
@@ -149,6 +150,19 @@ public class AccountController {
 
         photoService.uploadPhoto(file, description, uploader);
         return "redirect:/accounts/" + username + "/photos";
+    }
+
+    @GetMapping(path = "/accounts/{username}/profile-picture", produces = "image/jpg")
+    @ResponseBody
+    public byte[] profilePicture(@PathVariable String username) {
+        var account = accountService.getAccount(username);
+        return accountService.getProfilePicture(account);
+    }
+
+    @PostMapping("/my-photos/set-profile-picture")
+    public String setProfilePicture(Model model, @RequestParam long photoId) {
+        accountService.setProfilePicture(current(), photoId);
+        return myPhotos(model);
     }
 
 }

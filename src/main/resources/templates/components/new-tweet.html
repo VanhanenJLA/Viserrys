@@ -14,7 +14,8 @@
       <div class="col">
         <span class="header-text text-muted">From: </span>
         <img class="img-fluid rounded-circle new-tweet-profile-picture"
-             th:src="@{|/photos/${currentAccount.getPhotos().get(0).id}/content|}">
+             th:if="${currentAccount.profilePicture}"
+             th:src="@{|/photos/${currentAccount.profilePicture.id}/content|}">
         <span class="header-text"
               th:text="${currentAccount.username}"></span>
       </div>
@@ -22,7 +23,8 @@
       <div class="col">
         <span class="header-text text-muted">To: </span>
         <img class="img-fluid rounded-circle new-tweet-profile-picture"
-             th:src="@{|/photos/${account.getPhotos().get(0).id}/content|}">
+             th:if="${account.profilePicture}"
+             th:src="@{|/photos/${account.profilePicture.id}/content|}">
         <span class="header-text"
               th:text="${account.username}"></span>
       </div>
