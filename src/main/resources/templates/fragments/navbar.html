@@ -20,17 +20,20 @@
 
       <ul class="navbar-nav mr-auto">
 
-        <li class="nav-item active">
+        <li class="nav-item"
+            th:classappend="${activeNavLink == 'me' ? 'active' : ''}">
           <a class="nav-link"
              th:href="@{/me}">Me</a>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item"
+            th:classappend="${activeNavLink == 'my-photos' ? 'active' : ''}">
           <a class="nav-link"
              th:href="@{/my-photos}">My photos</a>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item"
+            th:classappend="${activeNavLink == 'others' ? 'active' : ''}">
           <a class="nav-link"
              th:href="@{/others}">Others</a>
         </li>
@@ -45,16 +48,6 @@
           </button>
         </li>
       </ul>
-
-      <!-- <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2"
-               type="text"
-               placeholder="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0"
-                type="submit">
-          Search
-        </button>
-      </form> -->
 
     </div>
 

@@ -1,10 +1,19 @@
 
 package viserrys.Photo;
 
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import lombok.AllArgsConstructor;
@@ -19,13 +28,18 @@ import viserrys.Account.Account;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class Photo extends AbstractPersistable<Long> {
-    
-    @ManyToOne
-    private Account uploader;
 
-    private String description;
+    @ManyToOne
+    @JoinColumn(name = "uploader_id")
+    Account uploader;
+
+    @Length(max = 500)
+    String description;
 
     @Lob
-    private byte[] content;
+    byte[] content;
+
+    // @OneToMany(mappedBy = "likes")
+    // Set<Like> likes;
 
 }

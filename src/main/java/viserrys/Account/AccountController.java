@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import viserrys.Auth.AuthService;
-import viserrys.Photo.PhotoController;
 import viserrys.Photo.PhotoService;
 import viserrys.Tweet.Tweet;
-import viserrys.Tweet.TweetRepository;
+import viserrys.Tweet.TweetService;
 
 @Controller
 public class AccountController {
@@ -32,10 +31,7 @@ public class AccountController {
     PhotoService photoService;
 
     @Autowired
-    TweetRepository tweetRepository;
-
-    @Autowired
-    PhotoController photoController;
+    TweetService tweetService;
 
     private Account current() {
         return authService.getAuthenticatedAccount();
@@ -43,20 +39,20 @@ public class AccountController {
 
     @GetMapping("/me")
     private String me(Model model) {
+        model.addAttribute("activeNavLink", "me");
         return account(model, current().getUsername());
     }
 
     @GetMapping("/my-photos")
     private String myPhotos(Model model) {
+        model.addAttribute("activeNavLink", "my-photos");
         return photos(model, current().getUsername());
     }
 
     @GetMapping("/accounts/{username}")
     private String account(Model model, @PathVariable String username) {
         var account = accountService.accountRepository.findByUsername(username);
-
-        var tweets = tweetRepository.findAll();
-
+        var tweets = tweetService.findAllByRecipient(account);
         model.addAttribute("tweets", tweets);
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", current());
@@ -71,6 +67,41 @@ public class AccountController {
         return "accounts";
     }
 
+    @GetMapping("/others")
+    private String others(Model model) {
+        model.addAttribute("activeNavLink", "others");
+        var accounts = accountService.getAccounts();
+        var me = current();
+        accounts.remove(me);
+        model.addAttribute("accounts", accounts);
+        model.addAttribute("currentAccount", me);
+        return "others";
+    }
+
+    @PostMapping("/accounts/{username}/follow")
+    private String follow(Model model, @PathVariable String username) throws Exception {
+        var sender = current();
+        var recipient = accountService.accountRepository.findByUsername(username);
+        accountService.follow(sender, recipient);
+        return account(model, username);
+    }
+
+    @PostMapping("/accounts/{username}/unfollow")
+    private String unfollow(Model model, @PathVariable String username) throws Exception {
+        var sender = current();
+        var recipient = accountService.accountRepository.findByUsername(username);
+        accountService.unfollow(sender, recipient);
+        return account(model, username);
+    }
+
+    @PostMapping("/accounts/{username}/tweet")
+    private String tweet(Model model, @PathVariable String username, @RequestParam String content) throws Exception {
+        var sender = current();
+        var recipient = accountService.accountRepository.findByUsername(username);
+        tweetService.tweet(sender, recipient, LocalDateTime.now(), content);
+        return account(model, username);
+    }
+
     List<Tweet> FakeTweets() {
         var asd = "Improve your goldfish's physical fitness by getting him a bicycle.";
         var tweet = new Tweet(current(), current(), LocalDateTime.now(), asd);
@@ -82,43 +113,10 @@ public class AccountController {
         return tweets;
     }
 
-    @GetMapping("/others")
-    private String others(Model model) {
-        List<Account> accounts = accountService.getAccounts();
-        var me = current();
-        accounts.remove(me);
-        model.addAttribute("accounts", accounts);
-        model.addAttribute("currentAccount", me);
-        return "others";
-    }
-
-    @PostMapping("/accounts/{username}/follow")
-    private String follow(Model model, @PathVariable String username) throws Exception {
-        Account sender = current();
-        Account recipient = accountService.accountRepository.findByUsername(username);
-
-        accountService.follow(sender, recipient);
-
-        model.addAttribute("currentAccount", sender);
-        model.addAttribute("account", recipient);
-        return account(model, username);
-    }
-
-    @PostMapping("/accounts/{username}/tweet")
-    private String tweet(Model model, @PathVariable String username, @RequestParam String content) throws Exception {
-
-        var sender = current();
-        var recipient = accountService.accountRepository.findByUsername(username);
-
-        tweetRepository.save(new Tweet(sender, recipient, LocalDateTime.now(), content));
-
-        return account(model, username);
-    }
-
     @GetMapping("/accounts/{username}/followers")
     private String followers(Model model, @PathVariable String username) {
-        Account a = accountService.accountRepository.findByUsername(username);
-        List<Account> accounts = a.getFollowers();
+        var account = accountService.accountRepository.findByUsername(username);
+        var accounts = account.getFollowers();
         model.addAttribute("accounts", accounts);
         model.addAttribute("currentAccount", current());
         return "follows";
@@ -126,8 +124,8 @@ public class AccountController {
 
     @GetMapping("/accounts/{username}/following")
     private String following(Model model, @PathVariable String username) {
-        Account a = accountService.accountRepository.findByUsername(username);
-        List<Account> accounts = a.getFollowing();
+        var account = accountService.accountRepository.findByUsername(username);
+        var accounts = account.getFollowing();
         model.addAttribute("accounts", accounts);
         model.addAttribute("currentAccount", current());
         return "follows";
@@ -160,8 +158,14 @@ public class AccountController {
     }
 
     @PostMapping("/my-photos/set-profile-picture")
-    public String setProfilePicture(Model model, @RequestParam long photoId) {
+    public String setProfilePicture(Model model, @RequestParam Long photoId) {
         accountService.setProfilePicture(current(), photoId);
+        return myPhotos(model);
+    }
+
+    @PostMapping("/my-photos/delete-picture")
+    public String deletePicture(Model model, @RequestParam Long photoId) {
+        accountService.deletePicture(current(), photoId);
         return myPhotos(model);
     }
 

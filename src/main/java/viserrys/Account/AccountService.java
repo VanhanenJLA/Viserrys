@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import viserrys.Follow.Follow;
+import viserrys.Follow.FollowService;
 import viserrys.Photo.PhotoService;
 
 @Service
@@ -16,6 +18,9 @@ public class AccountService {
 
     @Autowired
     PhotoService photoService;
+
+    @Autowired
+    FollowService followService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -45,25 +50,12 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
-    public void follow(Account sender, Account recipient) throws Exception {
-
-        if (sender.equals(recipient))
-            throw new Exception("Cannot follow oneself!");
-
-        if (sender.getFollowing().contains(recipient))
-            throw new Exception("Already following " + recipient.getUsername());
-
-        sender.getFollowing().add(recipient);
-        recipient.getFollowers().add(sender);
-        accountRepository.save(sender);
-        accountRepository.save(recipient);
+    public Follow follow(Account sender, Account recipient) throws Exception {
+        return followService.follow(sender, recipient);
     }
 
-    public void unfollow(Account sender, Account recipient) {
-        sender.getFollowing().remove(recipient);
-        recipient.getFollowers().remove(sender);
-        accountRepository.save(sender);
-        accountRepository.save(recipient);
+    public void unfollow(Account sender, Account recipient) throws Exception {
+        followService.unfollow(sender, recipient);
     }
 
     public byte[] getProfilePicture(Account account) {
@@ -74,6 +66,10 @@ public class AccountService {
         var photo = photoService.getOne(photoId);
         account.profilePicture = photo;
         return accountRepository.save(account);
+    }
+
+    public void deletePicture(Account current, Long photoId) {
+        photoService.delete(photoId);
     }
 
 }

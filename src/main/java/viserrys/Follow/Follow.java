@@ -2,11 +2,11 @@
 package viserrys.Follow;
 
 import java.time.LocalDateTime;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import viserrys.Account.Account;
 
@@ -16,12 +16,13 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class Follow extends AbstractPersistable<Long> {
 
-    @OneToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     private Account sender;
     
-    @OneToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     private Account recipient;
 
     private LocalDateTime timestamp; 

@@ -1,11 +1,8 @@
 package viserrys;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.time.LocalDateTime;
 
 import javax.imageio.ImageIO;
 
@@ -19,7 +16,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import viserrys.Account.Account;
 import viserrys.Account.AccountService;
+import viserrys.Follow.FollowService;
 import viserrys.Photo.PhotoService;
+import viserrys.Tweet.TweetService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,13 +26,19 @@ import viserrys.Photo.PhotoService;
 public class ApplicationTest {
 
   @Autowired
-  private TestService testService;
+  TestService testService;
 
   @Autowired
-  private AccountService accountService;
+  AccountService accountService;
 
   @Autowired
-  private PhotoService photoService;
+  FollowService followService;
+
+  @Autowired
+  PhotoService photoService;
+
+  @Autowired
+  TweetService tweetService;
 
   @Before
   public void init() {
@@ -48,36 +53,38 @@ public class ApplicationTest {
     accountService.createAccount("Jaoni", "salasana");
     accountService.createAccount("Jooni", "salasana");
     accountService.createAccount("Jyoni", "salasana");
-
     var accounts = accountService.getAccounts();
 
-    accounts.forEach(a -> {
-      try {
-        uploadPhotos(a);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    });
+    for (Account account : accounts) {
+      uploadPhotos(account.getUsername());
+    }
+
+    setProfilePictures();
+
+    followService.follow(jouni(), jauni());
+    followService.follow(jauni(), jouni());
+
+    var msg = "InitDB populated tweet.";
+    tweetService.tweet(jouni(), jouni(), LocalDateTime.now(), msg);
+    tweetService.tweet(jauni(), jouni(), LocalDateTime.now(), msg);
 
   }
 
   @Test
   public void setProfilePictures() {
     var accounts = accountService.getAccounts();
-    for (int i = 1; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       var a = accounts.get(i);
-      var p = a.getPhotos().get(i);
+      var photos = photoService.findAllByUploader(a);
+      var p = photos.get(i);
       accountService.setProfilePicture(a, p.getId());
     }
   }
 
-  void uploadPhotos(Account account) throws Exception {
+  void uploadPhotos(String username) throws Exception {
 
     for (int i = 1; i < 6; i++) {
-
-      // var path =
-      // "C:\\Repos\\VanhanenJLA\\Viserrys\\src\\main\\resources\\static\\img\\avatars\\"
-      // + i + "png";
+      var account = accountService.getAccount(username);
       var path = "C:/Repos/VanhanenJLA/Viserrys/src/main/resources/static/img/avatars/" + i + ".png";
 
       var image = ImageIO.read(new File(path));
@@ -89,78 +96,20 @@ public class ApplicationTest {
       baos.close();
 
       var mp = new MockMultipartFile("eka", String.valueOf(i), "image/png", bytes);
+      var description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
-      photoService.uploadPhoto(mp, "Test photo.", account);
+      photoService.uploadPhoto(mp, description, account);
 
     }
 
   }
 
-  @Test
-  public void clearDatabase() {
-    try {
-      var db = new File("C:\\Repos\\VanhanenJLA\\Viserrys\\database.mv.db");
-      var success = db.delete();
-      assertTrue(success);
-    } catch (Exception e) {
-      fail(e.getMessage());
-    }
+  Account jouni() {
+    return accountService.getAccount("Jouni");
   }
 
-  @Test
-  public void accountCreation() {
-
-    try {
-      var a = accountService.createAccount("Jouni", "salasana");
-      testService.createTesters();
-      assertEquals(a.getUsername(), a.getUsername());
-    } catch (Exception e) {
-      fail(e.getMessage());
-    }
-
-  }
-
-  @Test
-  public void follow() {
-
-    try {
-      var juoni = accountService.createAccount("Juoni", "salasana");
-      var jauni = accountService.createAccount("Jauni", "salasana");
-      accountService.follow(juoni, jauni);
-
-      assertTrue("Juoni following contains Jauni", accountService.getAccount("Juoni").getFollowing().stream()
-          .anyMatch(account -> account.getUsername() == "Jauni"));
-
-      assertTrue("Jauno followers contains Juoni", accountService.getAccount("Jauni").getFollowers().stream()
-          .anyMatch(account -> account.getUsername() == "Juoni"));
-
-    } catch (Exception e) {
-      fail(e.getMessage());
-    }
-
-  }
-
-  @Test
-  public void uploadPhoto() throws Exception {
-
-    var jouni = accountService.getAccount("Jouni");
-
-    var path = "C:\\Repos\\VanhanenJLA\\Viserrys\\src\\main\\resources\\static\\img\\avatars\\1.png";
-    var image = ImageIO.read(new File(path));
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ImageIO.write(image, "png", baos);
-    baos.flush();
-    var bytes = baos.toByteArray();
-    baos.close();
-
-    var mp = new MockMultipartFile("eka", "1", "image/png", bytes);
-
-    photoService.uploadPhoto(mp, "Test photo.", jouni);
-    photoService.uploadPhoto(mp, "Test photo.", jouni);
-    photoService.uploadPhoto(mp, "Test photo.", jouni);
-    photoService.uploadPhoto(mp, "Test photo.", jouni);
-    photoService.uploadPhoto(mp, "Test photo.", jouni);
-
+  Account jauni() {
+    return accountService.getAccount("Jauni");
   }
 
 }

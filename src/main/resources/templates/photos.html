@@ -14,28 +14,57 @@
 
     <div class="col">
 
-      <div th:if="${#lists.isEmpty(account.getPhotos()) && !account.equals(currentAccount)}">
+      <div th:if="${#lists.isEmpty(account.photos) && account != currentAccount}">
         <div class="alert alert-primary mb-3"
              role="alert">User hasn't uploaded any images!</div>
       </div>
 
-      <div th:each="photo : ${account.getPhotos()}">
+      <div th:each="photo : ${account.photos}">
         <div class="card mt-2">
           <div class="card-body">
             <div class="row">
 
               <div class="col-md">
-                <img class="img-thumbnail"
+                <img class="img-thumbnai
                      th:src="@{|/photos/${photo.id}/content|}">
 
-                <form method="POST"
-                      th:action="@{/my-photos/set-profile-picture}">
-                  <input type="hidden"
-                         th:value="${photo.id}"
-                         name="photoId">
-                  <button type="submit"
-                          class="btn btn-block btn-outline-primary">Set as profile picture</button>
-                </form>
+                <div th:if="${currentAccount == account}">
+                  <form th:if="${photo != currentAccount.profilePicture}"
+                        method="POST"
+                        th:action="@{/my-photos/set-profile-picture}">
+                    <input type="hidden"
+                           th:value="${photo.id}"
+                           name="photoId">
+                    <button type="submit"
+                            class="btn btn-block btn-outline-primary">Set as profile picture</button>
+                  </form>
+
+                  <form th:if="${currentAccount == account}"
+                        method="POST"
+                        th:action="@{/my-photos/delete-picture}">
+                    <input type="hidden"
+                           th:value="${photo.id}"
+                           name="photoId">
+                    <button id="delete-picture-button"
+                            type="submit"
+                            class="btn btn-block btn-outline-danger">Delete</button>
+                  </form>
+                </div>
+
+                <div th:if="${currentAccount != account}">
+                  <form method="POST"
+                        th:action="@{|/photos/${photo.id}/like|}">
+                    <button type="submit"
+                            class="btn btn-block btn-outline-success">Like</button>
+                  </form>
+
+                  <form method="POST"
+                        th:action="@{|/photos/${photo.id}/comment|}">
+                    <button type="submit"
+                            class="btn btn-block btn-outline-primary">Comment</button>
+                  </form>
+                </div>
+
               </div>
 
               <div class="col-md">
@@ -45,18 +74,16 @@
             </div>
           </div>
         </div>
-
       </div>
 
-      <div th:if="${account.equals(currentAccount)}"
-           class="card mt-3">
+      <div th:if="${account == currentAccount && currentAccount.photos.size() < 5}"
+           class="card mt-3 mb-3">
 
         <div class="card-header">
           <h2>Add a new photo</h1>
         </div>
 
         <div class="card-body">
-
           <form method="POST"
                 th:action="@{|/accounts/${currentAccount.username}/photos|}"
                 enctype="multipart/form-data">
@@ -73,7 +100,7 @@
             </div>
 
             <div class="form-group">
-              <label for="description">Include a description for your photo.</label>
+              <label for="description">Include a description of your photo.</label>
               <textarea class="form-control"
                         id="description"
                         name="description"
@@ -91,6 +118,20 @@
       </div>
 
     </div>
+
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/bs-custom-file-input/1.1.1/bs-custom-file-input.min.js"></script>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        bsCustomFileInput.init();
+        document.getElementById('delete-picture-button').onclick = () => {
+          if (!confirm("Are you sure you want to delete this photo?"))
+            event.preventDefault();
+        };
+      });
+
+    </script>
 
 </body>
 

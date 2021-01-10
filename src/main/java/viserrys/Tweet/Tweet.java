@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import viserrys.Account.Account;
 
@@ -19,6 +20,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet> {
 
     @NotNull
@@ -39,13 +41,12 @@ public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet
 
     @Override
     public int compareTo(Tweet o) {
-        if (this.getTimestamp().isAfter(o.getTimestamp()))
+        if (timestamp.isAfter(o.timestamp))
             return -1;
 
-        if (this.getTimestamp().isBefore(o.getTimestamp()))
+        if (timestamp.isBefore(o.timestamp))
             return 1;
 
         return 0;
-
     }
 }

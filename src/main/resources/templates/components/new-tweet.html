@@ -1,6 +1,7 @@
 <new-tweet class="card mb-2 collapse">
 
   <new-tweet-header class="card-header py-1">
+
     <style>
       .new-tweet-profile-picture {
         height: 25px;
@@ -35,19 +36,20 @@
   <form th:action="@{|/accounts/${account.username}/tweet|}"
         method="POST">
 
-    <div class="card-body">
+    <div class="card-body p-0">
       <textarea name="content"
                 class="form-control"
-                placeholder="Type out a tweet."></textarea>
+                placeholder="Type out a tweet."
+                required></textarea>
     </div>
 
     <div class="card-footer justify-content-between">
-      <button class="btn btn-outline-success"
+      <button class="btn btn-block btn-outline-success"
               type="submit">Send</button>
 
       <button data-target="new-tweet"
               data-toggle="collapse"
-              class="btn btn-outline-danger"
+              class="btn btn-block btn-outline-danger"
               type="reset">Cancel</button>
     </div>
 

@@ -25,23 +25,32 @@
 
             <a th:href="@{|/accounts/${account.username}|}">
               <span class="form-label"
-                     th:text="${account.username}"></span>
+                    th:text="${account.username}"></span>
             </a>
           </div>
 
           <div class="col-auto">
-            <form class="form"
+
+            <form th:if="${!currentAccount.isFollowing(account)}"
                   th:action="@{|/accounts/${account.username}/follow|}"
                   method="POST">
               <button class="btn btn-outline-primary"
                       type="submit">
                 Follow
               </button>
+
             </form>
+
+            <form th:if="${currentAccount.isFollowing(account)}"
+                  th:action="@{|/accounts/${account.username}/unfollow|}"
+                  method="POST">
+              <button class="btn btn-outline-primary"
+                      type="submit">
+                Unfollow
+              </button>
+            </form>
+
           </div>
-
-
-
 
         </div>
 
@@ -64,14 +73,3 @@
     min-width: 40px;
   }
 </style>
-
-
-<!-- Unfollow -->
-<!-- <form th:if="currentAccount.getFollowing()" class="form"
-                      th:action="@{/accounts/{username}/follow(username=${account.username})}"
-                      method="POST">
-                  <button class="btn btn-primary"
-                          type="submit">
-                    Follow
-                  </button>
-                </form> -->
