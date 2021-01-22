@@ -30,11 +30,11 @@ public class AccountService {
         if (accountRepository.findByUsername(username) != null)
             throw new Exception("Username taken.");
 
-        Account a = new Account();
-        a.setUsername(username);
-        a.setPassword(passwordEncoder.encode(password));
+        var account = new Account();
+        account.setUsername(username);
+        account.setPassword(passwordEncoder.encode(password));
 
-        return accountRepository.save(a);
+        return accountRepository.save(account);
     }
 
     public Account createAccount(Account account) {
@@ -56,10 +56,6 @@ public class AccountService {
 
     public void unfollow(Account sender, Account recipient) throws Exception {
         followService.unfollow(sender, recipient);
-    }
-
-    public byte[] getProfilePicture(Account account) {
-        return account.getProfilePicture().getContent();
     }
 
     public Account setProfilePicture(Account account, long photoId) {

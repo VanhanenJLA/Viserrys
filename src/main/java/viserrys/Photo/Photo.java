@@ -3,15 +3,12 @@ package viserrys.Photo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.jpa.domain.AbstractPersistable;
@@ -39,7 +36,7 @@ public class Photo extends AbstractPersistable<Long> {
     @Lob
     byte[] content;
 
-    // @OneToMany(mappedBy = "likes")
-    // Set<Like> likes;
+    @ManyToMany
+    List<Account> likers = new ArrayList<>();
 
 }

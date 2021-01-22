@@ -73,6 +73,13 @@
 
   <footer th:replace="fragments/footer :: footer"></footer>
 
+  <script src="https://MomentJS.com/downloads/moment.js"></script>
+  <script>
+    // If it works, it works. 🚀
+    Array.from(document.getElementsByClassName('timestamp'))
+      .forEach(t => t.textContent = moment(t.textContent).fromNow());
+  </script>
+
 </body>
 
 </html>

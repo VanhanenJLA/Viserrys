@@ -29,22 +29,22 @@ public class Account extends AbstractPersistable<Long> {
     @NotEmpty
     @Column(unique = true)
     @Size(min = 3, max = 15)
-    private String username;
+    String username;        
 
     @NotEmpty
-    private String password;
+    String password;
 
     @ManyToMany(mappedBy = "sender")
-    private List<Follow> following = new ArrayList<>();
+    List<Follow> following = new ArrayList<>();
 
     @ManyToMany(mappedBy = "recipient")
-    private List<Follow> followers = new ArrayList<>();
+    List<Follow> followers = new ArrayList<>();
 
     @OneToMany(mappedBy = "uploader")
-    private List<Photo> photos = new ArrayList<>();
+    List<Photo> photos = new ArrayList<>();
 
     @OneToOne
-    public Photo profilePicture;
+    Photo profilePicture;
 
     public boolean isFollowing(Account recipient) {
         return following.stream().anyMatch(a -> a.getRecipient() == recipient);

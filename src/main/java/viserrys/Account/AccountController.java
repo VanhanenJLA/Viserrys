@@ -49,6 +49,18 @@ public class AccountController {
         return photos(model, current().getUsername());
     }
 
+    @PostMapping("/my-photos/set-profile-picture")
+    public String setProfilePicture(Model model, @RequestParam Long photoId) {
+        accountService.setProfilePicture(current(), photoId);
+        return myPhotos(model);
+    }
+
+    @PostMapping("/my-photos/delete-picture")
+    public String deletePicture(Model model, @RequestParam Long photoId) {
+        accountService.deletePicture(current(), photoId);
+        return myPhotos(model);
+    }
+
     @GetMapping("/accounts/{username}")
     private String account(Model model, @PathVariable String username) {
         var account = accountService.accountRepository.findByUsername(username);
@@ -57,14 +69,6 @@ public class AccountController {
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", current());
         return "account";
-    }
-
-    @GetMapping("/accounts")
-    private String accounts(Model model) {
-        List<Account> accounts = accountService.getAccounts();
-        model.addAttribute("accounts", accounts);
-        model.addAttribute("currentAccount", current());
-        return "accounts";
     }
 
     @GetMapping("/others")
@@ -83,7 +87,7 @@ public class AccountController {
         var sender = current();
         var recipient = accountService.accountRepository.findByUsername(username);
         accountService.follow(sender, recipient);
-        return account(model, username);
+        return "redirect:/accounts/{username}";
     }
 
     @PostMapping("/accounts/{username}/unfollow")
@@ -99,7 +103,7 @@ public class AccountController {
         var sender = current();
         var recipient = accountService.accountRepository.findByUsername(username);
         tweetService.tweet(sender, recipient, LocalDateTime.now(), content);
-        return account(model, username);
+        return "redirect:/accounts/{username}";
     }
 
     List<Tweet> FakeTweets() {
@@ -147,26 +151,20 @@ public class AccountController {
         var uploader = authService.getAuthenticatedAccount();
 
         photoService.uploadPhoto(file, description, uploader);
-        return "redirect:/accounts/" + username + "/photos";
+        return "redirect:/accounts/{username}/photos";
     }
 
     @GetMapping(path = "/accounts/{username}/profile-picture", produces = "image/jpg")
     @ResponseBody
     public byte[] profilePicture(@PathVariable String username) {
         var account = accountService.getAccount(username);
-        return accountService.getProfilePicture(account);
+        return account.getProfilePicture().getContent();
     }
 
-    @PostMapping("/my-photos/set-profile-picture")
-    public String setProfilePicture(Model model, @RequestParam Long photoId) {
-        accountService.setProfilePicture(current(), photoId);
-        return myPhotos(model);
-    }
-
-    @PostMapping("/my-photos/delete-picture")
-    public String deletePicture(Model model, @RequestParam Long photoId) {
-        accountService.deletePicture(current(), photoId);
-        return myPhotos(model);
+    @PostMapping("accounts/{username}/photos/{id}/like")
+    public String like(Model model, @PathVariable String username, @PathVariable Long id) throws Exception {
+        var photo = photoService.like(id, current());
+        return "redirect:/accounts/{username}/photos";
     }
 
 }
