@@ -15,18 +15,23 @@
       <div class="col-auto">
         <img th:if="${tweet.sender.profilePicture}"
              class="img-fluid rounded-circle tweet-profile-picture"
-             th:src="@{|/photos/${tweet.sender.profilePicture.id}/content|}">
+             th:src="@{|/photos/${tweet.sender.profilePicture.id}/content|}"
+             alt="profile-picture">
       </div>
 
       <div class="col align-self-center">
         <div class="row justify-content-between">
-          <a th:href="@{|/accounts/${tweet.sender.username}|}">
+
+          <a class="col"
+             th:href="@{|/accounts/${tweet.sender.username}|}">
             <span class="header-text"
                   th:text="${tweet.sender.username}">
             </span>
           </a>
-          <span class="header-text text-muted pr-3 timestamp"
+
+          <span class="col-auto header-text text-muted pr-3 timestamp"
                 th:text="${tweet.timestamp}"></span>
+
         </div>
       </div>
     </div>

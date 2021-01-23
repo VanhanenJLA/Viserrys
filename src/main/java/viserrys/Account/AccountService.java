@@ -14,7 +14,7 @@ import viserrys.Photo.PhotoService;
 public class AccountService {
 
     @Autowired
-    AccountRepository accountRepository;
+    public AccountRepository accountRepository;
 
     @Autowired
     PhotoService photoService;

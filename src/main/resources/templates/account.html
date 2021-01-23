@@ -23,7 +23,8 @@
           <div th:if="${account.hasProfilePicture()}"
                class="row justify-content-center">
             <img class="img-fluid img-thumbnail rounded-circle mt-n5"
-                 th:src="@{|/photos/${account.profilePicture.id}/content|}">
+                 th:src="@{|/photos/${account.profilePicture.id}/content|}"
+                 alt="profile-picture">
           </div>
 
           <div th:if="${!account.hasProfilePicture()}"
@@ -35,28 +36,44 @@
           <h2 th:text="${account.username}"></h2>
 
           <!-- Following -->
-          <a th:href="@{|/accounts/${username}/following|}">
-            <p th:text="|${account.getFollowing().size()} following|"></p>
+          <a class="h5"
+             th:href="@{|/accounts/${username}/following|}">
+            <span class="badge bg-info rounded-pill text-white"
+                  th:text="|${account.getFollowing().size()} following|"></span>
           </a>
 
           <!-- Followers -->
-          <a th:href="@{/accounts/{username}/followers(username=${account.username})}">
-            <p th:text="|${account.getFollowers().size()} followers|"></p>
+          <a class="h5"
+             th:href="@{/accounts/{username}/followers(username=${account.username})}">
+            <span class="badge bg-success rounded-pill text-white"
+                  th:text="|${account.getFollowers().size()} followers|"></span>
           </a>
 
           <!-- Photos -->
-          <a th:href="@{/accounts/{username}/photos(username=${account.username})}">
-            <p th:text="|${account.getPhotos().size()} photos|"></p>
+          <a class="h5"
+             th:href="@{/accounts/{username}/photos(username=${account.username})}">
+            <span class="badge bg-secondary rounded-pill text-white"
+                  th:text="|${account.getPhotos().size()} photos|"></span>
           </a>
+
+          <!-- Modal -->
+          <span data-bs-toggle="modal"
+                data-bs-target="#accounts-modal"
+                class="h5 badge bg-secondary rounded-pill text-white">
+            Modaali
+          </span>
 
         </div>
 
         <!-- Tweets -->
         <div class="col-md-8">
           <h2>Tweets</h2>
-          <button data-toggle="collapse"
-                  data-target="new-tweet"
-                  class="btn btn-block btn-outline-primary mb-2">Leave a tweet!</button>
+
+          <div class="d-grid gap-2 mx-auto">
+            <button data-bs-toggle="collapse"
+                    data-bs-target="new-tweet"
+                    class="btn btn-outline-primary mb-2">Leave a tweet!</button>
+          </div>
           <new-tweet th:replace="components/new-tweet.html :: new-tweet"></new-tweet>
 
           <div th:each="tweet : ${tweets}">
@@ -73,13 +90,14 @@
 
   <footer th:replace="fragments/footer :: footer"></footer>
 
-  <script src="https://MomentJS.com/downloads/moment.js"></script>
-  <script>
-    // If it works, it works. 🚀
-    Array.from(document.getElementsByClassName('timestamp'))
-      .forEach(t => t.textContent = moment(t.textContent).fromNow());
-  </script>
+  <accounts-modal th:replace="components/accounts-modal.html :: accounts-modal"></accounts-modal>
 
 </body>
 
 </html>
+<script src="https://MomentJS.com/downloads/moment.js"></script>
+<script>
+  // If it works, it works. 🚀
+  Array.from(document.getElementsByClassName('timestamp'))
+    .forEach(t => t.textContent = moment(t.textContent).fromNow());
+</script>

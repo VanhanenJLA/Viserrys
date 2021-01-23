@@ -8,12 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import viserrys.Account.Account;
+import viserrys.Comment.Comment;
 
 @Service
 public class PhotoService {
 
   @Autowired
-  private PhotoRepository photoRepository;
+  public PhotoRepository photoRepository;
 
   public Photo uploadPhoto(MultipartFile file, String description, Account uploader) throws Exception {
 
@@ -22,13 +23,19 @@ public class PhotoService {
     if (!type.equals("image/jpeg"))
       if (!type.equals("image/png"))
         throw new Exception("Unsupported file type: " + type);
-
-    return photoRepository.save(new Photo(uploader, description, file.getBytes(), new ArrayList<Account>()));
+    var photo = new Photo(uploader, description, file.getBytes(), new ArrayList<Comment>(), new ArrayList<Account>());
+    return photoRepository.save(photo);
   }
 
   public void delete(Long id) {
     var photo = photoRepository.getOne(id);
     photoRepository.delete(photo);
+  }
+
+  public Photo comment(Long id, Comment comment) {
+    var photo = photoRepository.findById(id).get();
+    photo.comments.add(comment);
+    return photoRepository.save(photo);
   }
 
   public Photo like(Long id, Account sender) throws Exception {

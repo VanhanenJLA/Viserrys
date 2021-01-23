@@ -10,16 +10,21 @@ import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import viserrys.Account.Account;
 import viserrys.Account.AccountService;
+import viserrys.Comment.Comment;
+import viserrys.Comment.CommentRepository;
 import viserrys.Follow.FollowService;
+import viserrys.Photo.Photo;
 import viserrys.Photo.PhotoService;
 import viserrys.Tweet.TweetService;
 
@@ -41,9 +46,23 @@ public class ApplicationTest {
   TweetService tweetService;
 
   @Autowired
+  CommentRepository commentRepository;
+
+  @Autowired
   EntityManager em;
 
+  
   @Test
+  @Transactional
+  public void nukeDb() {
+    em.joinTransaction();
+    em.createNativeQuery("DROP ALL OBJECTS DELETE FILES").executeUpdate();
+    em.close();
+  }
+
+  @Test
+  @Transactional
+  @Rollback(false)
   public void populateDatabase() throws Exception {
 
     createAccounts();
@@ -53,24 +72,30 @@ public class ApplicationTest {
     }
 
     setProfilePictures();
-
     createTweets();
-
-    // followService.follow(jouni(), jauni());
-    // followService.follow(jauni(), jouni());
-
+    setFollows();
+    // setComments();
   }
 
-  @Test
-  @Transactional
-  public void nukeDb() {
-    em.joinTransaction();
-    em.createNativeQuery("DROP ALL OBJECTS DELETE FILES").executeUpdate();
-  }
-
-  @Test
   public void dropTables() {
     List.of("Account", "Tweet", "Photo", "Follow").forEach(t -> dropTable(t));
+  }
+
+  @Transactional
+  @Rollback(false)
+  @Test
+  public void setComments() {
+    for (Account account : accountService.getAccounts()) {
+      var j = jouni();
+      var p = j.getPhotos();
+      comment(account, p.get(0));
+    }
+  }
+
+  public void comment(Account sender, Photo photo) {
+    var comment = commentRepository.save(new Comment(sender, LocalDateTime.now(), "Haha very lit! 😂👌"));
+    photo.getComments().add(comment);
+    var saved = photoService.photoRepository.save(photo);
   }
 
   @Transactional
@@ -81,7 +106,6 @@ public class ApplicationTest {
     // .setParameter("tableName", tableName) // lulul
   }
 
-  @Test
   public void setProfilePictures() {
     var accounts = accountService.getAccounts();
     for (int i = 0; i < 5; i++) {
@@ -120,10 +144,19 @@ public class ApplicationTest {
     return bytes;
   }
 
+  void setFollows() throws Exception {
+    followService.follow(jouni(), jauni());
+    followService.follow(jauni(), jouni());
+    followService.follow(jaoni(), jouni());
+    followService.follow(jaoni(), jauni());
+  }
+
   void createTweets() {
     var msg = "Hello world from application tests.";
     tweetService.tweet(jouni(), jouni(), LocalDateTime.now(), msg);
     tweetService.tweet(jauni(), jouni(), LocalDateTime.now(), msg);
+    tweetService.tweet(jaoni(), jouni(), LocalDateTime.now(), msg);
+
   }
 
   void createAccounts() throws Exception {
@@ -140,6 +173,10 @@ public class ApplicationTest {
 
   Account jauni() {
     return accountService.getAccount("Jauni");
+  }
+
+  Account jaoni() {
+    return accountService.getAccount("Jaoni");
   }
 
 }

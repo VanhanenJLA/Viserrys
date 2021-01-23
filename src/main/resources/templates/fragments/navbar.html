@@ -10,15 +10,16 @@
 
     <button class="navbar-toggler"
             type="button"
-            data-toggle="collapse"
-            data-target="#navigation-navbar">
+            data-bs-toggle="collapse"
+            data-bs-target="#navigation-navbar"
+            name="navbar-toggler">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse"
          id="navigation-navbar">
 
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav me-auto">
 
         <li class="nav-item"
             th:classappend="${activeNavLink == 'me' ? 'active' : ''}">
@@ -42,8 +43,10 @@
 
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a th:href="@{/logout}"
-             class="btn btn-block btn-outline-secondary">Sign out</a>
+          <div class="d-grid gap-2 mx-auto">
+            <a th:href="@{/logout}"
+               class="btn btn-outline-secondary">Sign out</a>
+          </div>
         </li>
       </ul>
 

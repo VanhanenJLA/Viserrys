@@ -4,6 +4,17 @@
 
 <head th:replace="fragments/head :: head(title=|Photos of ${currentAccount.username}|)"></head>
 
+<style>
+  .comment-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .img-thumbnail {
+    width: 100%;
+  }
+</style>
+
 <body>
 
   <navbar th:replace="fragments/navbar :: navbar"></navbar>
@@ -12,71 +23,95 @@
 
   <div class="container">
 
-
-
     <div th:if="${#lists.isEmpty(account.photos) && account != currentAccount}">
       <div class="alert alert-primary mb-3"
            role="alert">User hasn't uploaded any images!</div>
     </div>
 
     <div th:each="photo : ${account.photos}">
-      <div class="card mt-2">
-        <div class="card-body">
-          <div class="row">
+      <div class="mt-2">
+        <div class="row">
 
-            <div class="col-md">
-              <img class="img-thumbnail"
-                   th:src="@{|/photos/${photo.id}/content|}">
+          <div class="col-md-7">
 
-              <div th:if="${currentAccount == account}">
-                <form th:if="${photo != currentAccount.profilePicture}"
-                      method="POST"
-                      th:action="@{/my-photos/set-profile-picture}">
-                  <input type="hidden"
-                         th:value="${photo.id}"
-                         name="photoId">
+            <img class="img-thumbnail"
+                 th:src="@{|/photos/${photo.id}/content|}">
+
+            <div th:if="${currentAccount == account}">
+              <form th:if="${photo != currentAccount.profilePicture}"
+                    method="POST"
+                    th:action="@{/my-photos/set-profile-picture}">
+                <input type="hidden"
+                       th:value="${photo.id}"
+                       name="photoId">
+                <div class="d-grid gap-2 mx-auto">
                   <button type="submit"
-                          class="btn btn-block btn-outline-primary">Set as profile picture</button>
-                </form>
+                          class="btn btn-outline-primary">Set as profile picture</button>
+                </div>
+              </form>
 
-                <form th:if="${currentAccount == account}"
-                      method="POST"
-                      th:action="@{/my-photos/delete-picture}">
-                  <input type="hidden"
-                         th:value="${photo.id}"
-                         name="photoId">
+              <form th:if="${currentAccount == account}"
+                    method="POST"
+                    th:action="@{/my-photos/delete-picture}">
+                <input type="hidden"
+                       th:value="${photo.id}"
+                       name="photoId">
+                <div class="d-grid gap-2 mx-auto">
                   <button id="delete-picture-button"
                           type="submit"
-                          class="btn btn-block btn-outline-danger">Delete</button>
-                </form>
-              </div>
-
-              <div th:if="${currentAccount != account}">
-                <form th:if="${!photo.likers.contains(currentAccount)}"
-                      method="POST"
-                      th:action="@{|photos/${photo.id}/like|}">
-                  <button type="submit"
-                          class="btn btn-block btn-outline-success">Like</button>
-                </form>
-
-                <form method="POST"
-                      th:action="@{|/photos/${photo.id}/comment|}">
-                  <button type="submit"
-                          class="btn btn-block btn-outline-primary">Comment</button>
-                </form>
-              </div>
-
+                          class="btn btn-outline-danger">Delete</button>
+                </div>
+              </form>
             </div>
 
-            <div class="col-md">
-              <span th:text="${photo.description}"></span>
-              <hr>
-              <p th:text="|Likes: ${photo.likers.size()}|"></p>
+            <div th:if="${currentAccount != account}">
+              <form th:if="${!photo.likers.contains(currentAccount)}"
+                    method="POST"
+                    th:action="@{|photos/${photo.id}/like|}">
+                <div class="d-grid gap-2 mx-auto">
+                  <button type="submit"
+                          class="btn btn-outline-success">Like</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="pt-3">
+              <h4>Description</h4>
+              <p th:text="${photo.description}"></p>
+              <h4>
+                <p>Likes</p>
+                <span th:text="${photo.likers.size()}|"
+                      class="badge bg-success rounded-pill text-white">
+                </span>
+                <span th:each="liker : ${photo.likers}"
+                      th:text="${liker.username}"
+                      class="badge bg-warning rounded-pill text-white">
+                </span>
+              </h4>
             </div>
 
           </div>
+
+          <div class="col-md-5">
+            <h4>Comments</h4>
+            <div class="d-grid gap-2 mx-auto">
+              <button data-bs-toggle="collapse"
+                      th:data-bs-target="|#new-comment-${photo.id}|"
+                      class="btn btn-outline-primary mb-2">Leave a comment!</button>
+            </div>
+
+            <p th:if="${photo.comments.size() < 1}">Photo has no comments yet.</p>
+            <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>
+            <div th:each="comment : ${photo.comments}">
+              <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
+            </div>
+
+          </div>
+
         </div>
+
       </div>
+      <hr>
     </div>
 
     <div th:if="${account == currentAccount && currentAccount.photos.size() < 5}"
@@ -112,29 +147,34 @@
                       minlength="1"
                       maxlength="200"></textarea>
           </div>
-
-          <button type="submit"
-                  class="btn btn-outline-primary btn-block">Submit</button>
+          <div class="d-grid gap-2 mx-auto">
+            <button type="submit"
+                    class="btn btn-outline-primary">Submit</button>
+          </div>
         </form>
       </div>
 
     </div>
-
-    <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/bs-custom-file-input/1.1.1/bs-custom-file-input.min.js"></script>
-
-    <script>
-      window.addEventListener('DOMContentLoaded', () => {
-        bsCustomFileInput.init();
-        const del = document.getElementById('delete-picture-button');
-        if (del)
-          del.onclick = () => {
-            if (!confirm("Are you sure you want to delete this photo?"))
-              event.preventDefault();
-          };
-      });
-    </script>
-
 </body>
 
 </html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bs-custom-file-input/1.1.1/bs-custom-file-input.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    bsCustomFileInput.init();
+    const del = document.getElementById('delete-picture-button');
+    if (del)
+      del.onclick = () => {
+        if (!confirm("Are you sure you want to delete this photo?"))
+          event.preventDefault();
+      };
+  });
+</script>
+
+<script src="https://MomentJS.com/downloads/moment.js"></script>
+<script>
+  // If it works, it works. 🚀
+  Array.from(document.getElementsByClassName('timestamp'))
+    .forEach(t => t.textContent = moment(t.textContent).fromNow());
+</script>

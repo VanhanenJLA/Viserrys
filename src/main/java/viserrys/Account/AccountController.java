@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import viserrys.Auth.AuthService;
+import viserrys.Comment.CommentService;
 import viserrys.Photo.PhotoService;
 import viserrys.Tweet.Tweet;
 import viserrys.Tweet.TweetService;
@@ -32,6 +33,9 @@ public class AccountController {
 
     @Autowired
     TweetService tweetService;
+
+    @Autowired
+    CommentService commentService;
 
     private Account current() {
         return authService.getAuthenticatedAccount();
@@ -104,6 +108,15 @@ public class AccountController {
         var recipient = accountService.accountRepository.findByUsername(username);
         tweetService.tweet(sender, recipient, LocalDateTime.now(), content);
         return "redirect:/accounts/{username}";
+    }
+
+    @PostMapping("/accounts/{username}/photos/{id}/comment")
+    private String comment(Model model, @PathVariable String username, @PathVariable Long id,
+            @RequestParam String content) throws Exception {
+        var sender = current();
+        var comment = commentService.comment(sender, LocalDateTime.now(), content);
+        photoService.comment(id, comment);
+        return "redirect:/accounts/{username}/photos";
     }
 
     List<Tweet> FakeTweets() {

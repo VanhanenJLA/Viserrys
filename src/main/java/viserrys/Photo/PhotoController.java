@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import viserrys.Auth.AuthService;
+import viserrys.Comment.CommentService;
 
 @Controller
 public class PhotoController {
@@ -17,6 +18,9 @@ public class PhotoController {
 
   @Autowired
   AuthService authService;
+
+  @Autowired
+  CommentService commentService;
 
   @GetMapping(path = "/photos/{id}/content", produces = "image/jpg")
   @ResponseBody

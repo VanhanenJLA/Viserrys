@@ -1,6 +1,15 @@
 <div th:fragment="jumbotron"
      class="jumbotron jumbotron-fluid">
 
+  <style>
+    .jumbotron {
+      padding: 4rem 2rem;
+      margin-bottom: 2rem;
+      background-color: #e9ecef;
+      border-radius: .3rem;
+    }
+  </style>
+
   <div class="container">
     <h1 class="display-4"
         th:text="${jumbotronTitle}">Fluid jumbotron</h1>
