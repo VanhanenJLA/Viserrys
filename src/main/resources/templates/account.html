@@ -38,28 +38,28 @@
           <!-- Following -->
           <a class="h5"
              th:href="@{|/accounts/${username}/following|}">
-            <span class="badge bg-info rounded-pill text-white"
+            <span class="badge bg-info badge-pill text-white"
                   th:text="|${account.getFollowing().size()} following|"></span>
           </a>
 
           <!-- Followers -->
           <a class="h5"
              th:href="@{/accounts/{username}/followers(username=${account.username})}">
-            <span class="badge bg-success rounded-pill text-white"
+            <span class="badge bg-success badge-pill text-white"
                   th:text="|${account.getFollowers().size()} followers|"></span>
           </a>
 
           <!-- Photos -->
           <a class="h5"
              th:href="@{/accounts/{username}/photos(username=${account.username})}">
-            <span class="badge bg-secondary rounded-pill text-white"
+            <span class="badge bg-secondary badge-pill text-white"
                   th:text="|${account.getPhotos().size()} photos|"></span>
           </a>
 
           <!-- Modal -->
-          <span data-bs-toggle="modal"
-                data-bs-target="#accounts-modal"
-                class="h5 badge bg-secondary rounded-pill text-white">
+          <span data-toggle="modal"
+                data-target="#accounts-modal"
+                class="h5 badge bg-secondary badge-pill text-white">
             Modaali
           </span>
 
@@ -69,11 +69,11 @@
         <div class="col-md-8">
           <h2>Tweets</h2>
 
-          <div class="d-grid gap-2 mx-auto">
-            <button data-bs-toggle="collapse"
-                    data-bs-target="new-tweet"
-                    class="btn btn-outline-primary mb-2">Leave a tweet!</button>
-          </div>
+
+          <button data-toggle="collapse"
+                  data-target="new-tweet"
+                  class="btn btn-block btn-outline-primary mb-2">Leave a tweet!</button>
+
           <new-tweet th:replace="components/new-tweet.html :: new-tweet"></new-tweet>
 
           <div th:each="tweet : ${tweets}">

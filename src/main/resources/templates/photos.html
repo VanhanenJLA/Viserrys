@@ -44,10 +44,9 @@
                 <input type="hidden"
                        th:value="${photo.id}"
                        name="photoId">
-                <div class="d-grid gap-2 mx-auto">
-                  <button type="submit"
-                          class="btn btn-outline-primary">Set as profile picture</button>
-                </div>
+
+                <button type="submit"
+                        class="btn btn-block btn-outline-primary">Set as profile picture</button>
               </form>
 
               <form th:if="${currentAccount == account}"
@@ -56,11 +55,11 @@
                 <input type="hidden"
                        th:value="${photo.id}"
                        name="photoId">
-                <div class="d-grid gap-2 mx-auto">
-                  <button id="delete-picture-button"
-                          type="submit"
-                          class="btn btn-outline-danger">Delete</button>
-                </div>
+
+                <button id="delete-picture-button"
+                  class="btn btn-block btn-outline-danger"        
+                type="submit">Delete</button>
+
               </form>
             </div>
 
@@ -68,10 +67,9 @@
               <form th:if="${!photo.likers.contains(currentAccount)}"
                     method="POST"
                     th:action="@{|photos/${photo.id}/like|}">
-                <div class="d-grid gap-2 mx-auto">
-                  <button type="submit"
-                          class="btn btn-outline-success">Like</button>
-                </div>
+
+                <button type="submit"
+                        class="btn btn-block btn-outline-success">Like</button>
               </form>
             </div>
 
@@ -81,11 +79,11 @@
               <h4>
                 <p>Likes</p>
                 <span th:text="${photo.likers.size()}|"
-                      class="badge bg-success rounded-pill text-white">
+                      class="badge bg-success badge-pill text-white">
                 </span>
                 <span th:each="liker : ${photo.likers}"
                       th:text="${liker.username}"
-                      class="badge bg-warning rounded-pill text-white">
+                      class="badge bg-warning badge-pill text-white">
                 </span>
               </h4>
             </div>
@@ -94,14 +92,14 @@
 
           <div class="col-md-5">
             <h4>Comments</h4>
-            <div class="d-grid gap-2 mx-auto">
-              <button data-bs-toggle="collapse"
-                      th:data-bs-target="|#new-comment-${photo.id}|"
-                      class="btn btn-outline-primary mb-2">Leave a comment!</button>
-            </div>
+
+            <button data-toggle="collapse"
+                    th:data-target="|#new-comment-${photo.id}|"
+                    class="btn btn-block btn-outline-primary mb-2">Leave a tweet!</button>
 
             <p th:if="${photo.comments.size() < 1}">Photo has no comments yet.</p>
             <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>
+
             <div th:each="comment : ${photo.comments}">
               <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
             </div>
@@ -147,10 +145,9 @@
                       minlength="1"
                       maxlength="200"></textarea>
           </div>
-          <div class="d-grid gap-2 mx-auto">
-            <button type="submit"
-                    class="btn btn-outline-primary">Submit</button>
-          </div>
+
+          <button type="submit"
+                  class="btn btn-block btn-outline-primary">Submit</button>
         </form>
       </div>
 

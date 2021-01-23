@@ -34,7 +34,7 @@
             <form th:if="${!currentAccount.isFollowing(account)}"
                   th:action="@{|/accounts/${account.username}/follow|}"
                   method="POST">
-              <button class="btn btn-outline-primary"
+              <button class="btn btn-block btn-outline-primary"
                       type="submit">
                 Follow
               </button>
@@ -44,7 +44,7 @@
             <form th:if="${currentAccount.isFollowing(account)}"
                   th:action="@{|/accounts/${account.username}/unfollow|}"
                   method="POST">
-              <button class="btn btn-outline-primary"
+              <button class="btn btn-block btn-outline-primary"
                       type="submit">
                 Unfollow
               </button>

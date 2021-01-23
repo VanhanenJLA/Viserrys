@@ -46,16 +46,14 @@
     </div>
 
     <div class="card-footer justify-content-between">
-      <div class="d-grid gap-2 mx-auto">
 
-        <button class="btn btn-outline-success"
-                type="submit">Send</button>
+      <button class="btn btn-block btn-outline-success"
+              type="submit">Send</button>
 
-        <button th:data-bs-target="|#new-comment-${photo.id}|"
-                data-bs-toggle="collapse"
-                class="btn btn-outline-danger"
-                type="reset">Cancel</button>
-      </div>
+      <button th:data-target="|#new-comment-${photo.id}|"
+              data-toggle="collapse"
+              class="btn btn-block btn-outline-danger"
+              type="reset">Cancel</button>
     </div>
 
   </form>

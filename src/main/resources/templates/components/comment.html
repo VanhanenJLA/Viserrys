@@ -1,20 +1,20 @@
-<comment class="row border p-3 mb-1">
+<comment>
 
-  <img th:src="@{|/photos/${comment.sender.profilePicture.id}/content|}"
-       alt="Avatar"
-       class="me-3 rounded-circle comment-avatar">
+  <div class="media border mb-1 p-3">
+    <img th:src="@{|/photos/${comment.sender.profilePicture.id}/content|}"
+         class="mr-3 comment-avatar">
 
-  <div class="col">
-    <div class="row">
-      <h5 class="col"
-          th:text="${comment.sender.username}"></h5>
-      <small class="col-auto timestamp h5 text-muted"
-             th:text="${comment.timestamp}"></small>
-    </div>
-    <div class="row">
+    <div class="media-body">
+      <div class="d-flex justify-content-between">
+        <h5 th:text="${comment.sender.username}"></h5>
+        <small class="timestamp h5 text-muted"
+               th:text="${comment.timestamp}"></small>
+      </div>
       <p th:text="${comment.content}"></p>
     </div>
+
   </div>
+
 
 </comment>
 
@@ -28,10 +28,9 @@
     <div class="row">
       <h5 class="col"
           th:text="${comment.sender.username}"></h5>
-      <small class="col-auto timestamp h5 text-muted" th:text="${comment.timestamp}"></small>
+      <small class="col-auto timestamp h5 text-muted"
+             th:text="${comment.timestamp}"></small>
     </div>
-    <!-- If it works, it works. 🚀 -->
-
 
 <p th:text="${comment.content}"></p>
 </div>
