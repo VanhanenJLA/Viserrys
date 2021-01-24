@@ -16,66 +16,88 @@
 
 <body class="text-center">
 
-  <form class="form-signin"
-        th:action="@{/login}"
-        method="POST">
+  <div class="form-signin">
 
-    <img class="img-fluid"
-         th:src="@{/img/chatting.svg}" />
+    <form class="form-signin"
+          th:action="@{/login}"
+          method="POST">
 
-    <h1 class="mb-3">
-      Viserrys
-    </h1>
+      <img class="img-fluid"
+           th:src="@{/img/chatting.svg}" />
 
-    <div th:if="${param.error}"
-         class="alert alert-danger"
-         role="alert">
-      <span th:text="${param.error}"></span>
-    </div>
+      <h1 class="mb-3">
+        Viserrys
+      </h1>
 
-    <div th:if="${param.logout}"
-         class="alert alert-success"
-         role="alert">
-      You have been signed out.
-    </div>
+      <div th:if="${param.error}"
+           class="alert alert-danger"
+           role="alert">
+        Something went bonkers.
+      </div>
 
-    <h3 class="mb-3 text-muted font-weight-normal">Please sign in</h3>
+      <div th:if="${param.logout}"
+           class="alert alert-success"
+           role="alert">
+        You have been signed out.
+      </div>
 
-    <input type="text"
-           id="username"
-           name="username"
-           class="form-control"
-           placeholder="Username"
-           required
-           autofocus />
+      <h3 class="mb-3 text-muted font-weight-normal">Please sign in</h3>
 
-    <input type="password"
-           id="password"
-           name="password"
-           class="form-control"
-           placeholder="Password"
-           required />
+      <input type="text"
+             id="username"
+             name="username"
+             class="form-control"
+             placeholder="Username"
+             required
+             autofocus />
 
-    <div class="checkbox mb-3 float-left">
-      <label>
-        <input type="checkbox"
-               value="remember-me"></input> Remember me?
-      </label>
-    </div>
+      <input type="password"
+             id="password"
+             name="password"
+             class="form-control"
+             placeholder="Password"
+             required />
 
-
-    <button class="btn btn-block btn-lg btn-block btn-outline-primary"
-            type="submit">Sign in</button>
+      <div class="checkbox mb-3 float-left">
+        <label>
+          <input type="checkbox"
+                 value="remember-me"></input> Remember me?
+        </label>
+      </div>
 
 
-    <p class="mt-5 mb-3">
-      <a class="text-muted"
-         th:href="@{/register}">
-        Not registered yet?
-      </a>
-    </p>
+      <button class="btn btn-block btn-lg btn-block btn-outline-primary"
+              type="submit">Sign in</button>
 
-  </form>
+      <p class="mt-5 mb-3">
+        <a class="text-muted"
+           th:href="@{/register}">
+          Not registered yet?
+        </a>
+      </p>
+
+    </form>
+
+    <form class="form-signin"
+          th:action="@{/login}"
+          method="POST">
+
+      <input type="hidden"
+             name="username"
+             class="form-control"
+             value="Jouni" />
+
+      <input type="hidden"
+             value="salasana"
+             name="password"
+             class="form-control"
+             placeholder="Password" />
+
+      <button class="btn btn-block btn-lg btn-block btn-outline-primary"
+              type="submit">Sign in as Jouni</button>
+    </form>
+
+  </div>
 
 </body>
 
