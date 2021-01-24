@@ -57,8 +57,8 @@
                        name="photoId">
 
                 <button id="delete-picture-button"
-                  class="btn btn-block btn-outline-danger"        
-                type="submit">Delete</button>
+                        class="btn btn-block btn-outline-danger"
+                        type="submit">Delete</button>
 
               </form>
             </div>
@@ -74,18 +74,22 @@
             </div>
 
             <div class="pt-3">
-              <h4>Description</h4>
-              <p th:text="${photo.description}"></p>
+
               <h4>
-                <p>Likes</p>
-                <span th:text="${photo.likers.size()}|"
+                <span th:text="|👍 ${photo.likers.size()}|"
                       class="badge bg-success badge-pill text-white">
                 </span>
-                <span th:each="liker : ${photo.likers}"
-                      th:text="${liker.username}"
-                      class="badge bg-warning badge-pill text-white">
-                </span>
+
+                <a th:each="liker : ${photo.likers}"
+                   th:href="@{|/accounts/${liker.username}|}"
+                   th:text="${liker.username}"
+                   class="badge bg-secondary badge-pill text-white mx-1">
+                </a>
               </h4>
+
+              <h4>Description</h4>
+              <p th:text="${photo.description}"></p>
+
             </div>
 
           </div>

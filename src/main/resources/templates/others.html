@@ -15,44 +15,55 @@
     <div class="container">
       <div class="col">
 
-        <div class="row"
-             th:each="account : ${accounts}">
+        <ul class="list-unstyled">
 
-          <div class="col-auto">
-            <img class="img-fluid rounded-circle small-profile-picture"
-                 th:if="${account.profilePicture}"
-                 th:src="@{|/photos/${account.profilePicture.id}/content|}">
+          <li th:each="account : ${accounts}"
+              class="media mb-3">
 
-            <a th:href="@{|/accounts/${account.username}|}">
-              <span class="form-label"
-                    th:text="${account.username}"></span>
-            </a>
-          </div>
+            <img class="mr-3 small-profile-picture"
+                 th:src="@{|/photos/${account.profilePicture.id}/content|}"
+                 alt="avatar">
 
-          <div class="col-auto">
+            <div class="media-body d-flex">
 
-            <form th:if="${!currentAccount.isFollowing(account)}"
-                  th:action="@{|/accounts/${account.username}/follow|}"
-                  method="POST">
-              <button class="btn btn-block btn-outline-primary"
-                      type="submit">
-                Follow
-              </button>
+              <div class="col-auto">
+                <a th:href="@{|/accounts/${account.username}|}"
+                   th:text="${account.username}"
+                   class="h5 mr-3">
+                </a>
+              </div>
 
-            </form>
 
-            <form th:if="${currentAccount.isFollowing(account)}"
-                  th:action="@{|/accounts/${account.username}/unfollow|}"
-                  method="POST">
-              <button class="btn btn-block btn-outline-primary"
-                      type="submit">
-                Unfollow
-              </button>
-            </form>
+              <div class="col">
+                <!-- Following -->
+                <button class="btn btn-lg p-0 btn-link">
+                  <a class="badge bg-info badge-pill text-white"
+                     th:text="|${account.getFollowing().size()} following|"></a>
+                </button>
 
-          </div>
+                <!-- Followers -->
+                <button class="btn btn-lg p-0 btn-link">
+                  <a class="badge bg-primary badge-pill text-white"
+                     th:text="|${account.getFollowers().size()} followers|"></a>
+                </button>
 
-        </div>
+                <!-- Photos -->
+                <button type="button"
+                        class="btn btn-lg p-0 btn-link">
+                  <a class="badge bg-secondary badge-pill text-white"
+                     th:text="|${account.getPhotos().size()} photos|"
+                     th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
+                </button>
+              </div>
+
+              <div class="col">
+                <follow-unfollow th:replace="components/follow-unfollow.html :: follow-unfollow"></follow-unfollow>
+              </div>
+
+            </div>
+          </li>
+
+        </ul>
 
       </div>
     </div>

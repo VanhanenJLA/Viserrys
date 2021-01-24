@@ -1,0 +1,22 @@
+<follow-unfollow>
+
+  <form th:if="${!currentAccount.isFollowing(account)}"
+        th:action="@{|/accounts/${account.username}/follow|}"
+        method="POST">
+    <button class="btn btn-block btn-outline-success"
+            type="submit">
+      👀 Follow
+    </button>
+
+  </form>
+
+  <form th:if="${currentAccount.isFollowing(account)}"
+        th:action="@{|/accounts/${account.username}/unfollow|}"
+        method="POST">
+    <button class="btn btn-block btn-outline-secondary"
+            type="submit">
+      👋 Unfollow
+    </button>
+  </form>
+
+</follow-unfollow>

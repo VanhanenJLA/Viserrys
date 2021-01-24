@@ -24,12 +24,12 @@
 
           <a class="col"
              th:href="@{|/accounts/${tweet.sender.username}|}">
-            <span class="header-text"
+            <span class="h5"
                   th:text="${tweet.sender.username}">
             </span>
           </a>
 
-          <span class="col-auto header-text text-muted pr-3 timestamp"
+          <span class="col-auto text-muted pr-3 timestamp"
                 th:text="${tweet.timestamp}"></span>
 
         </div>

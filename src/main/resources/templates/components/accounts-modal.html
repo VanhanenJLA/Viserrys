@@ -32,38 +32,43 @@
 
         <div class="modal-body">
           <ul class="list-unstyled">
+
             <li th:each="account : ${accounts}"
                 class="media mb-3">
+
               <img class="mr-3 small-profile-picture"
                    th:src="@{|/photos/${account.profilePicture.id}/content|}"
                    alt="avatar">
+
               <div class="media-body">
-                <h5 class="mb-1 mt-1">
 
-                  <span th:text="${account.username}"></span>
+                <a th:href="@{|/accounts/${account.username}|}"
+                   th:text="${account.username}"
+                   class="h5 mr-3">
+                </a>
 
-                  <span>
-                    <!-- Following -->
-                    <button class="btn btn-lg p-0 btn-link">
-                      <a class="badge bg-info badge-pill text-white"
-                         th:text="|${account.getFollowing().size()} following|"></a>
-                    </button>
+                <span>
+                  <!-- Following -->
+                  <button class="btn btn-lg p-0 btn-link">
+                    <a class="badge bg-info badge-pill text-white"
+                       th:text="|${account.getFollowing().size()} following|"></a>
+                  </button>
 
-                    <!-- Followers -->
-                    <button class="btn btn-lg p-0 btn-link">
-                      <a class="badge bg-primary badge-pill text-white"
-                         th:text="|${account.getFollowers().size()} followers|"></a>
-                    </button>
+                  <!-- Followers -->
+                  <button class="btn btn-lg p-0 btn-link">
+                    <a class="badge bg-primary badge-pill text-white"
+                       th:text="|${account.getFollowers().size()} followers|"></a>
+                  </button>
 
-                    <!-- Photos -->
-                    <button type="button"
-                            class="btn btn-lg p-0 btn-link">
-                      <a class="badge bg-secondary badge-pill text-white"
-                         th:text="|${account.getPhotos().size()} photos|"
-                         th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
-                    </button>
-                  </span>
-                </h5>
+                  <!-- Photos -->
+                  <button type="button"
+                          class="btn btn-lg p-0 btn-link">
+                    <a class="badge bg-secondary badge-pill text-white"
+                       th:text="|${account.getPhotos().size()} photos|"
+                       th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
+                  </button>
+                </span>
+
 
               </div>
               <hr>

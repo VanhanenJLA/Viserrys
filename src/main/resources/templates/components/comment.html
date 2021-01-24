@@ -7,7 +7,9 @@
 
     <div class="media-body">
       <div class="d-flex justify-content-between">
-        <h5 th:text="${comment.sender.username}"></h5>
+        <a class="h5"
+           th:href="@{|/accounts/${comment.sender.username}|}"
+           th:text="${comment.sender.username}"></a>
         <small class="timestamp h5 text-muted"
                th:text="${comment.timestamp}"></small>
       </div>
