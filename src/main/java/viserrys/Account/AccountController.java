@@ -70,8 +70,10 @@ public class AccountController {
     @GetMapping("/accounts/{username}")
     private String account(Model model, @PathVariable String username) {
         var account = accountService.accountRepository.findByUsername(username);
-        var tweets = tweetService.findAllByRecipient(account);
-        model.addAttribute("tweets", tweets);
+        var tweetsReceived = tweetService.findAllByRecipient(account);
+        var tweetsSent = tweetService.findAllBySender(account);
+        model.addAttribute("tweetsReceived", tweetsReceived);
+        model.addAttribute("tweetsSent", tweetsSent);
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", current());
         List<Account> following = account.following.stream().map(f -> f.getRecipient()).collect(Collectors.toList());

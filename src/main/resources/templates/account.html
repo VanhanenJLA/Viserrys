@@ -53,6 +53,20 @@
                  th:text="|${account.getFollowers().size()} followers|"></a>
             </button>
 
+            <!-- Tweets received -->
+            <button type="button"
+                    class="btn btn-lg p-0 btn-link">
+              <a class="badge bg-warning badge-pill text-white"
+                 th:text="|${tweetsReceived.size()} tweets received|"></a>
+            </button>
+
+            <!-- Tweets sent -->
+            <button type="button"
+                    class="btn btn-lg p-0 btn-link">
+              <a class="badge bg-danger badge-pill text-white"
+                 th:text="|${tweetsSent.size()} tweets sent|"></a>
+            </button>
+
             <!-- Photos -->
             <button type="button"
                     class="btn btn-lg p-0 btn-link">
@@ -81,7 +95,7 @@
 
           <new-tweet th:replace="components/new-tweet.html :: new-tweet"></new-tweet>
 
-          <div th:each="tweet : ${tweets}">
+          <div th:each="tweet : ${tweetsReceived}">
             <tweet th:replace="components/tweet.html :: tweet(tweet=${tweet})"></tweet>
           </div>
 

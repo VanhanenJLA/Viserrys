@@ -22,4 +22,8 @@ public class TweetService {
     return tweetRepository.findAllByRecipient(recipient);
   }
 
+  public List<Tweet> findAllBySender(Account sender) {
+    return tweetRepository.findAllBySender(sender);
+  }
+
 }

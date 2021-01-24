@@ -8,4 +8,6 @@ import viserrys.Account.Account;
 
 public interface TweetRepository extends JpaRepository<Tweet, Long> {
   List<Tweet> findAllByRecipient(Account recipient);
+
+  List<Tweet> findAllBySender(Account sender);
 }
