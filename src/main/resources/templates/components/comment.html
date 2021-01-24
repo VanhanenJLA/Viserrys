@@ -1,7 +1,8 @@
 <comment>
 
   <div class="media border mb-1 p-3">
-    <img th:src="@{|/photos/${comment.sender.profilePicture.id}/content|}"
+    <img th:if="${comment.sender.profilePicture}"
+         th:src="@{|/photos/${comment.sender.profilePicture.id}/content|}"
          class="mr-3 comment-avatar">
 
     <div class="media-body">

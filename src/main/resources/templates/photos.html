@@ -95,7 +95,7 @@
 
             <button data-toggle="collapse"
                     th:data-target="|#new-comment-${photo.id}|"
-                    class="btn btn-block btn-outline-primary mb-2">Leave a tweet!</button>
+                    class="btn btn-block btn-outline-primary mb-2">Leave a comment!</button>
 
             <p th:if="${photo.comments.size() < 1}">Photo has no comments yet.</p>
             <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>
