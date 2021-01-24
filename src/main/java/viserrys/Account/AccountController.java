@@ -3,6 +3,8 @@ package viserrys.Account;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,6 +74,10 @@ public class AccountController {
         model.addAttribute("tweets", tweets);
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", current());
+        List<Account> following = account.following.stream().map(f -> f.getRecipient()).collect(Collectors.toList());
+        List<Account> followers = account.followers.stream().map(f -> f.getSender()).collect(Collectors.toList());
+        model.addAttribute("following", following);
+        model.addAttribute("followers", followers);
         return "account";
     }
 

@@ -36,32 +36,28 @@
           <h2 th:text="${account.username}"></h2>
 
           <!-- Following -->
-          <a class="h5"
-             th:href="@{|/accounts/${username}/following|}">
-            <span class="badge bg-info badge-pill text-white"
-                  th:text="|${account.getFollowing().size()} following|"></span>
-          </a>
+          <button class="btn btn-lg p-0 btn-link">
+            <a data-toggle="modal"
+               data-target="#following-modal"
+               class="badge bg-info badge-pill text-white"
+               th:text="|${account.getFollowing().size()} following|"></a>
+          </button>
 
           <!-- Followers -->
-          <a class="h5"
-             th:href="@{/accounts/{username}/followers(username=${account.username})}">
-            <span class="badge bg-success badge-pill text-white"
-                  th:text="|${account.getFollowers().size()} followers|"></span>
-          </a>
+          <button class="btn btn-lg p-0 btn-link">
+            <a data-toggle="modal"
+               data-target="#followers-modal"
+               class="badge bg-primary badge-pill text-white"
+               th:text="|${account.getFollowers().size()} followers|"></a>
+          </button>
 
           <!-- Photos -->
-          <a class="h5"
-             th:href="@{/accounts/{username}/photos(username=${account.username})}">
-            <span class="badge bg-secondary badge-pill text-white"
-                  th:text="|${account.getPhotos().size()} photos|"></span>
-          </a>
-
-          <!-- Modal -->
-          <span data-toggle="modal"
-                data-target="#accounts-modal"
-                class="h5 badge bg-secondary badge-pill text-white">
-            Modaali
-          </span>
+          <button type="button"
+                  class="btn btn-lg p-0 btn-link">
+            <a class="badge bg-secondary badge-pill text-white"
+               th:text="|${account.getPhotos().size()} photos|"
+               th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
+          </button>
 
         </div>
 
@@ -90,7 +86,13 @@
 
   <footer th:replace="fragments/footer :: footer"></footer>
 
-  <accounts-modal th:replace="components/accounts-modal.html :: accounts-modal"></accounts-modal>
+  <followers-modal
+                   th:replace="components/accounts-modal.html :: accounts-modal(accounts=${followers}, id='followers-modal', title=|${account.username}'s followers|)">
+  </followers-modal>
+
+  <following-modal
+                   th:replace="components/accounts-modal.html :: accounts-modal(accounts=${following}, id='following-modal', title=|${account.username} is following|)">
+  </following-modal>
 
 </body>
 

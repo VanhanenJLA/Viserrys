@@ -1,34 +1,88 @@
 <accounts-modal>
 
+  <style>
+    .small-profile-picture {
+      height: 40px;
+      min-height: 40px;
+      width: 40px;
+      min-width: 40px;
+    }
+  </style>
+
   <div class="modal fade"
-       id="accounts-modal"
+       th:id="${id}"
        tabindex="-1"
        aria-labelledby="accounts-modal"
        aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title"
-              id="accounts-modal-title">Modal title</h5>
+          <h2 class="modal-title"
+              id="accounts-modal-title"
+              th:text="${title}">
+          </h2>
           <button type="button"
-                  class="btn-close"
+                  class="btn btn-close"
                   data-dismiss="modal"
-                  aria-label="Close"></button>
+                  aria-label="Close">
+            <span class="h3"
+                  aria-hidden="true">🤯</span>
+          </button>
         </div>
 
         <div class="modal-body">
-          ...
+          <ul class="list-unstyled">
+            <li th:each="account : ${accounts}"
+                class="media mb-3">
+              <img class="mr-3 small-profile-picture"
+                   th:src="@{|/photos/${account.profilePicture.id}/content|}"
+                   alt="avatar">
+              <div class="media-body">
+                <h5 class="mb-1 mt-1">
+
+                  <span th:text="${account.username}"></span>
+
+                  <span>
+                    <!-- Following -->
+                    <button class="btn btn-lg p-0 btn-link">
+                      <a class="badge bg-info badge-pill text-white"
+                         th:text="|${account.getFollowing().size()} following|"></a>
+                    </button>
+
+                    <!-- Followers -->
+                    <button class="btn btn-lg p-0 btn-link">
+                      <a class="badge bg-primary badge-pill text-white"
+                         th:text="|${account.getFollowers().size()} followers|"></a>
+                    </button>
+
+                    <!-- Photos -->
+                    <button type="button"
+                            class="btn btn-lg p-0 btn-link">
+                      <a class="badge bg-secondary badge-pill text-white"
+                         th:text="|${account.getPhotos().size()} photos|"
+                         th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
+                    </button>
+                  </span>
+                </h5>
+
+              </div>
+              <hr>
+            </li>
+
+          </ul>
         </div>
 
-        <div class="modal-footer">
-          <button type="button"
-                  class="btn btn-block btn-secondary"
-                  data-dismiss="modal">Close</button>
-          <button type="button"
-                  class="btn btn-block btn-primary">Save changes</button>
-        </div>
+
       </div>
     </div>
   </div>
 
 </accounts-modal>
+
+<!-- <div class="modal-footer">
+  <button type="button"
+          class="btn btn-block btn-secondary"
+          data-dismiss="modal">Close</button>
+  <button type="button"
+          class="btn btn-block btn-primary">Save changes</button>
+</div> -->

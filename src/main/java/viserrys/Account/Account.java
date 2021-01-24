@@ -29,7 +29,7 @@ public class Account extends AbstractPersistable<Long> {
     @NotEmpty
     @Column(unique = true)
     @Size(min = 3, max = 15)
-    String username;        
+    String username;
 
     @NotEmpty
     String password;

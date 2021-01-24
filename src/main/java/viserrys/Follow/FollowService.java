@@ -17,9 +17,9 @@ public class FollowService {
         if (sender.equals(recipient))
             throw new Exception("An account cannot follow itself.");
 
-        if (sender.getFollowing().stream().anyMatch(f -> f.getSender().equals(sender)))
+        if (recipient.getFollowers().stream().anyMatch(f -> f.getSender().equals(sender)))
             throw new Exception(sender.getUsername() + " is already following " + recipient.getUsername());
-        
+
         return followRepository.save(new Follow(sender, recipient, LocalDateTime.now()));
     }
 
