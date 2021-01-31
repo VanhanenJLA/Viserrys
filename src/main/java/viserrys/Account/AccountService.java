@@ -59,12 +59,12 @@ public class AccountService {
     }
 
     public Account setProfilePicture(Account account, long photoId) {
-        var photo = photoService.getOne(photoId);
+        var photo = photoService.photoRepository.getOne(photoId);
         account.profilePicture = photo;
         return accountRepository.save(account);
     }
 
-    public void deletePicture(Account current, Long photoId) {
+    public void deletePicture(Account current, long photoId) {
         photoService.delete(photoId);
     }
 

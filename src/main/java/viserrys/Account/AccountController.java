@@ -1,7 +1,6 @@
 package viserrys.Account;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,9 +16,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 import viserrys.Auth.AuthService;
 import viserrys.Comment.CommentService;
+import viserrys.Photo.Photo;
 import viserrys.Photo.PhotoService;
-import viserrys.Tweet.Tweet;
+import viserrys.Reaction.ReactionService;
+import viserrys.Reaction.ReactionType;
 import viserrys.Tweet.TweetService;
+
+class MyConfiguration {
+    @Bean(name = "urlService")
+    public UrlService urlService() {
+        return () -> "domain.com/myapp";
+    }
+}
+
+interface UrlService {
+    String getApplicationUrl();
+}
 
 @Controller
 public class AccountController {
@@ -39,6 +51,9 @@ public class AccountController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    ReactionService reactionService;
+
     private Account current() {
         return authService.getAuthenticatedAccount();
     }
@@ -56,13 +71,13 @@ public class AccountController {
     }
 
     @PostMapping("/my-photos/set-profile-picture")
-    public String setProfilePicture(Model model, @RequestParam Long photoId) {
+    public String setProfilePicture(Model model, @RequestParam long photoId) {
         accountService.setProfilePicture(current(), photoId);
         return myPhotos(model);
     }
 
     @PostMapping("/my-photos/delete-picture")
-    public String deletePicture(Model model, @RequestParam Long photoId) {
+    public String deletePicture(Model model, @RequestParam long photoId) {
         accountService.deletePicture(current(), photoId);
         return myPhotos(model);
     }
@@ -70,16 +85,19 @@ public class AccountController {
     @GetMapping("/accounts/{username}")
     private String account(Model model, @PathVariable String username) {
         var account = accountService.accountRepository.findByUsername(username);
-        var tweetsReceived = tweetService.findAllByRecipient(account);
         var tweetsSent = tweetService.findAllBySender(account);
-        model.addAttribute("tweetsReceived", tweetsReceived);
-        model.addAttribute("tweetsSent", tweetsSent);
-        model.addAttribute("account", account);
-        model.addAttribute("currentAccount", current());
+        var tweetsReceived = tweetService.findAllByRecipient(account);
         List<Account> following = account.following.stream().map(f -> f.getRecipient()).collect(Collectors.toList());
         List<Account> followers = account.followers.stream().map(f -> f.getSender()).collect(Collectors.toList());
+
+        model.addAttribute("currentAccount", current());
+        model.addAttribute("account", account);
+        model.addAttribute("tweetsReceived", tweetsReceived);
+        model.addAttribute("tweetsSent", tweetsSent);
         model.addAttribute("following", following);
         model.addAttribute("followers", followers);
+        model.addAttribute("view", "profile");
+
         return "account";
     }
 
@@ -107,7 +125,7 @@ public class AccountController {
         var sender = current();
         var recipient = accountService.accountRepository.findByUsername(username);
         accountService.unfollow(sender, recipient);
-        return account(model, username);
+        return "redirect:/accounts/{username}";
     }
 
     @PostMapping("/accounts/{username}/tweet")
@@ -122,20 +140,10 @@ public class AccountController {
     private String comment(Model model, @PathVariable String username, @PathVariable Long id,
             @RequestParam String content) throws Exception {
         var sender = current();
-        var comment = commentService.comment(sender, LocalDateTime.now(), content);
-        photoService.comment(id, comment);
+        var photo = photoService.photoRepository.getOne(id);
+        var comment = commentService.comment(sender, photo, LocalDateTime.now(), content);
+        // photoService.comment(id, comment);
         return "redirect:/accounts/{username}/photos";
-    }
-
-    List<Tweet> FakeTweets() {
-        var asd = "Improve your goldfish's physical fitness by getting him a bicycle.";
-        var tweet = new Tweet(current(), current(), LocalDateTime.now(), asd);
-        var tweets = new ArrayList<Tweet>();
-
-        for (int i = 0; i < 10; i++) {
-            tweets.add(tweet);
-        }
-        return tweets;
     }
 
     @GetMapping("/accounts/{username}/followers")
@@ -162,6 +170,10 @@ public class AccountController {
         var currentAccount = current();
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", currentAccount);
+        model.addAttribute("reactionTypes", ReactionType.values());
+        model.addAttribute("reactionService", reactionService);
+        model.addAttribute("view", "photos");
+
         return "photos";
     }
 
@@ -182,9 +194,12 @@ public class AccountController {
         return account.getProfilePicture().getContent();
     }
 
-    @PostMapping("accounts/{username}/photos/{id}/like")
-    public String like(Model model, @PathVariable String username, @PathVariable Long id) throws Exception {
-        var photo = photoService.like(id, current());
+    @PostMapping("accounts/{username}/photos/{id}/react")
+    public String like(Model model, @PathVariable String username, @PathVariable Long id,
+            @RequestParam ReactionType reactionType) throws Exception {
+        var photo = photoService.photoRepository.getOne(id);
+
+        reactionService.react(current(), photo, LocalDateTime.now(), reactionType);
         return "redirect:/accounts/{username}/photos";
     }
 

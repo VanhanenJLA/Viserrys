@@ -11,10 +11,25 @@
   </style>
 
   <div class="container">
-    <h1 class="display-4"
-        th:text="${jumbotronTitle}">Fluid jumbotron</h1>
-    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.
-    </p>
+
+    <p class="display-4 mb-4"
+       th:text="${jumbotronTitle}"></p>
+
+    <div class="col btn-group px-0"
+         role="group">
+      <a type="button"
+         class="btn btn-outline-secondary"
+         th:classappend="${view == 'profile' ? 'active' : ''}"
+         th:href="@{|/accounts/${account.username}|}">Profile</a>
+      <a type="button"
+         class="btn btn-outline-secondary"
+         th:classappend="${view == 'photos' ? 'active' : ''}"
+         th:href="@{|/accounts/${account.username}/photos|}">Photos
+      </a>
+      <button type="button"
+              class="btn btn-outline-secondary disabled">Activity</button>
+    </div>
+
   </div>
 
 </div>

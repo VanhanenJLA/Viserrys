@@ -1,7 +1,6 @@
 package viserrys.Photo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import viserrys.Account.Account;
 import viserrys.Comment.Comment;
+import viserrys.Reaction.Reaction;
 
 @Service
 public class PhotoService {
@@ -23,38 +23,13 @@ public class PhotoService {
     if (!type.equals("image/jpeg"))
       if (!type.equals("image/png"))
         throw new Exception("Unsupported file type: " + type);
-    var photo = new Photo(uploader, description, file.getBytes(), new ArrayList<Comment>(), new ArrayList<Account>());
+    var photo = new Photo(uploader, description, file.getBytes(), new ArrayList<Comment>(), new ArrayList<Reaction>());
     return photoRepository.save(photo);
   }
 
   public void delete(Long id) {
     var photo = photoRepository.getOne(id);
     photoRepository.delete(photo);
-  }
-
-  public Photo comment(Long id, Comment comment) {
-    var photo = photoRepository.findById(id).get();
-    photo.comments.add(comment);
-    return photoRepository.save(photo);
-  }
-
-  public Photo like(Long id, Account sender) throws Exception {
-    var photo = photoRepository.findById(id).get();
-
-    if (photo.getLikers().contains(sender))
-      throw new Exception("Photo " + photo.getId() + " is already liked by " + sender.getUsername());
-
-    photo.likers.add(sender);
-
-    return photoRepository.save(photo);
-  }
-
-  public Photo getOne(Long id) {
-    return photoRepository.getOne(id);
-  }
-
-  public List<Photo> findAllByUploader(Account uploader) {
-    return photoRepository.findAllByUploader(uploader);
   }
 
 }

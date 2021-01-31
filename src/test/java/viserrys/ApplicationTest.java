@@ -10,7 +10,6 @@ import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,8 @@ import viserrys.Comment.CommentRepository;
 import viserrys.Follow.FollowService;
 import viserrys.Photo.Photo;
 import viserrys.Photo.PhotoService;
+import viserrys.Reaction.ReactionService;
+import viserrys.Reaction.ReactionType;
 import viserrys.Tweet.TweetService;
 
 @RunWith(SpringRunner.class)
@@ -46,12 +47,14 @@ public class ApplicationTest {
   TweetService tweetService;
 
   @Autowired
+  ReactionService reactionService;
+
+  @Autowired
   CommentRepository commentRepository;
 
   @Autowired
   EntityManager em;
 
-  
   @Test
   @Transactional
   public void nukeDb() {
@@ -77,6 +80,15 @@ public class ApplicationTest {
     // setComments();
   }
 
+  @Transactional
+  @Rollback(false)
+  @Test
+  public void react() throws Exception {
+    var photo = photoService.photoRepository.findAll().get(0);
+    var reaction = reactionService.react(jouni(), photo, LocalDateTime.now(), ReactionType.SAD);
+    System.out.println("Bubuntu");
+  }
+
   public void dropTables() {
     List.of("Account", "Tweet", "Photo", "Follow").forEach(t -> dropTable(t));
   }
@@ -93,9 +105,10 @@ public class ApplicationTest {
   }
 
   public void comment(Account sender, Photo photo) {
-    var comment = commentRepository.save(new Comment(sender, LocalDateTime.now(), "Haha very lit! 😂👌"));
-    photo.getComments().add(comment);
-    var saved = photoService.photoRepository.save(photo);
+    var comment = commentRepository.save(new Comment(sender, photo, LocalDateTime.now(), "Haha very lit! 😂👌"));
+    System.out.println("");
+    // photo.getComments().add(comment);
+    // photoService.photoRepository.save(photo);
   }
 
   @Transactional
@@ -103,14 +116,13 @@ public class ApplicationTest {
     em.joinTransaction();
     String query = "DROP TABLE IF EXISTS " + tableName;
     em.createNativeQuery(query).executeUpdate();
-    // .setParameter("tableName", tableName) // lulul
   }
 
   public void setProfilePictures() {
     var accounts = accountService.getAccounts();
     for (int i = 0; i < 5; i++) {
       var a = accounts.get(i);
-      var photos = photoService.findAllByUploader(a);
+      var photos = photoService.photoRepository.findAllByUploader(a);
       var p = photos.get(i);
       accountService.setProfilePicture(a, p.getId());
     }

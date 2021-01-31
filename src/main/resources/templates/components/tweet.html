@@ -14,7 +14,7 @@
     <div class="row">
       <div class="col-auto">
         <img th:if="${tweet.sender.profilePicture}"
-             class="img-fluid rounded-circle tweet-profile-picture"
+             class="img-fluid tweet-profile-picture"
              th:src="@{|/photos/${tweet.sender.profilePicture.id}/content|}"
              alt="profile-picture">
       </div>

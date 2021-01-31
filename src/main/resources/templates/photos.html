@@ -10,6 +10,11 @@
     height: 60px;
   }
 
+  .emoji {
+    font-size: x-large;
+    padding: 0px;
+  }
+
   .img-thumbnail {
     width: 100%;
   }
@@ -37,59 +42,75 @@
             <img class="img-thumbnail"
                  th:src="@{|/photos/${photo.id}/content|}">
 
+            <!-- My-photos menu -->
             <div th:if="${currentAccount == account}">
               <form th:if="${photo != currentAccount.profilePicture}"
                     method="POST"
                     th:action="@{/my-photos/set-profile-picture}">
-                <input type="hidden"
-                       th:value="${photo.id}"
-                       name="photoId">
 
                 <button type="submit"
-                        class="btn btn-block btn-outline-primary">Set as profile picture</button>
+                        class="btn btn-block btn-outline-primary"
+                        th:value="${photo.id}"
+                        name="photoId">
+                  Set as profile picture
+                </button>
               </form>
 
               <form th:if="${currentAccount == account}"
                     method="POST"
                     th:action="@{/my-photos/delete-picture}">
-                <input type="hidden"
-                       th:value="${photo.id}"
-                       name="photoId">
 
                 <button id="delete-picture-button"
                         class="btn btn-block btn-outline-danger"
-                        type="submit">Delete</button>
-
+                        type="submit"
+                        th:value="${photo.id}"
+                        name="photoId">
+                  Delete
+                </button>
               </form>
+
             </div>
 
+            <!-- React bar -->
             <div th:if="${currentAccount != account}">
-              <form th:if="${!photo.likers.contains(currentAccount)}"
-                    method="POST"
-                    th:action="@{|photos/${photo.id}/like|}">
+              <form method="POST"
+                    th:action="@{|photos/${photo.id}/react|}">
 
-                <button type="submit"
-                        class="btn btn-block btn-outline-success">Like</button>
+                <div class="btn-group btn-block">
+                  <button th:each="reactionType : ${reactionTypes}"
+                          type="submit"
+                          th:value="${reactionType}"
+                          name="reactionType"
+                          class="btn btn-outline-secondary emoji"
+                          th:text="${reactionType.emoji}"
+                          th:classappend="${reactionService.hasReacted(currentAccount, photo, reactionType) ? 'active' : ''}">
+                  </button>
+                </div>
+
               </form>
             </div>
 
-            <div class="pt-3">
+            <!-- Reaction pills -->
+            <h4 class="pt-1">
+              <button th:each="reactionType : ${reactionTypes}"
+                      th:if="${reactionService.countReactions(photo, reactionType) > 0}"
+                      class="btn btn-lg p-0 btn-link">
+                <a class="badge bg-success badge-pill text-white"
+                   th:text="|${reactionType.emoji} ${reactionService.countReactions(photo, reactionType)}|"></a>
+              </button>
 
-              <h4>
-                <span th:text="|👍 ${photo.likers.size()}|"
-                      class="badge bg-success badge-pill text-white">
-                </span>
-
-                <a th:each="liker : ${photo.likers}"
-                   th:href="@{|/accounts/${liker.username}|}"
-                   th:text="${liker.username}"
-                   class="badge bg-secondary badge-pill text-white mx-1">
+              <button th:each="reaction : ${reactionService.getLatestReactions(5, photo)}"
+                      class="btn btn-lg p-0 btn-link">
+                <a th:href="@{|/accounts/${reaction.sender.username}|}"
+                   th:text="|${reaction.reactionType.emoji} ${reaction.sender.username}|"
+                   class="badge bg-secondary badge-pill text-white">
                 </a>
-              </h4>
+              </button>
+            </h4>
 
+            <div class="pt-2">
               <h4>Description</h4>
               <p th:text="${photo.description}"></p>
-
             </div>
 
           </div>

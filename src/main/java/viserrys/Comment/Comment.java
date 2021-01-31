@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import viserrys.Account.Account;
+import viserrys.Photo.Photo;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -27,6 +28,11 @@ public class Comment extends AbstractPersistable<Long> implements Comparable<Com
     @ManyToOne
     private Account sender;
 
+    @NotNull
+    @ManyToOne
+    private Photo target;
+
+    @NotNull
     private LocalDateTime timestamp;
 
     @Lob // Doesn't work for Heroku.

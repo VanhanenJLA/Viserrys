@@ -65,7 +65,8 @@
                           class="btn btn-lg p-0 btn-link">
                     <a class="badge bg-secondary badge-pill text-white"
                        th:text="|${account.getPhotos().size()} photos|"
-                       th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
+                       th:href="@{|/accounts/{account.username}/photos|}">
+                    </a>
                   </button>
                 </span>
 

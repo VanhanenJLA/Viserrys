@@ -3,13 +3,13 @@ package viserrys.Photo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.jpa.domain.AbstractPersistable;
@@ -20,6 +20,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import viserrys.Account.Account;
 import viserrys.Comment.Comment;
+import viserrys.Reaction.Reaction;
+import viserrys.Reaction.ReactionType;
 
 @Entity
 @Data
@@ -38,11 +40,10 @@ public class Photo extends AbstractPersistable<Long> {
     @Lob
     byte[] content;
 
-    @ManyToMany
-    @JoinTable(name = "photo_comment", joinColumns = @JoinColumn(name = "photo_id"), inverseJoinColumns = @JoinColumn(name = "comment_id"))
+    @OneToMany(mappedBy = "target")
     List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany
-    List<Account> likers = new ArrayList<>();
+    @OneToMany(mappedBy = "target")
+    List<Reaction> reactions = new ArrayList<>();
 
 }

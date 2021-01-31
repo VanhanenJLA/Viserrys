@@ -4,6 +4,10 @@
 
 <head th:replace="fragments/head :: head(title=${account.username})"></head>
 
+<style>
+
+</style>
+
 <body>
 
   <navbar th:replace="fragments/navbar :: navbar"></navbar>
@@ -22,7 +26,7 @@
           <!-- Picture -->
           <div th:if="${account.hasProfilePicture()}"
                class="row justify-content-center">
-            <img class="img-fluid img-thumbnail rounded-circle mt-n5"
+            <img class="img-fluid img-thumbnail rounded-circle mt-n5 profile-picture"
                  th:src="@{|/photos/${account.profilePicture.id}/content|}"
                  alt="profile-picture">
           </div>
@@ -42,7 +46,7 @@
               <a data-toggle="modal"
                  data-target="#following-modal"
                  class="badge bg-info badge-pill text-white"
-                 th:text="|${account.getFollowing().size()} following|"></a>
+                 th:text="|${account.following.size()} following|"></a>
             </button>
 
             <!-- Followers -->
@@ -50,7 +54,7 @@
               <a data-toggle="modal"
                  data-target="#followers-modal"
                  class="badge bg-primary badge-pill text-white"
-                 th:text="|${account.getFollowers().size()} followers|"></a>
+                 th:text="|${account.followers.size()} followers|"></a>
             </button>
 
             <!-- Tweets received -->
@@ -71,7 +75,7 @@
             <button type="button"
                     class="btn btn-lg p-0 btn-link">
               <a class="badge bg-secondary badge-pill text-white"
-                 th:text="|${account.getPhotos().size()} photos|"
+                 th:text="|${account.photos.size()} photos|"
                  th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
             </button>
 
