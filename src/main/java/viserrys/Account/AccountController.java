@@ -16,18 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import viserrys.Auth.AuthService;
 import viserrys.Comment.CommentService;
-import viserrys.Photo.Photo;
 import viserrys.Photo.PhotoService;
 import viserrys.Reaction.ReactionService;
 import viserrys.Reaction.ReactionType;
 import viserrys.Tweet.TweetService;
-
-class MyConfiguration {
-    @Bean(name = "urlService")
-    public UrlService urlService() {
-        return () -> "domain.com/myapp";
-    }
-}
 
 interface UrlService {
     String getApplicationUrl();
