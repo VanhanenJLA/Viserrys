@@ -90,7 +90,7 @@ public class AccountController {
         model.addAttribute("followers", followers);
         model.addAttribute("view", "profile");
 
-        return "account";
+        return "pages/account";
     }
 
     @GetMapping("/others")
@@ -101,7 +101,7 @@ public class AccountController {
         accounts.remove(me);
         model.addAttribute("accounts", accounts);
         model.addAttribute("currentAccount", me);
-        return "others";
+        return "pages/others";
     }
 
     @PostMapping("/accounts/{username}/follow")
@@ -144,7 +144,7 @@ public class AccountController {
         var accounts = account.getFollowers();
         model.addAttribute("accounts", accounts);
         model.addAttribute("currentAccount", current());
-        return "follows";
+        return "pages/follows";
     }
 
     @GetMapping("/accounts/{username}/following")
@@ -166,7 +166,7 @@ public class AccountController {
         model.addAttribute("reactionService", reactionService);
         model.addAttribute("view", "photos");
 
-        return "photos";
+        return "pages/photos";
     }
 
     @PostMapping("/accounts/{username}/photos")

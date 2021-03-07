@@ -1,4 +1,3 @@
-
 package viserrys.Photo;
 
 import org.springframework.beans.factory.annotation.Autowired;

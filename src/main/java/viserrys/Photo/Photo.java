@@ -1,9 +1,7 @@
-
 package viserrys.Photo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -21,7 +19,6 @@ import lombok.NoArgsConstructor;
 import viserrys.Account.Account;
 import viserrys.Comment.Comment;
 import viserrys.Reaction.Reaction;
-import viserrys.Reaction.ReactionType;
 
 @Entity
 @Data

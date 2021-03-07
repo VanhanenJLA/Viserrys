@@ -6,7 +6,6 @@
       padding: 4rem 2rem;
       margin-bottom: 2rem;
       background-color: #e9ecef;
-      border-radius: .3rem;
     }
   </style>
 
@@ -15,8 +14,10 @@
     <p class="display-4 mb-4"
        th:text="${jumbotronTitle}"></p>
 
-    <div class="col btn-group px-0"
+    <div th:if="${account != null}"
+         class="col btn-group px-0"
          role="group">
+
       <a type="button"
          class="btn btn-outline-secondary"
          th:classappend="${view == 'profile' ? 'active' : ''}"
@@ -28,6 +29,7 @@
       </a>
       <button type="button"
               class="btn btn-outline-secondary disabled">Activity</button>
+
     </div>
 
   </div>

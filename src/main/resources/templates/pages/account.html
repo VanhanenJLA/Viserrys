@@ -1,20 +1,20 @@
-<!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-
-<head th:replace="fragments/head :: head(title=${account.username})"></head>
-
 <style>
 
 </style>
 
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout/head :: head(title=${account.username})"></head>
+
 <body>
 
-  <navbar th:replace="fragments/navbar :: navbar"></navbar>
+  <navbar th:replace="layout/navbar :: navbar"></navbar>
 
   <main role="main">
 
-    <jumbotron th:replace="fragments/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s profile|)">
+    <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s profile|)">
     </jumbotron>
 
     <div class="container">
@@ -92,7 +92,6 @@
         <div class="col-md-8">
           <h2>Tweets</h2>
 
-
           <button data-toggle="collapse"
                   data-target="new-tweet"
                   class="btn btn-block btn-outline-primary mb-2">Leave a tweet!</button>
@@ -111,7 +110,7 @@
 
   </main>
 
-  <footer th:replace="fragments/footer :: footer"></footer>
+  <footer th:replace="layout/footer :: footer"></footer>
 
   <followers-modal
                    th:replace="components/accounts-modal.html :: accounts-modal(accounts=${followers}, id='followers-modal', title=|${account.username}'s followers|)">
@@ -124,6 +123,7 @@
 </body>
 
 </html>
+
 <script src="https://MomentJS.com/downloads/moment.js"></script>
 <script>
   // If it works, it works. 🚀

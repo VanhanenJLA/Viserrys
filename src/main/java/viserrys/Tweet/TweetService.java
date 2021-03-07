@@ -12,7 +12,7 @@ import viserrys.Account.Account;
 public class TweetService {
 
   @Autowired
-  TweetRepository tweetRepository;
+  public TweetRepository tweetRepository;
 
   public Tweet tweet(Account sender, Account recipient, LocalDateTime timestamp, String content) {
     return tweetRepository.save(new Tweet(sender, recipient, timestamp, content));

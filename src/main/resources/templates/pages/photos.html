@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/head :: head(title=|Photos of ${currentAccount.username}|)"></head>
+<head th:replace="layout/head :: head(title=|Photos of ${currentAccount.username}|)"></head>
 
 <style>
   .comment-avatar {
@@ -22,9 +22,9 @@
 
 <body>
 
-  <navbar th:replace="fragments/navbar :: navbar"></navbar>
+  <navbar th:replace="layout/navbar :: navbar"></navbar>
 
-  <jumbotron th:replace="fragments/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s photos|)"></jumbotron>
+  <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s photos|)"></jumbotron>
 
   <div class="container">
 
@@ -128,6 +128,8 @@
             <div th:each="comment : ${photo.comments}">
               <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
             </div>
+
+            <pagination th:replace="components/pagination.html :: pagination"></pagination>
 
           </div>
 

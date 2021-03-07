@@ -2,15 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/head :: head(title='Others')"></head>
+<head th:replace="layout/head :: head(title='Others')"></head>
 
 <body>
 
-  <navbar th:replace="fragments/navbar :: navbar"></navbar>
+  <navbar th:replace="layout/navbar :: navbar"></navbar>
 
   <main role="main">
 
-    <jumbotron th:replace="fragments/jumbotron :: jumbotron(jumbotronTitle='Others')"></jumbotron>
+    <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle='Others')"></jumbotron>
 
     <div class="container">
       <div class="col">
@@ -20,11 +20,11 @@
           <li th:each="account : ${accounts}"
               class="media mb-3">
 
-            <img class="mr-3 small-profile-picture"
-                 th:src="@{|/photos/${account.profilePicture.id}/content|}"
-                 alt="avatar">
+            <div class="media-body row no-gutters">
 
-            <div class="media-body d-flex">
+              <img class="mr-3 small-profile-picture"
+                   th:src="@{|/photos/${account.profilePicture.id}/content|}"
+                   alt="avatar">
 
               <div class="col-auto">
                 <a th:href="@{|/accounts/${account.username}|}"
@@ -70,7 +70,7 @@
 
   </main>
 
-  <footer th:replace="fragments/footer :: footer"></footer>
+  <footer th:replace="layout/footer :: footer"></footer>
 
 </body>
 
