@@ -4,6 +4,13 @@
 
 <head th:replace="layout/head :: head(title='Others')"></head>
 
+<style>
+  .badge {
+    font-size: medium;
+    padding: 0.45em;
+  }
+</style>
+
 <body>
 
   <navbar th:replace="layout/navbar :: navbar"></navbar>
@@ -13,60 +20,49 @@
     <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle='Others')"></jumbotron>
 
     <div class="container">
-      
+
       <div class="col">
 
         <ul class="list-unstyled">
 
-          <li th:each="account : ${accounts}"
-              class="media mb-3">
+          <li th:each="account : ${accounts}">
+            <div class="row mb-3">
+              <div class="col-md-6">
 
-            <div class="media-body row no-gutters">
+                <div class="row">
 
-              <img class="mr-3 small-profile-picture"
-                   th:src="@{|/photos/${account.profilePicture.id}/content|}"
-                   alt="avatar">
+                  <div class="col-md-auto">
+                    <chip th:replace="components/chip.html :: chip(account=${account})"></chip>
+                  </div>
 
-              <div class="col-auto">
-                <a th:href="@{|/accounts/${account.username}|}"
-                   th:text="${account.username}"
-                   class="h5 mr-3">
-                </a>
+                  <div class="col my-auto">
+                    <!-- Following -->
+                    <a class="badge bg-info badge-pill text-white col-md-auto"
+                       th:text="|${account.getFollowing().size()} following|"></a>
+
+                    <!-- Followers -->
+                    <a class="badge bg-primary badge-pill text-white col-md-auto"
+                       th:text="|${account.getFollowers().size()} followers|"></a>
+
+                    <!-- Photos -->
+                    <a class="badge bg-secondary badge-pill text-white col-md-auto"
+                       th:text="|${account.getPhotos().size()} photos|"
+                       th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
+                  </div>
+
+                </div>
               </div>
 
-
-              <div class="col">
-                <!-- Following -->
-                <button class="btn btn-lg p-0 btn-link">
-                  <a class="badge bg-info badge-pill text-white"
-                     th:text="|${account.getFollowing().size()} following|"></a>
-                </button>
-
-                <!-- Followers -->
-                <button class="btn btn-lg p-0 btn-link">
-                  <a class="badge bg-primary badge-pill text-white"
-                     th:text="|${account.getFollowers().size()} followers|"></a>
-                </button>
-
-                <!-- Photos -->
-                <button type="button"
-                        class="btn btn-lg p-0 btn-link">
-                  <a class="badge bg-secondary badge-pill text-white"
-                     th:text="|${account.getPhotos().size()} photos|"
-                     th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
-                </button>
-              </div>
-
-              <div class="col">
+              <div class="col-md-6 mt-1 mt-md-0">
                 <follow-unfollow th:replace="components/follow-unfollow.html :: follow-unfollow"></follow-unfollow>
               </div>
-
             </div>
-          </li>
-
-        </ul>
-
       </div>
+      </li>
+
+      </ul>
+
+    </div>
     </div>
 
   </main>
