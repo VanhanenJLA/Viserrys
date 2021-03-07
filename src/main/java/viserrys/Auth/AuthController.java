@@ -21,12 +21,12 @@ public class AuthController {
 
   @GetMapping("/login")
   public String login(@ModelAttribute Account account) {
-    return "login";
+    return "pages/login";
   }
 
   @GetMapping("/register")
   public String register(@ModelAttribute Account account) {
-    return "register";
+    return "pages/register";
   }
 
   @PostMapping("/register")
