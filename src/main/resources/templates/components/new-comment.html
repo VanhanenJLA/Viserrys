@@ -1,39 +1,9 @@
 <new-comment th:id="|new-comment-${photo.id}|"
              class="card mb-2 collapse">
 
-  <new-comment-header class="card-header py-1">
-
-    <style>
-      .new-comment-profile-picture {
-        height: 25px;
-        min-height: 25px;
-        width: 25px;
-        min-width: 25px;
-      }
-    </style>
-
-    <div class="row">
-      <div class="col">
-        <span class="header-text text-muted">From: </span>
-        <img class="img-fluid rounded-circle new-comment-profile-picture"
-             th:if="${currentAccount.profilePicture}"
-             th:src="@{|/photos/${currentAccount.profilePicture.id}/content|}"
-             alt="profile-picture">
-        <span class="header-text"
-              th:text="${currentAccount.username}"></span>
-      </div>
-
-      <div class="col">
-        <span class="header-text text-muted">To: </span>
-        <img class="img-fluid rounded-circle new-comment-profile-picture"
-             th:if="${account.profilePicture}"
-             th:src="@{|/photos/${account.profilePicture.id}/content|}">
-        <span class="header-text"
-              th:text="${account.username}"></span>
-      </div>
-    </div>
-
-  </new-comment-header>
+  <new-message-header
+                      th:replace="components/new-message-header.html :: new-message-header(sender=${currentAccount}, recipient=${account})">
+  </new-message-header>
 
   <form th:action="@{|/accounts/${account.username}/photos/${photo.id}/comment|}"
         method="POST">

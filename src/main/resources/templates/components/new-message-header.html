@@ -1,0 +1,23 @@
+<new-message-header>
+
+  <div class="card-header py-1">
+
+    <div class="row no-gutters">
+
+      <div class="col-auto">
+        <chip th:replace="components/chip.html :: chip(account=${sender})"></chip>
+      </div>
+
+      <div class="col text-center my-auto">
+        <i class="bi bi-arrow-right"></i>
+      </div>
+
+      <div class="col-auto">
+        <chip th:replace="components/chip.html :: chip(account=${recipient})"></chip>
+      </div>
+
+    </div>
+
+  </div>
+
+</new-message-header>
