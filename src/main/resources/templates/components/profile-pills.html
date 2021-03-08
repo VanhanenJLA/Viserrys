@@ -1,0 +1,45 @@
+<profile-pills>
+  <div class="col row justify-content-between">
+
+    <div class="form-group col-xs-6">
+
+      <small class="text-muted"> Follows </small>
+      <br>
+
+      <a data-toggle="modal"
+         data-target="#followers-modal"
+         class="badge bg-info badge-pill text-white"
+         th:text="|${account.followers.size()} 📥|"></a>
+
+      <a data-toggle="modal"
+         data-target="#following-modal"
+         class="badge bg-info badge-pill text-white"
+         th:text="|${account.following.size()} 📤|"></a>
+
+    </div>
+
+    <div class="form-group col-xs-6">
+
+      <small class="text-muted"> Tweets </small>
+      <br>
+      <a class="badge bg-primary badge-pill text-white"
+         th:text="|${tweets.received.size()} 📥|"></a>
+      <a class="badge bg-primary badge-pill text-white"
+         th:text="|${tweets.sent.size()} 📤|"></a>
+
+    </div>
+
+    <div class="form-group">
+      <small class="text-muted">Photos</small>
+      <br>
+      <a class="badge bg-secondary badge-pill text-white"
+         th:text="|${account.photos.size()} 🖼|"
+         th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
+      <a style="visibility: hidden;"
+         class="badge bg-secondary badge-pill text-white"
+         th:text="|${account.photos.size()} 🖼|"
+         th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
+    </div>
+
+  </div>
+</profile-pills>

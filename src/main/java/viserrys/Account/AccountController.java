@@ -19,10 +19,21 @@ import viserrys.Comment.CommentService;
 import viserrys.Photo.PhotoService;
 import viserrys.Reaction.ReactionService;
 import viserrys.Reaction.ReactionType;
+import viserrys.Tweet.Tweet;
 import viserrys.Tweet.TweetService;
 
 interface UrlService {
     String getApplicationUrl();
+}
+
+
+class Tweets {
+    public List<Tweet> sent;
+    public List<Tweet> received;
+    public Tweets(List<Tweet> sent, List<Tweet> received) {
+        this.sent = sent;
+        this.received = received;
+    }
 }
 
 @Controller
@@ -76,16 +87,17 @@ public class AccountController {
 
     @GetMapping("/accounts/{username}")
     private String account(Model model, @PathVariable String username) {
+
         var account = accountService.accountRepository.findByUsername(username);
         var tweetsSent = tweetService.findAllBySender(account);
         var tweetsReceived = tweetService.findAllByRecipient(account);
+        var tweets = new Tweets(tweetsSent, tweetsReceived);
         List<Account> following = account.following.stream().map(f -> f.getRecipient()).collect(Collectors.toList());
         List<Account> followers = account.followers.stream().map(f -> f.getSender()).collect(Collectors.toList());
 
         model.addAttribute("currentAccount", current());
         model.addAttribute("account", account);
-        model.addAttribute("tweetsReceived", tweetsReceived);
-        model.addAttribute("tweetsSent", tweetsSent);
+        model.addAttribute("tweets", tweets);
         model.addAttribute("following", following);
         model.addAttribute("followers", followers);
         model.addAttribute("view", "profile");

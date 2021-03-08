@@ -1,7 +1,3 @@
-<style>
-
-</style>
-
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
@@ -9,6 +5,12 @@
 <head th:replace="layout/head :: head(title=${account.username})"></head>
 
 <body>
+
+  <style>
+    .badge-pill {
+      font-size: large
+    }
+  </style>
 
   <navbar th:replace="layout/navbar :: navbar"></navbar>
 
@@ -39,47 +41,7 @@
 
           <h2 th:text="${account.username}"></h2>
 
-          <span class="h5">
-
-            <!-- Following -->
-            <button class="btn btn-lg p-0 btn-link">
-              <a data-toggle="modal"
-                 data-target="#following-modal"
-                 class="badge bg-info badge-pill text-white"
-                 th:text="|${account.following.size()} following|"></a>
-            </button>
-
-            <!-- Followers -->
-            <button class="btn btn-lg p-0 btn-link">
-              <a data-toggle="modal"
-                 data-target="#followers-modal"
-                 class="badge bg-primary badge-pill text-white"
-                 th:text="|${account.followers.size()} followers|"></a>
-            </button>
-
-            <!-- Tweets received -->
-            <button type="button"
-                    class="btn btn-lg p-0 btn-link">
-              <a class="badge bg-warning badge-pill text-white"
-                 th:text="|${tweetsReceived.size()} tweets received|"></a>
-            </button>
-
-            <!-- Tweets sent -->
-            <button type="button"
-                    class="btn btn-lg p-0 btn-link">
-              <a class="badge bg-danger badge-pill text-white"
-                 th:text="|${tweetsSent.size()} tweets sent|"></a>
-            </button>
-
-            <!-- Photos -->
-            <button type="button"
-                    class="btn btn-lg p-0 btn-link">
-              <a class="badge bg-secondary badge-pill text-white"
-                 th:text="|${account.photos.size()} photos|"
-                 th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
-            </button>
-
-          </span>
+          <profile-pills th:replace="components/profile-pills.html :: profile-pills(account=${account}, tweets=${tweets})"></profile-pills>
 
           <div th:if="${currentAccount != account}"
                class="my-3">
