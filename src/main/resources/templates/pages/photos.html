@@ -64,9 +64,14 @@
                         class="btn btn-block btn-outline-danger"
                         type="submit"
                         th:value="${photo.id}"
-                        name="photoId">
+                        name="photoId"
+                        data-content='<div class="btn-group" role="group"><button type="button" class="btn btn-secondary">Yes</button><button type="button" class="btn btn-secondary">No</button></div>'
+                        data-toggle="popover"
+                        data-placement="top"
+                        title="Delete this picture?">
                   Delete
                 </button>
+
               </form>
 
             </div>
@@ -128,8 +133,6 @@
             <div th:each="comment : ${photo.comments}">
               <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
             </div>
-
-            <pagination th:replace="components/pagination.html :: pagination"></pagination>
 
           </div>
 
@@ -194,6 +197,10 @@
         if (!confirm("Are you sure you want to delete this photo?"))
           event.preventDefault();
       };
+
+    const removalPopover = $('[data-toggle="popover"]');
+    removalPopover.popover();
+
   });
 </script>
 

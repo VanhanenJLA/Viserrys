@@ -1,25 +1,32 @@
 <pagination>
 
-  <nav th:if="${photo.comments.size() > 5}"
-       class="mt-1">
+  <nav class="mt-1">
 
     <ul class="pagination justify-content-center">
 
-      <li class="page-item">
+      <li class="page-item"
+          th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
         <a class="page-link"
-           href="#"
+           th:href="|?pageNumber=${page.getNumber() - 1}|"
            aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
 
-      <li class="page-item"><a class="page-link"
-           href="#">1</a></li>
-
-      <li class="page-item">
+      <li th:each="i : ${#numbers.sequence(0, page.getTotalPages() - 1)}"
+          class="page-item"
+          th:classappend="${page.getNumber() == i} ? 'active' : ''">
         <a class="page-link"
-           href="#"
-           aria-label="Next">
+           th:href="|?pageNumber=${i}|"
+           th:text="${i}">
+        </a>
+      </li>
+
+      <li class="page-item"
+          th:classappend="${page.hasNext()} ? '' : 'disabled'">
+        <a class="page-link"
+           aria-label="Next"
+           th:href="|?pageNumber=${page.getNumber() + 1}|">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
@@ -27,5 +34,5 @@
     </ul>
 
   </nav>
-  
+
 </pagination>

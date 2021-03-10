@@ -26,10 +26,10 @@ interface UrlService {
     String getApplicationUrl();
 }
 
-
 class Tweets {
     public List<Tweet> sent;
     public List<Tweet> received;
+
     public Tweets(List<Tweet> sent, List<Tweet> received) {
         this.sent = sent;
         this.received = received;
@@ -64,7 +64,8 @@ public class AccountController {
     @GetMapping("/me")
     private String me(Model model) {
         model.addAttribute("activeNavLink", "me");
-        return account(model, current().getUsername());
+        var username = current().getUsername();
+        return "redirect:/accounts/" + username;
     }
 
     @GetMapping("/my-photos")
@@ -86,7 +87,8 @@ public class AccountController {
     }
 
     @GetMapping("/accounts/{username}")
-    private String account(Model model, @PathVariable String username) {
+    private String account(Model model, @PathVariable String username, @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "1") int size) {
 
         var account = accountService.accountRepository.findByUsername(username);
         var tweetsSent = tweetService.findAllBySender(account);
@@ -94,6 +96,10 @@ public class AccountController {
         var tweets = new Tweets(tweetsSent, tweetsReceived);
         List<Account> following = account.following.stream().map(f -> f.getRecipient()).collect(Collectors.toList());
         List<Account> followers = account.followers.stream().map(f -> f.getSender()).collect(Collectors.toList());
+
+        var page = tweetService.findAllByRecipient(account, pageNumber);
+
+        model.addAttribute("page", page);
 
         model.addAttribute("currentAccount", current());
         model.addAttribute("account", account);

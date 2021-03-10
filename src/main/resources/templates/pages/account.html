@@ -41,7 +41,9 @@
 
           <h2 th:text="${account.username}"></h2>
 
-          <profile-pills th:replace="components/profile-pills.html :: profile-pills(account=${account}, tweets=${tweets})"></profile-pills>
+          <profile-pills
+                         th:replace="components/profile-pills.html :: profile-pills(account=${account}, tweets=${tweets})">
+          </profile-pills>
 
           <div th:if="${currentAccount != account}"
                class="my-3">
@@ -60,9 +62,11 @@
 
           <new-tweet th:replace="components/new-tweet.html :: new-tweet"></new-tweet>
 
-          <div th:each="tweet : ${tweetsReceived}">
+          <div th:each="tweet : ${page}">
             <tweet th:replace="components/tweet.html :: tweet(tweet=${tweet})"></tweet>
           </div>
+
+          <pagination th:replace="components/pagination.html :: pagination(page=${page})"></pagination>
 
         </div>
 
