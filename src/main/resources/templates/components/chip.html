@@ -35,9 +35,11 @@
     }
   </style>
 
-  <div class="chip">
+  <a class="chip"
+     th:href="@{|/accounts/${account.username}|}">
     <img th:if="${account.profilePicture}"
          th:src="@{|/photos/${account.profilePicture.id}/content|}"
          th:text="${account.username}">
-  </div>
+  </a>
+
 </chip>

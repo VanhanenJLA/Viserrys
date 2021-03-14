@@ -28,9 +28,11 @@
           <!-- Picture -->
           <div th:if="${account.hasProfilePicture()}"
                class="row justify-content-center">
-            <img class="img-fluid img-thumbnail rounded-circle mt-n5 profile-picture"
-                 th:src="@{|/photos/${account.profilePicture.id}/content|}"
-                 alt="profile-picture">
+            <a th:href="@{|/accounts/${account.username}/photos/${account.profilePicture.id}|}">
+              <img class="img-fluid img-thumbnail rounded-circle mt-n5 profile-picture"
+                   th:src="@{|/photos/${account.profilePicture.id}/content|}"
+                   alt="profile-picture">
+            </a>
           </div>
 
           <div th:if="${!account.hasProfilePicture()}"

@@ -8,7 +8,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -37,9 +40,12 @@ public class Photo extends AbstractPersistable<Long> {
     @Lob
     byte[] content;
 
+    @Cascade(CascadeType.ALL)
+    @OrderBy("timestamp DESC")
     @OneToMany(mappedBy = "target")
     List<Comment> comments = new ArrayList<>();
 
+    // @Cascade(CascadeType.ALL)
     @OneToMany(mappedBy = "target")
     List<Reaction> reactions = new ArrayList<>();
 

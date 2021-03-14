@@ -1,0 +1,40 @@
+<reactions>
+
+  <!-- React bar -->
+  <div>
+    <form method="POST"
+          th:action="@{|photos/${photo.id}/react|}">
+
+      <div class="btn-group btn-block">
+        <button th:each="reactionType : ${reactionTypes}"
+                type="submit"
+                th:value="${reactionType}"
+                name="reactionType"
+                class="btn btn-outline-secondary emoji"
+                th:text="${reactionType.emoji}"
+                th:classappend="${reactionService.hasReacted(currentAccount, photo, reactionType) ? 'active' : ''}">
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Reaction pills -->
+  <h4 class="pt-1">
+    <button th:each="reactionType : ${reactionTypes}"
+            th:if="${reactionService.countReactions(photo, reactionType) > 0}"
+            class="btn btn-lg p-0 btn-link">
+      <a class="badge bg-success badge-pill text-white"
+         th:text="|${reactionType.emoji} ${reactionService.countReactions(photo, reactionType)}|"></a>
+    </button>
+
+    <button th:each="reaction : ${reactionService.getLatestReactions(5, photo)}"
+            class="btn btn-lg p-0 btn-link">
+      <a th:href="@{|/accounts/${reaction.sender.username}|}"
+         th:text="|${reaction.reactionType.emoji} ${reaction.sender.username}|"
+         class="badge bg-secondary badge-pill text-white">
+      </a>
+    </button>
+  </h4>
+
+</reactions>

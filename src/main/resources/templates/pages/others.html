@@ -27,6 +27,7 @@
 
           <li th:each="account : ${accounts}">
             <div class="row mb-3">
+
               <div class="col-md-6">
 
                 <div class="row">
@@ -37,32 +38,39 @@
 
                   <div class="col my-auto">
                     <!-- Following -->
-                    <a class="badge bg-info badge-pill text-white col-md-auto"
-                       th:text="|${account.getFollowing().size()} following|"></a>
+                    <a>
+                      <button class="btn btn-sm btn-round btn-outline-secondary col-md-auto"
+                              th:text="|${account.getFollowing().size()} 📤|">
+                      </button>
+                    </a>
 
                     <!-- Followers -->
-                    <a class="badge bg-primary badge-pill text-white col-md-auto"
-                       th:text="|${account.getFollowers().size()} followers|"></a>
+                    <a>
+                      <button class="btn btn-sm btn-round btn-outline-secondary col-md-auto"
+                              th:text="|${account.getFollowers().size()} 📥|">
+                      </button>
+                    </a>
 
                     <!-- Photos -->
-                    <a class="badge bg-secondary badge-pill text-white col-md-auto"
-                       th:text="|${account.getPhotos().size()} photos|"
-                       th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
+                    <a th:href="@{/accounts/{username}/photos(username=${account.username})}">
+                      <button class="btn btn-sm btn-round btn-outline-secondary col-md-auto"
+                              th:text="|${account.getPhotos().size()} 🖼|">
+                      </button>
+                    </a>
                   </div>
 
                 </div>
               </div>
 
-              <div class="col-md-6 mt-1 mt-md-0">
-                <follow-unfollow th:replace="components/follow-unfollow.html :: follow-unfollow"></follow-unfollow>
+              <div class="col-md-6 mt-1 my-md-auto">
+                <follow-unfollow th:replace="components/follow-unfollow.html :: follow-unfollow(isRound=${true})"></follow-unfollow>
               </div>
+
             </div>
+          </li>
+        </ul>
       </div>
-      </li>
 
-      </ul>
-
-    </div>
     </div>
 
   </main>
@@ -72,12 +80,3 @@
 </body>
 
 </html>
-
-<style>
-  .small-profile-picture {
-    height: 40px;
-    min-height: 40px;
-    width: 40px;
-    min-width: 40px;
-  }
-</style>

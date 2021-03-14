@@ -2,23 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="layout/head :: head(title=|Photos of ${currentAccount.username}|)"></head>
-
-<style>
-  .comment-avatar {
-    width: 60px;
-    height: 60px;
-  }
-
-  .emoji {
-    font-size: x-large;
-    padding: 0px;
-  }
-
-  .img-thumbnail {
-    width: 100%;
-  }
-</style>
+<head th:replace="layout/head :: head(title=|Photos of ${account.username}|)"></head>
 
 <body>
 
@@ -39,10 +23,12 @@
 
           <div class="col-md-7">
 
-            <img class="img-thumbnail"
-                 th:src="@{|/photos/${photo.id}/content|}">
+            <a th:href="@{|/accounts/${account.username}/photos/${photo.id}|}">
+              <img class="img-thumbnail"
+                   th:src="@{|/photos/${photo.id}/content|}">
+            </a>
 
-            <!-- My-photos menu -->
+            <!-- Photo owner actions -->
             <div th:if="${currentAccount == account}">
               <form th:if="${photo != currentAccount.profilePicture}"
                     method="POST"
@@ -76,42 +62,7 @@
 
             </div>
 
-            <!-- React bar -->
-            <div th:if="${currentAccount != account}">
-              <form method="POST"
-                    th:action="@{|photos/${photo.id}/react|}">
-
-                <div class="btn-group btn-block">
-                  <button th:each="reactionType : ${reactionTypes}"
-                          type="submit"
-                          th:value="${reactionType}"
-                          name="reactionType"
-                          class="btn btn-outline-secondary emoji"
-                          th:text="${reactionType.emoji}"
-                          th:classappend="${reactionService.hasReacted(currentAccount, photo, reactionType) ? 'active' : ''}">
-                  </button>
-                </div>
-
-              </form>
-            </div>
-
-            <!-- Reaction pills -->
-            <h4 class="pt-1">
-              <button th:each="reactionType : ${reactionTypes}"
-                      th:if="${reactionService.countReactions(photo, reactionType) > 0}"
-                      class="btn btn-lg p-0 btn-link">
-                <a class="badge bg-success badge-pill text-white"
-                   th:text="|${reactionType.emoji} ${reactionService.countReactions(photo, reactionType)}|"></a>
-              </button>
-
-              <button th:each="reaction : ${reactionService.getLatestReactions(5, photo)}"
-                      class="btn btn-lg p-0 btn-link">
-                <a th:href="@{|/accounts/${reaction.sender.username}|}"
-                   th:text="|${reaction.reactionType.emoji} ${reaction.sender.username}|"
-                   class="badge bg-secondary badge-pill text-white">
-                </a>
-              </button>
-            </h4>
+            <reactions th:replace="components/reactions :: reactions"></reactions>
 
             <div class="pt-2">
               <h4>Description</h4>
@@ -127,11 +78,19 @@
                     th:data-target="|#new-comment-${photo.id}|"
                     class="btn btn-block btn-outline-primary mb-2">Leave a comment!</button>
 
-            <p th:if="${photo.comments.size() < 1}">Photo has no comments yet.</p>
+            <p th:if="${#lists.isEmpty(photo.comments)}">Photo has no comments yet.</p>
             <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>
 
-            <div th:each="comment : ${photo.comments}">
-              <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
+            <div th:if="${photo.comments.size() > 5}">
+              <div th:each="comment : ${photo.comments.subList(0, 5)}">
+                <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
+              </div>
+            </div>
+
+            <div th:if="${photo.comments.size() <= 5}">
+              <div th:each="comment : ${photo.comments}">
+                <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
+              </div>
             </div>
 
           </div>
@@ -139,6 +98,7 @@
         </div>
 
       </div>
+
       <hr>
     </div>
 

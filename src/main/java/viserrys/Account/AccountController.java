@@ -64,31 +64,36 @@ public class AccountController {
     @GetMapping("/me")
     private String me(Model model) {
         model.addAttribute("activeNavLink", "me");
-        var username = current().getUsername();
-        return "redirect:/accounts/" + username;
+        var me = current().getUsername();
+        return "redirect:/accounts/" + me;
     }
 
     @GetMapping("/my-photos")
     private String myPhotos(Model model) {
         model.addAttribute("activeNavLink", "my-photos");
-        return photos(model, current().getUsername());
+        return myPhotos();
     }
 
     @PostMapping("/my-photos/set-profile-picture")
     public String setProfilePicture(Model model, @RequestParam long photoId) {
         accountService.setProfilePicture(current(), photoId);
-        return myPhotos(model);
+        return myPhotos();
     }
 
     @PostMapping("/my-photos/delete-picture")
     public String deletePicture(Model model, @RequestParam long photoId) {
         accountService.deletePicture(current(), photoId);
-        return myPhotos(model);
+        return myPhotos();
+    }
+
+    private String myPhotos() {
+        var me = current().getUsername();
+        return "redirect:/accounts/" + me + "/photos";
     }
 
     @GetMapping("/accounts/{username}")
     private String account(Model model, @PathVariable String username, @RequestParam(defaultValue = "0") int pageNumber,
-            @RequestParam(defaultValue = "1") int size) {
+            @RequestParam(defaultValue = "5") int pageSize) {
 
         var account = accountService.accountRepository.findByUsername(username);
         var tweetsSent = tweetService.findAllBySender(account);
@@ -97,9 +102,13 @@ public class AccountController {
         List<Account> following = account.following.stream().map(f -> f.getRecipient()).collect(Collectors.toList());
         List<Account> followers = account.followers.stream().map(f -> f.getSender()).collect(Collectors.toList());
 
-        var page = tweetService.findAllByRecipient(account, pageNumber);
-
+        var page = tweetService.findAllByRecipient(account, pageNumber, pageSize);
+        var pageSizes = List.of(5, 10, 25, 50, 100);
+        var maxPages = Math.min(page.getTotalPages() - 1, 10);
         model.addAttribute("page", page);
+        model.addAttribute("pageSizes", pageSizes);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("maxPages", maxPages);
 
         model.addAttribute("currentAccount", current());
         model.addAttribute("account", account);
@@ -156,24 +165,6 @@ public class AccountController {
         return "redirect:/accounts/{username}/photos";
     }
 
-    @GetMapping("/accounts/{username}/followers")
-    private String followers(Model model, @PathVariable String username) {
-        var account = accountService.accountRepository.findByUsername(username);
-        var accounts = account.getFollowers();
-        model.addAttribute("accounts", accounts);
-        model.addAttribute("currentAccount", current());
-        return "pages/follows";
-    }
-
-    @GetMapping("/accounts/{username}/following")
-    private String following(Model model, @PathVariable String username) {
-        var account = accountService.accountRepository.findByUsername(username);
-        var accounts = account.getFollowing();
-        model.addAttribute("accounts", accounts);
-        model.addAttribute("currentAccount", current());
-        return "follows";
-    }
-
     @GetMapping("/accounts/{username}/photos")
     private String photos(Model model, @PathVariable String username) {
         var account = accountService.accountRepository.findByUsername(username);
@@ -185,6 +176,30 @@ public class AccountController {
         model.addAttribute("view", "photos");
 
         return "pages/photos";
+    }
+
+    @GetMapping("/accounts/{username}/photos/{photoId}")
+    private String photos(Model model, @PathVariable String username, @PathVariable long photoId,
+            @RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize) {
+        var account = accountService.accountRepository.findByUsername(username);
+        var currentAccount = current();
+        var photo = photoService.photoRepository.findById(photoId).get();
+        model.addAttribute("photo", photo);
+        model.addAttribute("account", account);
+        model.addAttribute("currentAccount", currentAccount);
+        model.addAttribute("reactionTypes", ReactionType.values());
+        model.addAttribute("reactionService", reactionService);
+        model.addAttribute("view", "photos");
+
+        var page = commentService.findAllByTargetId(photoId, pageNumber, pageSize);
+        var pageSizes = List.of(5, 10, 25, 50, 100);
+        var maxPages = Math.min(page.getTotalPages() - 1, 10);
+        model.addAttribute("page", page);
+        model.addAttribute("pageSizes", pageSizes);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("maxPages", maxPages);
+
+        return "pages/photo";
     }
 
     @PostMapping("/accounts/{username}/photos")
