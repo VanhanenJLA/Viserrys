@@ -71,22 +71,22 @@ public class AccountController {
     @GetMapping("/my-photos")
     private String myPhotos(Model model) {
         model.addAttribute("activeNavLink", "my-photos");
-        return myPhotos();
+        return redirectMyPhotos();
     }
 
     @PostMapping("/my-photos/set-profile-picture")
     public String setProfilePicture(Model model, @RequestParam long photoId) {
         accountService.setProfilePicture(current(), photoId);
-        return myPhotos();
+        return redirectMyPhotos();
     }
 
     @PostMapping("/my-photos/delete-picture")
     public String deletePicture(Model model, @RequestParam long photoId) {
         accountService.deletePicture(current(), photoId);
-        return myPhotos();
+        return redirectMyPhotos();
     }
 
-    private String myPhotos() {
+    private String redirectMyPhotos() {
         var me = current().getUsername();
         return "redirect:/accounts/" + me + "/photos";
     }
