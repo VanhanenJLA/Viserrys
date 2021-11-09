@@ -40,21 +40,21 @@
                     <!-- Following -->
                     <a>
                       <button class="btn btn-sm btn-round btn-outline-secondary col-md-auto"
-                              th:text="|${account.getFollowing().size()} 📤|">
+                              th:text="|📤 ${account.getFollowing().size()}|">
                       </button>
                     </a>
 
                     <!-- Followers -->
                     <a>
                       <button class="btn btn-sm btn-round btn-outline-secondary col-md-auto"
-                              th:text="|${account.getFollowers().size()} 📥|">
+                              th:text="|$📥 {account.getFollowers().size()}|">
                       </button>
                     </a>
 
                     <!-- Photos -->
                     <a th:href="@{/accounts/{username}/photos(username=${account.username})}">
                       <button class="btn btn-sm btn-round btn-outline-secondary col-md-auto"
-                              th:text="|${account.getPhotos().size()} 🖼|">
+                              th:text="|🖼 ${account.getPhotos().size()}|">
                       </button>
                     </a>
                   </div>

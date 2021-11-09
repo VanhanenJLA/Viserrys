@@ -9,12 +9,12 @@
       <a data-toggle="modal"
          data-target="#followers-modal"
          class="badge bg-info badge-pill text-white"
-         th:text="|${account.followers.size()} 📥|"></a>
+         th:text="|📥 ${account.followers.size()}|"></a>
 
       <a data-toggle="modal"
          data-target="#following-modal"
          class="badge bg-info badge-pill text-white"
-         th:text="|${account.following.size()} 📤|"></a>
+         th:text="|📤 ${account.following.size()}|"></a>
 
     </div>
 
@@ -23,9 +23,9 @@
       <small class="text-muted"> Tweets </small>
       <br>
       <a class="badge bg-primary badge-pill text-white"
-         th:text="|${tweets.received.size()} 📥|"></a>
+         th:text="|📥 ${tweets.received.size()}|"></a>
       <a class="badge bg-primary badge-pill text-white"
-         th:text="|${tweets.sent.size()} 📤|"></a>
+         th:text="|📤 ${tweets.sent.size()}|"></a>
 
     </div>
 
@@ -33,11 +33,11 @@
       <small class="text-muted">Photos</small>
       <br>
       <a class="badge bg-secondary badge-pill text-white"
-         th:text="|${account.photos.size()} 🖼|"
+         th:text="|🖼 ${account.photos.size()}|"
          th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
       <a style="visibility: hidden;"
          class="badge bg-secondary badge-pill text-white"
-         th:text="|${account.photos.size()} 🖼|"
+         th:text="|🖼 ${account.photos.size()}|"
          th:href="@{/accounts/{username}/photos(username=${account.username})}"></a>
     </div>
 
