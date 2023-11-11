@@ -1,14 +1,25 @@
 package viserrys;
 
+import ch.qos.logback.core.model.Model;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import viserrys.Auth.AuthService;
 
 @Controller
 public class DefaultController {
 
-//    @GetMapping("*")
-//    public String home(Model model) {
-//
-//        return "redirect:/login";
-//    }
+    final AuthService authService;
+
+    public DefaultController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @GetMapping("*")
+    public String home(Model model) {
+        if (authService.getAuthenticatedAccount() == null)
+            return "redirect:/login";
+        return "redirect:/me";
+    }
 
 }

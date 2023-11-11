@@ -1,53 +1,95 @@
 package viserrys;
 
+
+import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+//@EnableWebMvc
+public class SecurityConfiguration {
+    
+    public static final String LOGIN_URL = "/login";
+    public static final String LOGOUT_URL = "/logout";
+    public static final String REGISTER_URL = "/register";
+    public static final String LOGIN_FAIL_URL = LOGIN_URL + "?error";
+    public static final String DEFAULT_SUCCESS_URL = "/me";
+    public static final String ROOT_URL = "/";
+    public static final String[] MVC_ENDPOINTS_WHITELIST = {
+            ROOT_URL,
+            LOGIN_URL,
+            DEFAULT_SUCCESS_URL,
+            REGISTER_URL,
+    };
+
+    public static final String IMAGES_URL = "/img/*";
+    public static final String STYLESHEETS_URL = "/css/**";
+    public static final String H2CONSOLE_URL = "/h2-console/**";
+    public static final String[] ANT_ENDPOINTS_WHITELIST = {
+            H2CONSOLE_URL,
+            STYLESHEETS_URL,
+            IMAGES_URL,
+    };
 
     @Autowired
     private UserDetailsService userDetailsService;
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**", "/static/**");
+    @Bean
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.headers().frameOptions().sameOrigin();
-        
-        http.authorizeRequests()
-                .antMatchers("/register").permitAll()
-                .antMatchers("/h2-console", "/h2-console/**").permitAll()
-                .antMatchers("/css", "/css/*").permitAll()
-                .antMatchers("/img", "/img/*").permitAll()
-                .anyRequest().authenticated()
-                .and().formLogin().loginPage("/login").defaultSuccessUrl("/me", true).permitAll()
-                .and().logout().logoutUrl("/logout").permitAll();
-
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
+        var matchers = createAntPathRequestMatchers(ANT_ENDPOINTS_WHITELIST);
+        http
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(matchers).permitAll()
+                        .requestMatchers(mvc.pattern(REGISTER_URL)).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage(LOGIN_URL).permitAll()
+                        .failureUrl(LOGIN_FAIL_URL).permitAll()
+                        .defaultSuccessUrl(DEFAULT_SUCCESS_URL, true)
+                )
+                .logout(logout -> logout
+                        .logoutUrl(LOGOUT_URL).permitAll()
+                );
+        return http.build();
     }
 
+    public static AntPathRequestMatcher[] createAntPathRequestMatchers(String... patterns) {
+        return Stream.of(patterns)
+                .map(AntPathRequestMatcher::new)
+                .toArray(AntPathRequestMatcher[]::new);
+    }
+
+    public MvcRequestMatcher[] createAntPathRequestMatchers(MvcRequestMatcher.Builder builder, String... patterns) {
+        return Stream.of(patterns)
+                .map(p -> builder.pattern(p))
+                .toArray(MvcRequestMatcher[]::new);
+    }
+    
 }

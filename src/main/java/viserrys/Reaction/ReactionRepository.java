@@ -1,7 +1,6 @@
 package viserrys.Reaction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import viserrys.Account.Account;
 import viserrys.Photo.Photo;
 

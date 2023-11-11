@@ -1,19 +1,9 @@
 package viserrys.Account;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import viserrys.Auth.AuthService;
 import viserrys.Comment.CommentService;
 import viserrys.Photo.PhotoService;
@@ -22,9 +12,9 @@ import viserrys.Reaction.ReactionType;
 import viserrys.Tweet.Tweet;
 import viserrys.Tweet.TweetService;
 
-interface UrlService {
-    String getApplicationUrl();
-}
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class Tweets {
     public List<Tweet> sent;
@@ -39,23 +29,26 @@ class Tweets {
 @Controller
 public class AccountController {
 
-    @Autowired
-    AccountService accountService;
+    final AccountService accountService;
 
-    @Autowired
-    AuthService authService;
+    final AuthService authService;
 
-    @Autowired
-    PhotoService photoService;
+    final PhotoService photoService;
 
-    @Autowired
-    TweetService tweetService;
+    final TweetService tweetService;
 
-    @Autowired
-    CommentService commentService;
+    final CommentService commentService;
 
-    @Autowired
-    ReactionService reactionService;
+    final ReactionService reactionService;
+
+    public AccountController(AccountService accountService, AuthService authService, PhotoService photoService, TweetService tweetService, CommentService commentService, ReactionService reactionService) {
+        this.accountService = accountService;
+        this.authService = authService;
+        this.photoService = photoService;
+        this.tweetService = tweetService;
+        this.commentService = commentService;
+        this.reactionService = reactionService;
+    }
 
     private Account current() {
         return authService.getAuthenticatedAccount();
@@ -92,8 +85,7 @@ public class AccountController {
     }
 
     @GetMapping("/accounts/{username}")
-    private String account(Model model, @PathVariable String username, @RequestParam(defaultValue = "0") int pageNumber,
-            @RequestParam(defaultValue = "5") int pageSize) {
+    private String account(Model model, @PathVariable String username, @RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize) {
 
         var account = accountService.accountRepository.findByUsername(username);
         var tweetsSent = tweetService.findAllBySender(account);
@@ -156,8 +148,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/photos/{id}/comment")
-    private String comment(Model model, @PathVariable String username, @PathVariable Long id,
-            @RequestParam String content) throws Exception {
+    private String comment(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam String content) throws Exception {
         var sender = current();
         var photo = photoService.photoRepository.getOne(id);
         var comment = commentService.comment(sender, photo, LocalDateTime.now(), content);
@@ -179,8 +170,7 @@ public class AccountController {
     }
 
     @GetMapping("/accounts/{username}/photos/{photoId}")
-    private String photos(Model model, @PathVariable String username, @PathVariable long photoId,
-            @RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize) {
+    private String photos(Model model, @PathVariable String username, @PathVariable long photoId, @RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize) {
         var account = accountService.accountRepository.findByUsername(username);
         var currentAccount = current();
         var photo = photoService.photoRepository.findById(photoId).get();
@@ -203,8 +193,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/photos")
-    private String uploadPhoto(@PathVariable String username, @RequestParam MultipartFile file,
-            @RequestParam String description) throws Exception {
+    private String uploadPhoto(@PathVariable String username, @RequestParam MultipartFile file, @RequestParam String description) throws Exception {
 
         var uploader = authService.getAuthenticatedAccount();
 
@@ -220,8 +209,7 @@ public class AccountController {
     }
 
     @PostMapping("accounts/{username}/photos/{id}/react")
-    public String like(Model model, @PathVariable String username, @PathVariable Long id,
-            @RequestParam ReactionType reactionType) throws Exception {
+    public String like(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam ReactionType reactionType) throws Exception {
         var photo = photoService.photoRepository.getOne(id);
 
         reactionService.react(current(), photo, LocalDateTime.now(), reactionType);

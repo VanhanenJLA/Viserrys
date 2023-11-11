@@ -43,8 +43,11 @@
 
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a th:href="@{/logout}"
-             class="btn btn-block btn-outline-secondary">Sign out</a>
+          <form th:action="@{/logout}"
+                method="POST">
+            <button class="btn btn-block btn-outline-secondary"
+                    type="submit">Sign out</button>
+          </form>
         </li>
       </ul>
 

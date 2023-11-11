@@ -1,14 +1,13 @@
 package viserrys.Account;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import viserrys.Follow.Follow;
 import viserrys.Follow.FollowService;
 import viserrys.Photo.PhotoService;
+
+import java.util.List;
 
 @Service
 public class AccountService {

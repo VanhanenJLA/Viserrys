@@ -1,7 +1,6 @@
 package viserrys.Follow;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import viserrys.Account.Account;
 
 
