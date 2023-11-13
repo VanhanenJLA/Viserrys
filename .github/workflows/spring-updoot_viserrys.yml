@@ -16,10 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java version
-        uses: actions/setup-java@v1
+      - name: Set up Java & Maven version
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: '17'
+          maven-version: '3.11.0'
 
       - name: Build with Maven
         run: mvn clean install
@@ -28,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/target/*.war'
 
   deploy:
     runs-on: windows-latest
@@ -50,4 +52,4 @@ jobs:
           app-name: 'viserrys'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C88AF448D00148B7979D8D2A6B5BF488 }}
-          package: '*.jar'
+          package: '*.war'
