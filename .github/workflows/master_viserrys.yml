@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java & Maven version
+      - name: Set up Java version
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'

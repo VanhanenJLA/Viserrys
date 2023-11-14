@@ -41,10 +41,12 @@ public class SecurityConfiguration {
     public static final String IMAGES_URL = "/img/*";
     public static final String STYLESHEETS_URL = "/css/**";
     public static final String H2CONSOLE_URL = "/h2-console/**";
+    public static final String FAVICON_URL = "/favicon.ico";
     public static final String[] ANT_ENDPOINTS_WHITELIST = {
             H2CONSOLE_URL,
             STYLESHEETS_URL,
             IMAGES_URL,
+            FAVICON_URL,
     };
 
     @Autowired
@@ -62,11 +64,12 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-        var matchers = createAntPathRequestMatchers(ANT_ENDPOINTS_WHITELIST);
+        var antMatchers = createAntPathRequestMatchers(ANT_ENDPOINTS_WHITELIST);
+        var mvcMatchers = createMvcRequestMatchers(mvc, MVC_ENDPOINTS_WHITELIST);
         http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(matchers).permitAll()
-                        .requestMatchers(mvc.pattern(REGISTER_URL)).permitAll()
+                        .requestMatchers(antMatchers).permitAll()
+                        .requestMatchers(mvcMatchers).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -86,7 +89,7 @@ public class SecurityConfiguration {
                 .toArray(AntPathRequestMatcher[]::new);
     }
 
-    public MvcRequestMatcher[] createAntPathRequestMatchers(MvcRequestMatcher.Builder builder, String... patterns) {
+    public MvcRequestMatcher[] createMvcRequestMatchers(MvcRequestMatcher.Builder builder, String... patterns) {
         return Stream.of(patterns)
                 .map(p -> builder.pattern(p))
                 .toArray(MvcRequestMatcher[]::new);
