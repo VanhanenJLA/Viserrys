@@ -72,6 +72,11 @@ public class SecurityConfiguration {
                         .requestMatchers(mvcMatchers).permitAll()
                         .anyRequest().authenticated()
                 )
+                .headers(headers -> headers
+                        .frameOptions(frameOptionsConfig -> frameOptionsConfig
+                                .disable()))
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(antMatcher(H2CONSOLE_URL)))
                 .formLogin(form -> form
                         .loginPage(LOGIN_URL).permitAll()
                         .failureUrl(LOGIN_FAIL_URL).permitAll()
