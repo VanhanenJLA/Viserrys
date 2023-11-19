@@ -1,9 +1,9 @@
 
-package viserrys.Follow;
+package viserrys.follow;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import viserrys.Account.Account;
+import viserrys.account.Account;
 
 import java.time.LocalDateTime;
 

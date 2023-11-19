@@ -1,4 +1,4 @@
-package viserrys.Photo;
+package viserrys.photo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

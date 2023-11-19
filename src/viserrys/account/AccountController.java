@@ -1,16 +1,17 @@
-package viserrys.Account;
+package viserrys.account;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import viserrys.Auth.AuthService;
-import viserrys.Comment.CommentService;
-import viserrys.Photo.PhotoService;
-import viserrys.Reaction.ReactionService;
-import viserrys.Reaction.ReactionType;
-import viserrys.Tweet.Tweet;
-import viserrys.Tweet.TweetService;
+import viserrys.auth.AuthService;
+import viserrys.comment.CommentService;
+import viserrys.photo.PhotoService;
+import viserrys.reaction.ReactionService;
+import viserrys.reaction.ReactionType;
+import viserrys.tweet.Tweet;
+import viserrys.tweet.TweetService;
+import viserrys.follow.Follow;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +30,7 @@ class Tweets {
 @Controller
 public class AccountController {
 
+    private static final String ACTIVE_NAV_LINK = "activeNavLink";
     final AccountService accountService;
 
     final AuthService authService;
@@ -55,20 +57,20 @@ public class AccountController {
         this.reactionService = reactionService;
     }
 
-    private Account current() {
+    Account current() {
         return authService.getAuthenticatedAccount();
     }
 
     @GetMapping("/me")
-    private String me(Model model) {
-        model.addAttribute("activeNavLink", "me");
+    String me(Model model) {
+        model.addAttribute(ACTIVE_NAV_LINK, "me");
         var me = current().getUsername();
         return "redirect:/accounts/" + me;
     }
 
     @GetMapping("/my-photos")
-    private String myPhotos(Model model) {
-        model.addAttribute("activeNavLink", "my-photos");
+    String myPhotos(Model model) {
+        model.addAttribute(ACTIVE_NAV_LINK, "my-photos");
         return redirectMyPhotos();
     }
 
@@ -84,20 +86,20 @@ public class AccountController {
         return redirectMyPhotos();
     }
 
-    private String redirectMyPhotos() {
+    String redirectMyPhotos() {
         var me = current().getUsername();
         return "redirect:/accounts/" + me + "/photos";
     }
 
     @GetMapping("/accounts/{username}")
-    private String account(Model model, @PathVariable String username, @RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize) {
+    String account(Model model, @PathVariable String username, @RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize) {
 
         var account = accountService.accountRepository.findByUsername(username);
         var tweetsSent = tweetService.findAllBySender(account);
         var tweetsReceived = tweetService.findAllByRecipient(account);
         var tweets = new Tweets(tweetsSent, tweetsReceived);
         List<Account> following = account.following.stream().map(f -> f.getRecipient()).collect(Collectors.toList());
-        List<Account> followers = account.followers.stream().map(f -> f.getSender()).collect(Collectors.toList());
+        List<Account> followers = account.followers.stream().map(Follow::getSender).collect(Collectors.toList());
 
         var page = tweetService.findAllByRecipient(account, pageNumber, pageSize);
         var pageSizes = List.of(5, 10, 25, 50, 100);
@@ -118,8 +120,8 @@ public class AccountController {
     }
 
     @GetMapping("/others")
-    private String others(Model model) {
-        model.addAttribute("activeNavLink", "others");
+    String others(Model model) {
+        model.addAttribute(ACTIVE_NAV_LINK, "others");
         var accounts = accountService.getAccounts();
         var me = current();
         accounts.remove(me);
@@ -129,7 +131,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/follow")
-    private String follow(Model model, @PathVariable String username) throws Exception {
+    String follow(Model model, @PathVariable String username) throws Exception {
         var sender = current();
         var recipient = accountService.accountRepository.findByUsername(username);
         accountService.follow(sender, recipient);
@@ -137,7 +139,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/unfollow")
-    private String unfollow(Model model, @PathVariable String username) throws Exception {
+    String unfollow(Model model, @PathVariable String username) throws Exception {
         var sender = current();
         var recipient = accountService.accountRepository.findByUsername(username);
         accountService.unfollow(sender, recipient);
@@ -145,7 +147,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/tweet")
-    private String tweet(Model model, @PathVariable String username, @RequestParam String content) throws Exception {
+    String tweet(Model model, @PathVariable String username, @RequestParam String content) throws Exception {
         var sender = current();
         var recipient = accountService.accountRepository.findByUsername(username);
         tweetService.tweet(sender, recipient, LocalDateTime.now(), content);
@@ -153,7 +155,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/photos/{id}/comment")
-    private String comment(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam String content) throws Exception {
+    String comment(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam String content) throws Exception {
         var sender = current();
         var photo = photoService.photoRepository.getOne(id);
         var comment = commentService.comment(sender, photo, LocalDateTime.now(), content);
@@ -162,7 +164,7 @@ public class AccountController {
     }
 
     @GetMapping("/accounts/{username}/photos")
-    private String photos(Model model, @PathVariable String username) {
+    String photos(Model model, @PathVariable String username) {
         var account = accountService.accountRepository.findByUsername(username);
         var currentAccount = current();
         model.addAttribute("account", account);
@@ -175,7 +177,7 @@ public class AccountController {
     }
 
     @GetMapping("/accounts/{username}/photos/{photoId}")
-    private String photos(Model model, @PathVariable String username, @PathVariable long photoId, @RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize) {
+    String photos(Model model, @PathVariable String username, @PathVariable long photoId, @RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize) {
         var account = accountService.accountRepository.findByUsername(username);
         var currentAccount = current();
         var photo = photoService.photoRepository.findById(photoId).get();
@@ -198,7 +200,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/photos")
-    private String uploadPhoto(@PathVariable String username, @RequestParam MultipartFile file, @RequestParam String description) throws Exception {
+    String uploadPhoto(@PathVariable String username, @RequestParam MultipartFile file, @RequestParam String description) throws Exception {
 
         var uploader = authService.getAuthenticatedAccount();
 
@@ -215,7 +217,10 @@ public class AccountController {
 
     @PostMapping("accounts/{username}/photos/{id}/react")
     public String like(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam ReactionType reactionType) throws Exception {
-        var photo = photoService.photoRepository.getOne(id);
+        var photo = photoService
+                .photoRepository
+                .findById(id)
+                .orElseThrow(() -> new Error("Can't react to a non-existent photo."));
 
         reactionService.react(current(), photo, LocalDateTime.now(), reactionType);
         return "redirect:/accounts/{username}/photos";

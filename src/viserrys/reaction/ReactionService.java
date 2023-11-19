@@ -1,9 +1,9 @@
-package viserrys.Reaction;
+package viserrys.reaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import viserrys.Account.Account;
-import viserrys.Photo.Photo;
+import viserrys.account.Account;
+import viserrys.photo.Photo;
 
 import java.time.LocalDateTime;
 import java.util.List;

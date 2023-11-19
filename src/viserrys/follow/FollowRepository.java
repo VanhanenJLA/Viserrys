@@ -1,7 +1,7 @@
-package viserrys.Follow;
+package viserrys.follow;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import viserrys.Account.Account;
+import viserrys.account.Account;
 
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {

@@ -1,9 +1,9 @@
-package viserrys.Tweet;
+package viserrys.tweet;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import viserrys.Account.Account;
+import viserrys.account.Account;
 
 import java.util.List;
 

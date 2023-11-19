@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import viserrys.Account.AccountRepository;
+import viserrys.account.AccountRepository;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -24,6 +24,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("No account found for username: " + username);
 
         return new User(account.getUsername(), account.getPassword(), true, true, true, true,
-                Arrays.asList(new SimpleGrantedAuthority("USER")));
+                List.of(new SimpleGrantedAuthority("USER")));
     }
 }

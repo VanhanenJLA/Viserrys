@@ -1,12 +1,12 @@
 
-package viserrys.Follow;
+package viserrys.follow;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-import viserrys.Account.Account;
+import viserrys.account.Account;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

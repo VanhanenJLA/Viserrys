@@ -1,8 +1,8 @@
-package viserrys.Reaction;
+package viserrys.reaction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import viserrys.Account.Account;
-import viserrys.Photo.Photo;
+import viserrys.account.Account;
+import viserrys.photo.Photo;
 
 public interface ReactionRepository extends JpaRepository<Reaction, Long> {
   Reaction findBySenderAndTarget(Account sender, Photo target);

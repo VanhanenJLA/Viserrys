@@ -1,11 +1,11 @@
-package viserrys.Photo;
+package viserrys.photo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import viserrys.Account.Account;
-import viserrys.Comment.Comment;
-import viserrys.Reaction.Reaction;
+import viserrys.account.Account;
+import viserrys.comment.Comment;
+import viserrys.reaction.Reaction;
 
 import java.util.ArrayList;
 

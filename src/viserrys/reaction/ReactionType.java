@@ -1,4 +1,4 @@
-package viserrys.Reaction;
+package viserrys.reaction;
 
 public enum ReactionType {
 
@@ -12,7 +12,7 @@ public enum ReactionType {
 
   public final String emoji;
 
-  private ReactionType(String emoji) {
+  ReactionType(String emoji) {
     this.emoji = emoji;
   }
 }

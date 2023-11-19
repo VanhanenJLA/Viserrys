@@ -1,12 +1,12 @@
-package viserrys.Reaction;
+package viserrys.reaction;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-import viserrys.Account.Account;
-import viserrys.Photo.Photo;
+import viserrys.account.Account;
+import viserrys.photo.Photo;
 
 import jakarta.persistence.*;
 import javax.validation.constraints.NotNull;

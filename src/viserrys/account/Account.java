@@ -1,4 +1,4 @@
-package viserrys.Account;
+package viserrys.account;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-import viserrys.Follow.Follow;
-import viserrys.Photo.Photo;
+import viserrys.follow.Follow;
+import viserrys.photo.Photo;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;

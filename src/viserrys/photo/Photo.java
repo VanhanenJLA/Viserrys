@@ -1,4 +1,4 @@
-package viserrys.Photo;
+package viserrys.photo;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,9 +9,9 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-import viserrys.Account.Account;
-import viserrys.Comment.Comment;
-import viserrys.Reaction.Reaction;
+import viserrys.account.Account;
+import viserrys.comment.Comment;
+import viserrys.reaction.Reaction;
 
 import java.util.ArrayList;
 import java.util.List;

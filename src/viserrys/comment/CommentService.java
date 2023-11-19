@@ -1,4 +1,4 @@
-package viserrys.Comment;
+package viserrys.comment;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -6,8 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import viserrys.Account.Account;
-import viserrys.Photo.Photo;
+import viserrys.account.Account;
+import viserrys.photo.Photo;
 
 import java.time.LocalDateTime;
 

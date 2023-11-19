@@ -1,11 +1,12 @@
-package viserrys.Tweet;
+package viserrys.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-import viserrys.Account.Account;
+import viserrys.account.Account;
+import viserrys.photo.Photo;
 
 import jakarta.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -18,14 +19,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet> {
+public class Comment extends AbstractPersistable<Long> implements Comparable<Comment> {
 
     @NotNull
+    @ManyToOne
     private Account sender;
 
     @NotNull
-    private Account recipient;
+    @ManyToOne
+    private Photo target;
 
+    @NotNull
     private LocalDateTime timestamp;
 
     @Lob // Doesn't work for Heroku.
@@ -35,7 +39,7 @@ public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet
     private String content;
 
     @Override
-    public int compareTo(Tweet o) {
+    public int compareTo(Comment o) {
         if (timestamp.isAfter(o.timestamp))
             return -1;
 

@@ -1,7 +1,7 @@
-package viserrys.Photo;
+package viserrys.photo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import viserrys.Account.Account;
+import viserrys.account.Account;
 
 import java.util.List;
 
