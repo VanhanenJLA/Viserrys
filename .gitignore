@@ -43,3 +43,5 @@ atlassian-ide-plugin.xml
 .factorypath
 
 /logs/
+/viserrys.log
+/viserrys.trace.db

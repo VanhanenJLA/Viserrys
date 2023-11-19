@@ -21,11 +21,9 @@ import java.time.LocalDateTime;
 public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet> {
 
     @NotNull
-    @ManyToOne
     private Account sender;
 
     @NotNull
-    @ManyToOne
     private Account recipient;
 
     private LocalDateTime timestamp;

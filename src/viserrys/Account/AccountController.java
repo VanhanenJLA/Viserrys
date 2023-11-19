@@ -41,7 +41,12 @@ public class AccountController {
 
     final ReactionService reactionService;
 
-    public AccountController(AccountService accountService, AuthService authService, PhotoService photoService, TweetService tweetService, CommentService commentService, ReactionService reactionService) {
+    public AccountController(AccountService accountService,
+                             AuthService authService,
+                             PhotoService photoService,
+                             TweetService tweetService,
+                             CommentService commentService,
+                             ReactionService reactionService) {
         this.accountService = accountService;
         this.authService = authService;
         this.photoService = photoService;
