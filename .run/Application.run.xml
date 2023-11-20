@@ -2,6 +2,7 @@
   <configuration default="false" name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <module name="Viserrys" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="viserrys.Application" />
+    <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateClassesAndTriggerFile" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
