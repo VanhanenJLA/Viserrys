@@ -11,9 +11,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class ReactionService {
-
-  @Autowired
-  ReactionRepository reactionRepository;
+  final ReactionRepository reactionRepository;
+  public ReactionService(ReactionRepository reactionRepository) {
+    this.reactionRepository = reactionRepository;
+  }
 
   public Reaction react(Account sender, Photo target, LocalDateTime timestamp, ReactionType reactionType)
       throws Exception {
@@ -35,9 +36,9 @@ public class ReactionService {
     return reactionRepository.findBySenderAndTargetAndReactionType(sender, target, reactionType) != null;
   }
 
-//  public int countReactions(Photo target, ReactionType reactionType) {
-//    return target.getReactions().stream().filter(r -> r.getReactionType() == reactionType).collect(Collectors.toList())
-//        .size();
-//  }
+  public int countReactions(Photo target, ReactionType reactionType) {
+    return reactionRepository
+            .countReactionsByTargetAndReactionType(target, reactionType);
+  }
 
 }

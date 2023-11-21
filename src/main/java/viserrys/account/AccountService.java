@@ -4,11 +4,11 @@ import lombok.SneakyThrows;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import viserrys.follow.Follow;
+import viserrys.follow.FollowRepository;
 import viserrys.follow.FollowService;
 import viserrys.photo.PhotoService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -25,7 +25,8 @@ public class AccountService {
         this.brcypt = passwordEncoder;
     }
 
-    public Account createAccount(String username, String password) throws Exception {
+    @SneakyThrows
+    public Account createAccount(String username, String password) {
 
         if (accountRepository.findByUsername(username).isPresent())
             throw new Exception("Username taken.");
@@ -34,12 +35,6 @@ public class AccountService {
         account.setUsername(username);
         account.setPassword(brcypt.encode(password));
 
-        return accountRepository.save(account);
-    }
-
-    public Account createAccount(Account account) {
-        var password = account.getPassword();
-        account.setPassword(brcypt.encode(password));
         return accountRepository.save(account);
     }
 
@@ -54,22 +49,22 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
-    public Follow follow(Account sender, Account recipient) throws Exception {
+    public Follow follow(Account sender, Account recipient) {
         return followService.follow(sender, recipient);
     }
 
-    public void unfollow(Account sender, Account recipient) throws Exception {
+    public void unfollow(Account sender, Account recipient) {
         followService.unfollow(sender, recipient);
     }
 
     public Account setProfilePicture(Account account, long photoId) {
-        var photo = photoService.photoRepository.getOne(photoId);
+        var photo = photoService.getPhoto(photoId);
         account.profilePicture = photo;
         return accountRepository.save(account);
     }
 
     public void deletePicture(Account current, long photoId) {
-        photoService.delete(photoId);
+        photoService.deleteBy(photoId);
     }
 
 }

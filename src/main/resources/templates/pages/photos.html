@@ -6,95 +6,98 @@
 
 <body>
 
-  <navbar th:replace="layout/navbar :: navbar"></navbar>
+<navbar th:replace="layout/navbar :: navbar"></navbar>
 
-  <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s photos|)"></jumbotron>
+<jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s photos|)"></jumbotron>
 
-  <div class="container">
+<div class="container">
 
-    <div th:if="${#lists.isEmpty(account.photos) && account != currentAccount}">
-      <div class="alert alert-primary mb-3"
-           role="alert">User hasn't uploaded any images!</div>
+    <div th:if="${#lists.isEmpty(photos) && account != currentAccount}">
+        <div class="alert alert-primary mb-3"
+             role="alert">User hasn't uploaded any images!
+        </div>
     </div>
 
-    <div th:if="${account == currentAccount && currentAccount.photos.size() < 5}"
+    <div th:if="${account == currentAccount && photos.size() < 5}"
          class="card mb-4">
-      <add-photo th:replace="components/add-photo.html :: add-photo"></add-photo>
+        <add-photo th:replace="components/add-photo.html :: add-photo"></add-photo>
     </div>
 
-    <div th:each="photo : ${account.photos}">
-      <div class="mt-5">
-        <div class="row">
+    <div th:each="photo : ${photos}">
+        <div class="mt-5">
+            <div class="row">
 
-          <div class="col-md-7">
+                <div class="col-md-7">
 
-            <a th:href="@{|/accounts/${account.username}/photos/${photo.id}|}">
-              <img class="img-thumbnail"
-                   th:src="@{|/photos/${photo.id}/content|}">
-            </a>
+                    <a th:href="@{|/accounts/${account.username}/photos/${photo.id}|}">
+                        <img class="img-thumbnail"
+                             th:src="@{|/photos/${photo.id}/content|}">
+                    </a>
 
-            <!-- Photo owner actions -->
-            <div th:if="${currentAccount == account}">
-              <form th:if="${photo != currentAccount.profilePicture}"
-                    method="POST"
-                    th:action="@{/my-photos/set-profile-picture}">
+                    <!-- Photo owner actions -->
+                    <div th:if="${currentAccount == account}">
+                        <form th:if="${photo != currentAccount.profilePicture}"
+                              method="POST"
+                              th:action="@{/my-photos/set-profile-picture}">
 
-                <button type="submit"
-                        class="btn btn-block btn-outline-primary"
-                        th:value="${photo.id}"
-                        name="photoId">
-                  Set as profile picture
-                </button>
-              </form>
+                            <button type="submit"
+                                    class="btn btn-block btn-outline-primary"
+                                    th:value="${photo.id}"
+                                    name="photoId">
+                                Set as profile picture
+                            </button>
+                        </form>
 
-              <form th:if="${currentAccount == account}"
-                    method="POST"
-                    th:action="@{/my-photos/delete-picture}">
+                        <form th:if="${currentAccount == account}"
+                              method="POST"
+                              th:action="@{/my-photos/delete-picture}">
 
-                <button id="delete-picture-button"
-                        class="btn btn-block btn-outline-danger"
-                        type="submit"
-                        th:value="${photo.id}"
-                        name="photoId"
-                        data-content='<div class="btn-group" role="group"><button type="button" class="btn btn-secondary">Yes</button><button type="button" class="btn btn-secondary">No</button></div>'
-                        data-toggle="popover"
-                        data-placement="top"
-                        title="Delete this picture?">
-                  Delete
-                </button>
+                            <button id="delete-picture-button"
+                                    class="btn btn-block btn-outline-danger"
+                                    type="submit"
+                                    th:value="${photo.id}"
+                                    name="photoId"
+                                    data-content='<div class="btn-group" role="group"><button type="button" class="btn btn-secondary">Yes</button><button type="button" class="btn btn-secondary">No</button></div>'
+                                    data-toggle="popover"
+                                    data-placement="top"
+                                    title="Delete this picture?">
+                                Delete
+                            </button>
 
-              </form>
+                        </form>
+
+                    </div>
+
+                    <reactions th:replace="components/reactions :: reactions"></reactions>
+
+                    <div class="pt-2">
+                        <h4>Description</h4>
+                        <p th:text="${photo.description}"></p>
+                    </div>
+
+                </div>
+
+                <div class="col-md-5">
+                    <h4>Comments</h4>
+                    <!-- TODO: Fix-->
+                    <!--            <p th:if="${#lists.isEmpty(photo.comments)}">Photo hasn't been commented yet.</p>-->
+
+                    <button data-toggle="collapse"
+                            th:data-target="|#new-comment-${photo.id}|"
+                            class="btn btn-block btn-outline-primary mb-2">Leave a comment!
+                    </button>
+
+                    <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>
+
+                    <most-recent-comments
+                            th:replace="components/most-recent-comments.html :: most-recent-comments(max=5)">
+                    </most-recent-comments>
+
+                </div>
 
             </div>
-
-            <reactions th:replace="components/reactions :: reactions"></reactions>
-
-            <div class="pt-2">
-              <h4>Description</h4>
-              <p th:text="${photo.description}"></p>
-            </div>
-
-          </div>
-
-          <div class="col-md-5">
-            <h4>Comments</h4>
-            <p th:if="${#lists.isEmpty(photo.comments)}">Photo hasn't been commented yet.</p>
-
-            <button data-toggle="collapse"
-                    th:data-target="|#new-comment-${photo.id}|"
-                    class="btn btn-block btn-outline-primary mb-2">Leave a comment!</button>
-
-            <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>
-
-            <most-recent-comments
-                                  th:replace="components/most-recent-comments.html :: most-recent-comments(max=5)">
-            </most-recent-comments>
-
-          </div>
 
         </div>
-
-      </div>
 
     </div>
 
@@ -104,25 +107,25 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bs-custom-file-input/1.1.1/bs-custom-file-input.min.js"></script>
 <script>
-  window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', () => {
 
-    bsCustomFileInput.init();
-    const del = document.getElementById('delete-picture-button');
-    if (del)
-      del.onclick = () => {
-        if (!confirm("Are you sure you want to delete this photo?"))
-          event.preventDefault();
-      };
+        bsCustomFileInput.init();
+        const del = document.getElementById('delete-picture-button');
+        if (del)
+            del.onclick = () => {
+                if (!confirm("Are you sure you want to delete this photo?"))
+                    event.preventDefault();
+            };
 
-    const removalPopover = $('[data-toggle="popover"]');
-    removalPopover.popover();
+        const removalPopover = $('[data-toggle="popover"]');
+        removalPopover.popover();
 
-  });
+    });
 </script>
 
 <script src="https://MomentJS.com/downloads/moment.js"></script>
 <script>
-  // If it works, it works. 🚀
-  Array.from(document.getElementsByClassName('timestamp'))
-    .forEach(t => t.textContent = moment(t.textContent).fromNow());
+    // If it works, it works. 🚀
+    Array.from(document.getElementsByClassName('timestamp'))
+        .forEach(t => t.textContent = moment(t.textContent).fromNow());
 </script>

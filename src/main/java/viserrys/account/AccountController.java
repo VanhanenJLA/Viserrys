@@ -1,6 +1,6 @@
 package viserrys.account;
 
-import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import viserrys.auth.AuthService;
 import viserrys.comment.CommentService;
 import viserrys.follow.Follow;
+import viserrys.follow.FollowService;
 import viserrys.photo.PhotoService;
 import viserrys.reaction.ReactionService;
 import viserrys.reaction.ReactionType;
@@ -48,24 +49,26 @@ public class AccountController {
     final TweetService tweetService;
     final CommentService commentService;
     final ReactionService reactionService;
+    private final FollowService followService;
 
     public AccountController(AccountService accountService,
                              AuthService authService,
                              PhotoService photoService,
                              TweetService tweetService,
                              CommentService commentService,
-                             ReactionService reactionService) {
+                             ReactionService reactionService, 
+                             FollowService followService) {
         this.accountService = accountService;
         this.authService = authService;
         this.photoService = photoService;
         this.tweetService = tweetService;
         this.commentService = commentService;
         this.reactionService = reactionService;
+        this.followService = followService;
     }
 
     Account current() {
-        return authService
-                .getAuthenticatedAccount();
+        return authService.getAuthenticatedAccount();
     }
 
     @GetMapping("/me")
@@ -107,17 +110,14 @@ public class AccountController {
         var account = accountService.accountRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new Exception("User not found: " + username));
-
+        var current = current();
+        var isFollowing = followService.isFollowing(current, account);
+        
         var page = tweetService.findAllByRecipient(account, pageNumber, pageSize);
-        var pageSizes = List.of(5, 10, 25, 50, 100);
-        var maxPages = Math.min(page.getTotalPages() - 1, 10);
+        doVoodoo(model, pageSize, page);
 
-        model.addAttribute("page", page);
-        model.addAttribute("pageSizes", pageSizes);
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("maxPages", maxPages);
-
-        model.addAttribute("currentAccount", current());
+        model.addAttribute("isFollowing", isFollowing);
+        model.addAttribute("currentAccount", current);
         model.addAttribute("account", account);
         model.addAttribute("tweets", new Tweets(List.of(), List.of()));
         model.addAttribute("follows", new Follows(List.of(), List.of()));
@@ -125,6 +125,16 @@ public class AccountController {
         model.addAttribute("view", "profile");
 
         return "pages/account";
+    }
+
+    private static <T> void doVoodoo(Model model, int pageSize, Page<T> page) {
+        var pageSizes = List.of(5, 10, 25, 50, 100);
+        var maxPages = Math.min(page.getTotalPages() - 1, 10);
+
+        model.addAttribute("page", page);
+        model.addAttribute("pageSizes", pageSizes);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("maxPages", maxPages);
     }
 
     @GetMapping("/others")
@@ -135,11 +145,13 @@ public class AccountController {
         accounts.remove(me);
         model.addAttribute("accounts", accounts);
         model.addAttribute("currentAccount", me);
+        model.addAttribute("followService", followService);
+        model.addAttribute("photoService", photoService);
         return "pages/others";
     }
 
     @PostMapping("/accounts/{username}/follow")
-    String follow(Model model, @PathVariable String username) throws Exception {
+    String follow(Model model, @PathVariable String username) {
         var sender = current();
         var recipient = accountService.getAccount(username);
         accountService.follow(sender, recipient);
@@ -147,7 +159,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/unfollow")
-    String unfollow(Model model, @PathVariable String username) throws Exception {
+    String unfollow(Model model, @PathVariable String username) {
         var sender = current();
         var recipient = accountService.getAccount(username);
         accountService.unfollow(sender, recipient);
@@ -155,7 +167,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/tweet")
-    String tweet(Model model, @PathVariable String username, @RequestParam String content) throws Exception {
+    String tweet(Model model, @PathVariable String username, @RequestParam String content) {
         var sender = current();
         var recipient = accountService.getAccount(username);
         tweetService.tweet(sender, recipient, LocalDateTime.now(), content);
@@ -163,9 +175,9 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/{username}/photos/{id}/comment")
-    String comment(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam String content) throws Exception {
+    String comment(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam String content) {
         var sender = current();
-        var photo = photoService.photoRepository.getOne(id);
+        var photo = photoService.getPhoto(id);
         var comment = commentService.comment(sender, photo, Instant.now(), content);
         return "redirect:/accounts/{username}/photos";
     }
@@ -174,22 +186,28 @@ public class AccountController {
     String photos(Model model, @PathVariable String username) {
         var account = accountService.getAccount(username);
         var currentAccount = current();
+        var photos = photoService.getPhotosByUploader(account);
+
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", currentAccount);
         model.addAttribute("reactionTypes", ReactionType.values());
-        model.addAttribute("reactionService", reactionService);
+        model.addAttribute("photos", photos);
+
         model.addAttribute("view", "photos");
+        model.addAttribute("reactionService", reactionService);
 
         return "pages/photos";
     }
 
     @GetMapping("/accounts/{username}/photos/{photoId}")
-    String photos(Model model, @PathVariable String username, @PathVariable long photoId, @RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize) {
+    String photos(Model model,
+                  @PathVariable String username,
+                  @PathVariable long photoId,
+                  @RequestParam(defaultValue = "0") int pageNumber,
+                  @RequestParam(defaultValue = "5") int pageSize) {
         var account = accountService.getAccount(username);
         var currentAccount = current();
-        var photo = photoService.photoRepository
-                .findById(photoId)
-                .get();
+        var photo = photoService.getPhoto(photoId);
         model.addAttribute("photo", photo);
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", currentAccount);
@@ -198,21 +216,16 @@ public class AccountController {
         model.addAttribute("view", "photos");
 
         var page = commentService.findAllByTargetId(photoId, pageNumber, pageSize);
-        var pageSizes = List.of(5, 10, 25, 50, 100);
-        var maxPages = Math.min(page.getTotalPages() - 1, 10);
-        model.addAttribute("page", page);
-        model.addAttribute("pageSizes", pageSizes);
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("maxPages", maxPages);
+        doVoodoo(model, pageSize, page);
 
         return "pages/photo";
     }
 
     @PostMapping("/accounts/{username}/photos")
-    String uploadPhoto(@PathVariable String username, @RequestParam MultipartFile file, @RequestParam String description) throws Exception {
-
+    String uploadPhoto(@PathVariable String username,
+                       @RequestParam MultipartFile file,
+                       @RequestParam String description) throws Exception {
         var uploader = authService.getAuthenticatedAccount();
-
         photoService.uploadPhoto(file, description, uploader);
         return "redirect:/accounts/{username}/photos";
     }
@@ -221,17 +234,17 @@ public class AccountController {
     @ResponseBody
     public byte[] profilePicture(@PathVariable String username) {
         var account = accountService.getAccount(username);
-//        return account.getProfilePicture().getContent();
-        return null;
+        return account
+                .getProfilePicture()
+                .getContent();
     }
 
     @PostMapping("accounts/{username}/photos/{id}/react")
-    public String like(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam ReactionType reactionType) throws Exception {
-        var photo = photoService
-                .photoRepository
-                .findById(id)
-                .orElseThrow(() -> new Error("Can't react to a non-existent photo."));
-
+    public String like(Model model,
+                       @PathVariable String username,
+                       @PathVariable Long id,
+                       @RequestParam ReactionType reactionType) throws Exception {
+        var photo = photoService.getPhoto(id);
         reactionService.react(current(), photo, LocalDateTime.now(), reactionType);
         return "redirect:/accounts/{username}/photos";
     }

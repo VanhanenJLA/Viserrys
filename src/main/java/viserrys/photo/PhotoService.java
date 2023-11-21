@@ -1,30 +1,42 @@
 package viserrys.photo;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import viserrys.account.Account;
 
+import java.util.List;
+
+import static viserrys.FileType.ensureSupportedFileType;
+
 @Service
 public class PhotoService {
 
-    @Autowired
-    public PhotoRepository photoRepository;
+    final PhotoRepository photoRepository;
+
+    public PhotoService(PhotoRepository photoRepository) {
+        this.photoRepository = photoRepository;
+    }
 
     public Photo uploadPhoto(MultipartFile file, String description, Account uploader) throws Exception {
-
         var type = file.getContentType();
-
-        if (!type.equals("image/jpeg"))
-            if (!type.equals("image/png"))
-                throw new Exception("Unsupported file type: " + type);
+        ensureSupportedFileType(type);
         var photo = new Photo(uploader, description, file.getBytes());
         return photoRepository.save(photo);
     }
 
-    public void delete(Long id) {
-        var photo = photoRepository.getOne(id);
-        photoRepository.delete(photo);
+    @SneakyThrows
+    public Photo getPhoto(Long id) {
+        return photoRepository
+                .findById(id)
+                .orElseThrow(() -> new Exception("Photo not found: " + id));
+    }
+    
+    public void deleteBy(Long id) {
+        photoRepository.deleteById(id);
     }
 
+    public List<Photo> getPhotosByUploader(Account uploader) {
+        return photoRepository.findAllByUploader(uploader);
+    }
 }

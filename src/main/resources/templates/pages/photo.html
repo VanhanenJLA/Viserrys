@@ -6,55 +6,56 @@
 
 <body>
 
-  <navbar th:replace="layout/navbar :: navbar"></navbar>
+<navbar th:replace="layout/navbar :: navbar"></navbar>
 
-  <main role="main">
+<main role="main">
 
     <!-- <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s photo: ${photo.id}|)">
     </jumbotron> -->
 
     <div class="container">
 
-      <div class="col-lg-8 offset-lg-2 mt-5">
-        <img class="img-thumbnail"
-             th:src="@{|/photos/${photo.id}/content|}">
-      </div>
-
-      <div class="col-lg-8 offset-lg-2">
-
-        <reactions th:replace="components/reactions :: reactions"></reactions>
-
-        <div class="pt-2">
-          <h4>Description</h4>
-          <p th:text="${photo.description}"></p>
+        <div class="col-lg-8 offset-lg-2 mt-5">
+            <img class="img-thumbnail"
+                 th:src="@{|/photos/${photo.id}/content|}">
         </div>
 
-      </div>
+        <div class="col-lg-8 offset-lg-2">
 
-      <div class="col-lg-8 offset-lg-2">
-        <h4>Comments</h4>
+            <reactions th:replace="components/reactions :: reactions"></reactions>
 
-        <button data-toggle="collapse"
-                th:data-target="|#new-comment-${photo.id}|"
-                class="btn btn-block btn-outline-primary mb-2">Leave a comment!</button>
+            <div class="pt-2">
+                <h4>Description</h4>
+                <p th:text="${photo.description}"></p>
+            </div>
 
-        <p th:if="${#lists.isEmpty(photo.comments)}">Photo has no comments yet.</p>
-        <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>
-
-        <div th:each="comment : ${page}">
-          <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
         </div>
 
-        <pagination th:replace="components/pagination.html :: pagination(page=${page})"></pagination>
+        <div class="col-lg-8 offset-lg-2">
+            <h4>Comments</h4>
 
-      </div>
+            <button data-toggle="collapse"
+                    th:data-target="|#new-comment-${photo.id}|"
+                    class="btn btn-block btn-outline-primary mb-2">Leave a comment!
+            </button>
+
+            <p th:if="${#lists.isEmpty(page)}">Photo has no comments yet.</p>
+            <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>
+
+            <div th:each="comment : ${page}">
+                <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
+            </div>
+
+            <pagination th:replace="components/pagination.html :: pagination(page=${page})"></pagination>
+
+        </div>
 
 
     </div>
 
-  </main>
+</main>
 
-  <footer th:replace="layout/footer :: footer"></footer>
+<footer th:replace="layout/footer :: footer"></footer>
 
 </body>
 
@@ -62,7 +63,7 @@
 
 <script src="https://MomentJS.com/downloads/moment.js"></script>
 <script>
-  // If it works, it works. 🚀
-  Array.from(document.getElementsByClassName('timestamp'))
-    .forEach(t => t.textContent = moment(t.textContent).fromNow());
+    // If it works, it works. 🚀
+    Array.from(document.getElementsByClassName('timestamp'))
+        .forEach(t => t.textContent = moment(t.textContent).fromNow());
 </script>

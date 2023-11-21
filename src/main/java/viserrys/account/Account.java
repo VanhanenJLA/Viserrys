@@ -4,7 +4,10 @@ package viserrys.account;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import viserrys.photo.Photo;
 
@@ -25,7 +28,7 @@ public class Account extends AbstractPersistable<Long> {
 
     @NotEmpty
     String password;
-    
+
     @OneToOne
     Photo profilePicture;
 

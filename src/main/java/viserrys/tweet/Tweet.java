@@ -23,14 +23,14 @@ public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet
     @NotNull
     @ManyToOne
     private Account sender;
-
+    
     @NotNull
     @ManyToOne
     private Account recipient;
-
+    
     private LocalDateTime timestamp;
-
-    @Lob // Doesn't work for Heroku.
+    
+    @Lob
     @Column
     @NotEmpty
     @Size(min = 1, max = 150)

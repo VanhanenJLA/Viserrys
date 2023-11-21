@@ -1,24 +1,24 @@
 <follow-unfollow>
 
-  <form th:if="${!currentAccount.isFollowing(account)}"
-        th:action="@{|/accounts/${account.username}/follow|}"
-        method="POST">
-    <button class="btn btn-block btn-outline-success"
-            th:classappend="${isRound} ? 'btn-sm btn-round' : ''"
-            type="submit">
-      👀 Follow
-    </button>
+    <form th:if="${!isFollowing}"
+          th:action="@{|/accounts/${account.username}/follow|}"
+          method="POST">
+        <button class="btn btn-block btn-outline-success"
+                th:classappend="${isRound} ? 'btn-sm btn-round' : ''"
+                type="submit">
+            👀 Follow
+        </button>
 
-  </form>
+    </form>
 
-  <form th:if="${currentAccount.isFollowing(account)}"
-        th:action="@{|/accounts/${account.username}/unfollow|}"
-        method="POST">
-    <button class="btn btn-block btn-outline-secondary"
-            th:classappend="${isRound} ? 'btn-sm btn-round' : ''"
-            type="submit">
-      👋 Unfollow
-    </button>
-  </form>
+    <form th:if="${isFollowing}"
+          th:action="@{|/accounts/${account.username}/unfollow|}"
+          method="POST">
+        <button class="btn btn-block btn-outline-secondary"
+                th:classappend="${isRound} ? 'btn-sm btn-round' : ''"
+                type="submit">
+            👋 Unfollow
+        </button>
+    </form>
 
 </follow-unfollow>

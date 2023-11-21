@@ -9,7 +9,6 @@ import viserrys.auth.AuthService;
 public class DefaultController {
 
     final AuthService authService;
-
     public DefaultController(AuthService authService) {
         this.authService = authService;
     }
