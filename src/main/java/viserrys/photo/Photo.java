@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import viserrys.account.Account;
 
-import static viserrys.Constants.MB;
+import static viserrys.common.Constants.MB;
 
 @Entity
 @Getter

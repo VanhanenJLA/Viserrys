@@ -11,7 +11,8 @@ import jakarta.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -28,7 +29,7 @@ public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet
     @ManyToOne
     private Account recipient;
     
-    private LocalDateTime timestamp;
+    private Instant timestamp;
     
     @Lob
     @Column

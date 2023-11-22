@@ -1,10 +1,11 @@
-package viserrys;
+package viserrys.auth;
 
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,7 +16,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import java.util.stream.Stream;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-import static viserrys.Constants.*;
+import static viserrys.common.Constants.*;
 
 @Configuration
 @EnableWebSecurity
@@ -42,8 +43,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers
-                        .frameOptions(frameOptionsConfig -> frameOptionsConfig
-                                .disable()))
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(antMatcher(H2CONSOLE_URL)))
                 .formLogin(form -> form

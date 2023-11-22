@@ -14,8 +14,9 @@ public class DefaultController {
     }
 
     @GetMapping("*")
-    public String home(Model model) {
-        if (authService.getAuthenticatedAccount() == null)
+    public String home() {
+        var currentAccount = authService.getAuthenticatedAccount();
+        if (currentAccount == null)
             return "redirect:/login";
         return "redirect:/me";
     }

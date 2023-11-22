@@ -1,4 +1,4 @@
-package viserrys;
+package viserrys.photo;
 
 import java.util.EnumSet;
 

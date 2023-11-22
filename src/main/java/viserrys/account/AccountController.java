@@ -7,37 +7,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import viserrys.auth.AuthService;
 import viserrys.comment.CommentService;
-import viserrys.follow.Follow;
 import viserrys.follow.FollowService;
+import viserrys.follow.Follows;
 import viserrys.photo.PhotoService;
 import viserrys.reaction.ReactionService;
 import viserrys.reaction.ReactionType;
-import viserrys.tweet.Tweet;
 import viserrys.tweet.TweetService;
+import viserrys.tweet.Tweets;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
-
-class Tweets {
-    public List<Tweet> sent;
-    public List<Tweet> received;
-
-    public Tweets(List<Tweet> sent, List<Tweet> received) {
-        this.sent = sent;
-        this.received = received;
-    }
-}
-
-class Follows {
-    public List<Follow> sent;
-    public List<Follow> received;
-
-    public Follows(List<Follow> sent, List<Follow> received) {
-        this.sent = sent;
-        this.received = received;
-    }
-}
 
 @Controller
 public class AccountController {
@@ -56,7 +36,7 @@ public class AccountController {
                              PhotoService photoService,
                              TweetService tweetService,
                              CommentService commentService,
-                             ReactionService reactionService, 
+                             ReactionService reactionService,
                              FollowService followService) {
         this.accountService = accountService;
         this.authService = authService;
@@ -65,6 +45,16 @@ public class AccountController {
         this.commentService = commentService;
         this.reactionService = reactionService;
         this.followService = followService;
+    }
+
+    private static <T> void doVoodoo(Model model, int pageSize, Page<T> page) {
+        var pageSizes = List.of(5, 10, 25, 50, 100);
+        var maxPages = Math.min(page.getTotalPages() - 1, 10);
+
+        model.addAttribute("page", page);
+        model.addAttribute("pageSizes", pageSizes);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("maxPages", maxPages);
     }
 
     Account current() {
@@ -112,29 +102,29 @@ public class AccountController {
                 .orElseThrow(() -> new Exception("User not found: " + username));
         var current = current();
         var isFollowing = followService.isFollowing(current, account);
-        
+
+        var follows = new Follows(
+                followService.findAllBySender(account),
+                followService.findAllByRecipient(account)
+        );
+
+        var tweets = new Tweets(
+                tweetService.findAllBySender(account),
+                tweetService.findAllByRecipient(account)
+        );
+
         var page = tweetService.findAllByRecipient(account, pageNumber, pageSize);
         doVoodoo(model, pageSize, page);
 
         model.addAttribute("isFollowing", isFollowing);
         model.addAttribute("currentAccount", current);
         model.addAttribute("account", account);
-        model.addAttribute("tweets", new Tweets(List.of(), List.of()));
-        model.addAttribute("follows", new Follows(List.of(), List.of()));
+        model.addAttribute("tweets", tweets);
+        model.addAttribute("follows", follows);
         model.addAttribute("photos", List.of());
         model.addAttribute("view", "profile");
 
         return "pages/account";
-    }
-
-    private static <T> void doVoodoo(Model model, int pageSize, Page<T> page) {
-        var pageSizes = List.of(5, 10, 25, 50, 100);
-        var maxPages = Math.min(page.getTotalPages() - 1, 10);
-
-        model.addAttribute("page", page);
-        model.addAttribute("pageSizes", pageSizes);
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("maxPages", maxPages);
     }
 
     @GetMapping("/others")
@@ -170,7 +160,7 @@ public class AccountController {
     String tweet(Model model, @PathVariable String username, @RequestParam String content) {
         var sender = current();
         var recipient = accountService.getAccount(username);
-        tweetService.tweet(sender, recipient, LocalDateTime.now(), content);
+        tweetService.tweet(sender, recipient, Instant.now(), content);
         return "redirect:/accounts/{username}";
     }
 

@@ -1,4 +1,4 @@
-package viserrys;
+package viserrys.common;
 
 public class Constants 
 {

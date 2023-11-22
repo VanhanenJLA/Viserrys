@@ -7,7 +7,7 @@ import viserrys.account.Account;
 
 import java.util.List;
 
-import static viserrys.FileType.ensureSupportedFileType;
+import static viserrys.photo.FileType.ensureSupportedFileType;
 
 @Service
 public class PhotoService {
