@@ -1,6 +1,5 @@
 package viserrys.reaction;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import viserrys.account.Account;
 import viserrys.photo.Photo;
@@ -16,8 +15,7 @@ public class ReactionService {
     this.reactionRepository = reactionRepository;
   }
 
-  public Reaction react(Account sender, Photo target, LocalDateTime timestamp, ReactionType reactionType)
-      throws Exception {
+  public Reaction react(Account sender, Photo target, LocalDateTime timestamp, ReactionType reactionType) {
 
     var reaction = reactionRepository.findBySenderAndTargetAndReactionType(sender, target, reactionType);
     if (reaction != null) {

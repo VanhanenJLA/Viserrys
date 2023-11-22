@@ -1,13 +1,11 @@
 package viserrys.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import viserrys.account.AccountRepository;
 import viserrys.account.AccountService;
 
 import java.util.List;
@@ -15,11 +13,9 @@ import java.util.List;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final AccountRepository accountRepository;
     private final AccountService accountService;
 
-    public CustomUserDetailsService(AccountRepository accountRepository, AccountService accountService) {
-        this.accountRepository = accountRepository;
+    public CustomUserDetailsService(AccountService accountService) {
         this.accountService = accountService;
     }
 

@@ -15,8 +15,12 @@ import javax.validation.Valid;
 @Controller
 public class AuthController {
 
-    @Autowired
+    final
     AccountService accountService;
+
+    public AuthController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @GetMapping("/login")
     public String login(@ModelAttribute Account account) {

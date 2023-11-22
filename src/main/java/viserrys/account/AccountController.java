@@ -233,7 +233,7 @@ public class AccountController {
     public String like(Model model,
                        @PathVariable String username,
                        @PathVariable Long id,
-                       @RequestParam ReactionType reactionType) throws Exception {
+                       @RequestParam ReactionType reactionType) {
         var photo = photoService.getPhoto(id);
         reactionService.react(current(), photo, LocalDateTime.now(), reactionType);
         return "redirect:/accounts/{username}/photos";

@@ -67,7 +67,7 @@ public class SecurityConfiguration {
     public MvcRequestMatcher[] createMvcRequestMatchers(MvcRequestMatcher.Builder builder, String... patterns) {
         return Stream
                 .of(patterns)
-                .map(p -> builder.pattern(p))
+                .map(builder::pattern)
                 .toArray(MvcRequestMatcher[]::new);
     }
 

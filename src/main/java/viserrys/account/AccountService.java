@@ -4,7 +4,6 @@ import lombok.SneakyThrows;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import viserrys.follow.Follow;
-import viserrys.follow.FollowRepository;
 import viserrys.follow.FollowService;
 import viserrys.photo.PhotoService;
 

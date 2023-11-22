@@ -1,7 +1,10 @@
 package viserrys.photo;
 
+import lombok.Getter;
+
 import java.util.EnumSet;
 
+@Getter
 public enum FileType {
     IMAGE_JPEG("image/jpeg"),
     IMAGE_PNG("image/png");
@@ -10,10 +13,6 @@ public enum FileType {
 
     FileType(String mimeType) {
         this.mimeType = mimeType;
-    }
-
-    public String getMimeType() {
-        return mimeType;
     }
 
     private static final EnumSet<FileType> supportedFileTypes = EnumSet.allOf(FileType.class);

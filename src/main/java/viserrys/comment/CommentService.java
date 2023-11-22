@@ -28,8 +28,4 @@ public class CommentService {
     return commentRepository.findAllByTargetId(targetId, paging);
   }
 
-  // public List<Comment> findAllByRecipient(Account recipient) {
-  // return commentRepository.findAllByRecipient(recipient);
-  // }
-
 }
