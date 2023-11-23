@@ -12,8 +12,9 @@ import java.util.Map;
 
 public interface TweetRepository extends JpaRepository<Tweet, Long> {
   List<Tweet> findAllByRecipient(Account recipient);
-  Page<Tweet> findAllByRecipient(Account sender, Pageable paging);
+  Page<Tweet> findAllByRecipient(Account recipient, Pageable p);
   List<Tweet> findAllBySender(Account sender);
+  List<Tweet> findAllBySender(Account sender, Pageable p);
 
   @Query("SELECT COUNT(f) AS sentCount, (SELECT COUNT(fr) FROM Follow fr WHERE fr.recipient = :account) AS receivedCount FROM Follow f WHERE f.sender = :account")
   Map<String, Long> countSentAndReceivedFollowsBy(@Param("account") Account account);

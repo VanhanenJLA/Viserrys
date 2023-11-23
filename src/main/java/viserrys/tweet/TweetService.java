@@ -13,31 +13,38 @@ import java.util.List;
 @Service
 public class TweetService {
 
-  public final TweetRepository tweetRepository;
+    public final TweetRepository tweetRepository;
 
-  public TweetService(TweetRepository tweetRepository) {
-    this.tweetRepository = tweetRepository;
-  }
+    public TweetService(TweetRepository tweetRepository) {
+        this.tweetRepository = tweetRepository;
+    }
 
-  public Tweet tweet(Account sender, Account recipient, Instant timestamp, String content) {
-    return tweetRepository.save(new Tweet(sender, recipient, timestamp, content));
-  }
+    public Tweet tweet(Account sender, Account recipient, Instant timestamp, String content) {
+        return tweetRepository.save(new Tweet(sender, recipient, timestamp, content));
+    }
 
-  public List<Tweet> findAllByRecipient(Account recipient) {
-    return tweetRepository.findAllByRecipient(recipient);
-  }
+    public List<Tweet> findAllByRecipient(Account recipient) {
+        return tweetRepository.findAllByRecipient(recipient);
+    }
 
-  public List<Tweet> findAllBySender(Account sender) {
-    return tweetRepository.findAllBySender(sender);
-  }
+    public List<Tweet> findAllBySender(Account sender) {
+        return tweetRepository.findAllBySender(sender);
+    }
 
-  //  public TweetsRecord getTweetsAssociatedWithAccount(Account sender) {
+    //  public TweetsRecord getTweetsAssociatedWithAccount(Account sender) {
 //    return tweetRepository.findAllBySender(sender);
 //  }
 
-  public Page<Tweet> findAllByRecipient(Account recipient, int pageNumber, int pageSize) {
-    Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by("timestamp").descending());
-    return tweetRepository.findAllByRecipient(recipient, paging);
-  }
-  
+    public Page<Tweet> findAllByRecipient(Account recipient, int pageNumber, int pageSize) {
+        Pageable pageRequest = PageRequest.of(pageNumber,
+                pageSize,
+                Sort
+                        .by("timestamp")
+                        .descending());
+        return tweetRepository.findAllByRecipient(recipient, pageRequest);
+    }
+
+    public Page<Tweet> findAllByRecipient(Account recipient, Pageable pageable) {
+        return tweetRepository.findAllByRecipient(recipient, pageable);
+    }
 }

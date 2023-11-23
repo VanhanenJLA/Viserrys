@@ -1,6 +1,8 @@
 package viserrys.account;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +18,9 @@ import viserrys.tweet.TweetService;
 import viserrys.tweet.Tweets;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
+
+import static viserrys.common.Constants.Paging.*;
 
 @Controller
 public class AccountController {
@@ -29,7 +32,7 @@ public class AccountController {
     final TweetService tweetService;
     final CommentService commentService;
     final ReactionService reactionService;
-    private final FollowService followService;
+    final FollowService followService;
 
     public AccountController(AccountService accountService,
                              AuthService authService,
@@ -47,13 +50,12 @@ public class AccountController {
         this.followService = followService;
     }
 
-    private static <T> void doVoodoo(Model model, int pageSize, Page<T> page) {
-        var pageSizes = List.of(5, 10, 25, 50, 100);
-        var maxPages = Math.min(page.getTotalPages() - 1, 10);
+    private static <T> void doVoodoo(Model model, Page<T> page) {
+        var maxPages = Math.min(page.getTotalPages(), 10);
 
         model.addAttribute("page", page);
-        model.addAttribute("pageSizes", pageSizes);
-        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("pageSizes", PAGE_SIZES);
+        model.addAttribute("pageSize", page.getSize());
         model.addAttribute("maxPages", maxPages);
     }
 
@@ -94,8 +96,7 @@ public class AccountController {
     @GetMapping("/accounts/{username}")
     String account(Model model,
                    @PathVariable String username,
-                   @RequestParam(defaultValue = "0") int pageNumber,
-                   @RequestParam(defaultValue = "5") int pageSize) throws Exception {
+                   @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT) Pageable tweetPage) throws Exception {
 
         var account = accountService.accountRepository
                 .findByUsername(username)
@@ -113,8 +114,8 @@ public class AccountController {
                 tweetService.findAllByRecipient(account)
         );
 
-        var page = tweetService.findAllByRecipient(account, pageNumber, pageSize);
-        doVoodoo(model, pageSize, page);
+        var page = tweetService.findAllByRecipient(account, tweetPage);
+        doVoodoo(model, page);
 
         model.addAttribute("isFollowing", isFollowing);
         model.addAttribute("currentAccount", current);
@@ -193,8 +194,7 @@ public class AccountController {
     String photos(Model model,
                   @PathVariable String username,
                   @PathVariable long photoId,
-                  @RequestParam(defaultValue = "0") int pageNumber,
-                  @RequestParam(defaultValue = "5") int pageSize) {
+                  @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT) Pageable tweetPage) {
         var account = accountService.getAccount(username);
         var currentAccount = current();
         var photo = photoService.getPhoto(photoId);
@@ -205,8 +205,8 @@ public class AccountController {
         model.addAttribute("reactionService", reactionService);
         model.addAttribute("view", "photos");
 
-        var page = commentService.findAllByTargetId(photoId, pageNumber, pageSize);
-        doVoodoo(model, pageSize, page);
+        var page = commentService.findAllByTargetId(photoId, tweetPage.getPageNumber(), tweetPage.getPageSize());
+        doVoodoo(model, page);
 
         return "pages/photo";
     }
@@ -235,7 +235,7 @@ public class AccountController {
                        @PathVariable Long id,
                        @RequestParam ReactionType reactionType) {
         var photo = photoService.getPhoto(id);
-        reactionService.react(current(), photo, LocalDateTime.now(), reactionType);
+        reactionService.react(current(), photo, Instant.now(), reactionType);
         return "redirect:/accounts/{username}/photos";
     }
 

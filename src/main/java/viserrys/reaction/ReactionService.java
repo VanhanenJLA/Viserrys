@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import viserrys.account.Account;
 import viserrys.photo.Photo;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +15,7 @@ public class ReactionService {
     this.reactionRepository = reactionRepository;
   }
 
-  public Reaction react(Account sender, Photo target, LocalDateTime timestamp, ReactionType reactionType) {
+  public Reaction react(Account sender, Photo target, Instant timestamp, ReactionType reactionType) {
 
     var reaction = reactionRepository.findBySenderAndTargetAndReactionType(sender, target, reactionType);
     if (reaction != null) {

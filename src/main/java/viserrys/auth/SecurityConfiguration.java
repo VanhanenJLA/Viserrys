@@ -16,7 +16,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import java.util.stream.Stream;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-import static viserrys.common.Constants.*;
+import static viserrys.common.Constants.Security.*;
 
 @Configuration
 @EnableWebSecurity

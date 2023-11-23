@@ -10,7 +10,7 @@ import viserrys.photo.Photo;
 
 import jakarta.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -27,7 +27,7 @@ public class Reaction extends AbstractPersistable<Long> {
   @ManyToOne
   Photo target;
 
-  LocalDateTime timestamp;
+  Instant timestamp;
 
   @Enumerated(EnumType.STRING)
   ReactionType reactionType;

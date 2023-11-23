@@ -3,7 +3,7 @@
 //import java.io.ByteArrayOutputStream;
 //import java.io.File;
 //import java.io.IOException;
-//import java.time.LocalDateTime;
+//import java.time.Instant;
 //import java.util.List;
 //
 //import javax.imageio.ImageIO;
@@ -85,7 +85,7 @@
 //  @Test
 //  public void react() throws Exception {
 //    var photo = photoService.photoRepository.findAll().get(0);
-//    var reaction = reactionService.react(jouni(), photo, LocalDateTime.now(), ReactionType.SAD);
+//    var reaction = reactionService.react(jouni(), photo, Instant.now(), ReactionType.SAD);
 //    System.out.println("Bubuntu");
 //  }
 //
@@ -105,7 +105,7 @@
 //  }
 //
 //  public void comment(Account sender, Photo photo) {
-//    var comment = commentRepository.save(new Comment(sender, photo, LocalDateTime.now(), "Haha very lit! 😂👌"));
+//    var comment = commentRepository.save(new Comment(sender, photo, Instant.now(), "Haha very lit! 😂👌"));
 //    System.out.println("");
 //    // photo.getComments().add(comment);
 //    // photoService.photoRepository.save(photo);
@@ -165,9 +165,9 @@
 //
 //  void createTweets() {
 //    var msg = "Hello world from application tests.";
-//    tweetService.tweet(jouni(), jouni(), LocalDateTime.now(), msg);
-//    tweetService.tweet(jauni(), jouni(), LocalDateTime.now(), msg);
-//    tweetService.tweet(jaoni(), jouni(), LocalDateTime.now(), msg);
+//    tweetService.tweet(jouni(), jouni(), Instant.now(), msg);
+//    tweetService.tweet(jauni(), jouni(), Instant.now(), msg);
+//    tweetService.tweet(jaoni(), jouni(), Instant.now(), msg);
 //
 //  }
 //
