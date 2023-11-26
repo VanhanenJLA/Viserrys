@@ -1,5 +1,6 @@
 package viserrys.auth;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import viserrys.account.Account;
@@ -14,14 +15,15 @@ public class AuthService {
         this.accountService = accountService;
     }
 
-    public Account getAuthenticatedAccount() {  
+    public Account getAuthenticatedAccount() {
         var authentication = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
-        
-        if (authentication.isAuthenticated())
-            return accountService.getAccount(authentication.getName());
-        return null;
+
+        if (authentication instanceof AnonymousAuthenticationToken)
+            return null;
+
+        return accountService.getAccount(authentication.getName());
     }
 
 }

@@ -1,6 +1,5 @@
 package viserrys.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,20 +14,19 @@ import javax.validation.Valid;
 @Controller
 public class AuthController {
 
-    final
-    AccountService accountService;
+    final AccountService accountService;
 
     public AuthController(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @GetMapping("/login")
-    public String login(@ModelAttribute Account account) {
+    public String login() {
         return "pages/login";
     }
 
     @GetMapping("/register")
-    public String register(@ModelAttribute Account account) {
+    public String register(Model model, @ModelAttribute Account account) {
         return "pages/register";
     }
 
@@ -38,6 +36,7 @@ public class AuthController {
         try {
             accountService.createAccount(account.getUsername(), account.getPassword());
         } catch (Exception e) {
+            
             model.addAttribute("error", e.getMessage());
             return "redirect:/register";
         }

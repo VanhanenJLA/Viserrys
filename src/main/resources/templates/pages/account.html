@@ -16,7 +16,7 @@
 
 <main role="main">
 
-    <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s profile|)">
+    <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle=|${account.username}s profile|)">
     </jumbotron>
 
     <div class="container">
@@ -81,7 +81,7 @@
 <footer th:replace="layout/footer :: footer"></footer>
 
 <followers-modal
-        th:replace="components/accounts-modal.html :: accounts-modal(accounts=${followers}, id='followers-modal', title=|${account.username}'s followers|)">
+        th:replace="components/accounts-modal.html :: accounts-modal(accounts=${followers}, id='followers-modal', title=|${account.username}\'s followers|)">
 </followers-modal>
 
 <following-modal

@@ -1,63 +1,58 @@
 <pagination>
+    <!--/*@thymesVar id="page" type="org.springframework.data.domain.Page"*/-->
 
-    <form method="GET">
+    <nav class="mt-1">
 
-        <nav class="mt-1">
+        <div class="row">
 
-            <div class="row">
+<!--            <div class="col-sm-auto">-->
+<!--                <form method="GET">-->
+<!--                    <select class="form-control mr-1"-->
+<!--                            name="pageSize"-->
+<!--                            onchange="this.form.submit()">-->
+<!--                        <option th:each="size : ${pageSizes}"-->
+<!--                                th:selected="${size == pageSize}"-->
+<!--                                th:value="${size}"-->
+<!--                                th:text="${size}">-->
+<!--                        </option>-->
+<!--                    </select>-->
+<!--                </form>-->
+<!--            </div>-->
 
-                <div class="col-sm-auto">
-                    <select class="form-control mr-1"
-                            name="pageSize"
-                            onchange="this.form.submit()">
-                        <option th:each="size : ${pageSizes}"
-                                th:selected="${size == pageSize}"
-                                th:value="${size}"
-                                th:text="${size}"></option>
-                    </select>
-                </div>
+            <div class="col">
+                <ul th:if="${page.getTotalPages() > 1}"
+                    class="pagination justify-content-end">
 
-                <div class="col">
-                    <ul th:if="${page.getTotalPages() > 1}"
-                        class="pagination justify-content-end">
+                    <li class="page-item"
+                        th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
+                        <a class="page-link"
+                           th:href="@{''(size=${page.getSize()}, page=${page.getNumber() - 1})}">
+                            &laquo;
+                        </a>
+                    </li>
 
-                        <li class="page-item"
-                            th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
-                            <button class="page-link"
-                                    name="pageNumber"
-                                    th:value="${page.getNumber() + 1}"
-                                    aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </button>
-                        </li>
+                    <li th:each="i : ${#numbers.sequence(0, page.getTotalPages() - 1)}"
+                        class="page-item"
+                        th:classappend="${page.getNumber() == i} ? 'active' : ''">
+                        <a class="page-link"
+                           th:href="@{''(size=${page.getSize()}, page=${i})}"
+                           th:text="${i + 1}">
+                        </a>
+                    </li>
 
-                        <li th:each="i : ${#numbers.sequence(0, page.getTotalPages() - 1)}"
-                            class="page-item"
-                            th:classappend="${page.getNumber() == i} ? 'active' : ''">
-                            <button class="page-link"
-                                    name="pageNumber"
-                                    th:value="${i}"
-                                    th:text="${i + 1}">
-                            </button>
-                        </li>
-
-                        <li class="page-item"
-                            th:classappend="${page.hasNext()} ? '' : 'disabled'">
-                            <button class="page-link"
-                                    aria-label="Next"
-                                    name="pageNumber"
-                                    th:value="${page.getNumber() + 1}">
-                                <span aria-hidden="true">&raquo;</span>
-                            </button>
-                        </li>
-
-                    </ul>
-                </div>
-
+                    <li class="page-item"
+                        th:classappend="${page.hasNext()} ? '' : 'disabled'">
+                        <a class="page-link"
+                           th:href="@{''(size=${page.getSize()}, page=${page.getNumber() + 1})}">
+                            &raquo;
+                        </a>
+                    </li>
+                </ul>
             </div>
-            
-        </nav>
 
-    </form>
+        </div>
+
+    </nav>
+
 
 </pagination>

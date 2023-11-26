@@ -51,15 +51,11 @@ public class AccountController {
     }
 
     private static <T> void doVoodoo(Model model, Page<T> page) {
-        var maxPages = Math.min(page.getTotalPages(), 10);
-
         model.addAttribute("page", page);
         model.addAttribute("pageSizes", PAGE_SIZES);
-        model.addAttribute("pageSize", page.getSize());
-        model.addAttribute("maxPages", maxPages);
     }
 
-    Account current() {
+    final Account current() {
         return authService.getAuthenticatedAccount();
     }
 
