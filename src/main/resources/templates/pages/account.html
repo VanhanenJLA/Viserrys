@@ -3,20 +3,15 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="layout/head :: head(title=${account.username})"></head>
+<head th:replace="~{layout/head :: head(title=${account.username})}"></head>
 
 <body>
-
-<style>
-    .badge-pill {
-        font-size: large
-    }
-</style>
 
 <navbar th:replace="layout/navbar :: navbar"></navbar>
 
 <main role="main">
 
-    <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle=|${account.username}s profile|)">
+    <jumbotron th:replace="layout/jumbotron :: jumbotron(jumbotronTitle=|${account.username}'s profile|)">
     </jumbotron>
 
     <div class="container">
@@ -91,10 +86,3 @@
 </body>
 
 </html>
-
-<script src="https://MomentJS.com/downloads/moment.js"></script>
-<script>
-    // If it works, it works. 🚀
-    Array.from(document.getElementsByClassName('timestamp'))
-        .forEach(t => t.textContent = moment(t.textContent).fromNow());
-</script>

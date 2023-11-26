@@ -2,6 +2,7 @@ package viserrys.account;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import viserrys.reaction.ReactionType;
 import viserrys.tweet.TweetService;
 import viserrys.tweet.Tweets;
 
+import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.List;
 
@@ -88,11 +90,11 @@ public class AccountController {
         var me = current().getUsername();
         return "redirect:/accounts/" + me + "/photos";
     }
-
+    
     @GetMapping("/accounts/{username}")
     String account(Model model,
                    @PathVariable String username,
-                   @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT) Pageable tweetPage) throws Exception {
+                   @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT, direction = Sort.Direction.DESC) Pageable tweetPage) throws Exception {
 
         var account = accountService.accountRepository
                 .findByUsername(username)

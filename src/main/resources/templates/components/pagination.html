@@ -5,19 +5,20 @@
 
         <div class="row">
 
-<!--            <div class="col-sm-auto">-->
-<!--                <form method="GET">-->
-<!--                    <select class="form-control mr-1"-->
-<!--                            name="pageSize"-->
-<!--                            onchange="this.form.submit()">-->
-<!--                        <option th:each="size : ${pageSizes}"-->
-<!--                                th:selected="${size == pageSize}"-->
-<!--                                th:value="${size}"-->
-<!--                                th:text="${size}">-->
-<!--                        </option>-->
-<!--                    </select>-->
-<!--                </form>-->
-<!--            </div>-->
+            <div class="col-sm-auto">
+                <form method="GET">
+                    <input type="hidden" name="page" th:value="${page.getNumber()}"/>
+                    <select class="form-control mr-1"
+                            name="size"
+                            onchange="this.form.submit()">
+                        <option th:each="size : ${pageSizes}"
+                                th:selected="${size == page.getSize()}"
+                                th:value="${size}"
+                                th:text="${size}">
+                        </option>
+                    </select>
+                </form>
+            </div>
 
             <div class="col">
                 <ul th:if="${page.getTotalPages() > 1}"

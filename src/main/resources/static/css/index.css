@@ -10,3 +10,7 @@
   font-size: x-large;
   padding: 0;
 }
+
+.badge-pill {
+  font-size: large
+}
