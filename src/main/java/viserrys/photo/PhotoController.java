@@ -17,7 +17,7 @@ public class PhotoController {
   @GetMapping(path = "/photos/{id}/content", produces = "image/jpg")
   @ResponseBody
   public byte[] getContent(@PathVariable Long id) {
-    return photoService.getPhoto(id).getContent();
+    return photoService.getPhotoById(id).getContent();
   }
 
 }

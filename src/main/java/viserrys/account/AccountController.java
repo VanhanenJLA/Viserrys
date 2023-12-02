@@ -1,6 +1,8 @@
 package viserrys.account;
 
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -18,9 +20,7 @@ import viserrys.reaction.ReactionType;
 import viserrys.tweet.TweetService;
 import viserrys.tweet.Tweets;
 
-import javax.validation.constraints.Size;
 import java.time.Instant;
-import java.util.List;
 
 import static viserrys.common.Constants.Paging.*;
 
@@ -37,7 +37,7 @@ public class AccountController {
     final FollowService followService;
 
     public AccountController(AccountService accountService,
-                             AuthService authService,
+                             AuthService authService, 
                              PhotoService photoService,
                              TweetService tweetService,
                              CommentService commentService,
@@ -50,15 +50,10 @@ public class AccountController {
         this.commentService = commentService;
         this.reactionService = reactionService;
         this.followService = followService;
-    }
-
-    private static <T> void doVoodoo(Model model, Page<T> page) {
-        model.addAttribute("page", page);
-        model.addAttribute("pageSizes", PAGE_SIZES);
-    }
+    } 
 
     final Account current() {
-        return authService.getAuthenticatedAccount();
+        return accountService.getAuthenticatedAccount();
     }
 
     @GetMapping("/me")
@@ -71,22 +66,20 @@ public class AccountController {
     @GetMapping("/my-photos")
     String myPhotos(Model model) {
         model.addAttribute(ACTIVE_NAV_LINK, "my-photos");
-        return redirectMyPhotos();
+        var me = current().getUsername();
+        return "redirect:/accounts/" + me + "/photos";
     }
 
     @PostMapping("/my-photos/set-profile-picture")
     public String setProfilePicture(Model model, @RequestParam long photoId) {
         accountService.setProfilePicture(current(), photoId);
-        return redirectMyPhotos();
+        var me = current().getUsername();
+        return "redirect:/accounts/" + me + "/photos";
     }
 
     @PostMapping("/my-photos/delete-picture")
     public String deletePicture(Model model, @RequestParam long photoId) {
-        accountService.deletePicture(current(), photoId);
-        return redirectMyPhotos();
-    }
-
-    String redirectMyPhotos() {
+        accountService.deletePhoto(current(), photoId);
         var me = current().getUsername();
         return "redirect:/accounts/" + me + "/photos";
     }
@@ -94,37 +87,31 @@ public class AccountController {
     @GetMapping("/accounts/{username}")
     String account(Model model,
                    @PathVariable String username,
-                   @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT, direction = Sort.Direction.DESC) Pageable tweetPage) throws Exception {
+                   @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT, direction = Sort.Direction.DESC) Pageable tweetPageable) {
 
-        var account = accountService.accountRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new Exception("User not found: " + username));
+        var account = accountService.getAccount(username);
+        
         var current = current();
         var isFollowing = followService.isFollowing(current, account);
 
-        var follows = new Follows(
-                followService.findAllBySender(account),
-                followService.findAllByRecipient(account)
-        );
+        var stats = populateStats(account);
 
-        var tweets = new Tweets(
-                tweetService.findAllBySender(account),
-                tweetService.findAllByRecipient(account)
-        );
+        var tweetPage = tweetService.findAllByRecipient(account, tweetPageable);
 
-        var page = tweetService.findAllByRecipient(account, tweetPage);
-        doVoodoo(model, page);
+        model.addAttribute("page", tweetPage);
+        model.addAttribute("pageSizes", PAGE_SIZES);
 
         model.addAttribute("isFollowing", isFollowing);
         model.addAttribute("currentAccount", current);
         model.addAttribute("account", account);
-        model.addAttribute("tweets", tweets);
-        model.addAttribute("follows", follows);
-        model.addAttribute("photos", List.of());
+        model.addAttribute("stats", stats);
+
         model.addAttribute("view", "profile");
 
         return "pages/account";
     }
+
+
 
     @GetMapping("/others")
     String others(Model model) {
@@ -166,7 +153,7 @@ public class AccountController {
     @PostMapping("/accounts/{username}/photos/{id}/comment")
     String comment(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam String content) {
         var sender = current();
-        var photo = photoService.getPhoto(id);
+        var photo = photoService.getPhotoById(id);
         var comment = commentService.comment(sender, photo, Instant.now(), content);
         return "redirect:/accounts/{username}/photos";
     }
@@ -175,14 +162,16 @@ public class AccountController {
     String photos(Model model, @PathVariable String username) {
         var account = accountService.getAccount(username);
         var currentAccount = current();
-        var photos = photoService.getPhotosByUploader(account);
+        var photos = photoService.findAllByUploader(account, null);
 
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", currentAccount);
         model.addAttribute("reactionTypes", ReactionType.values());
         model.addAttribute("photos", photos);
-
+        
+        var canAddPhoto = account == currentAccount && photos.getTotalElements() < 5;
         model.addAttribute("view", "photos");
+        model.addAttribute("canAddPhoto", canAddPhoto);
         model.addAttribute("reactionService", reactionService);
 
         return "pages/photos";
@@ -192,10 +181,10 @@ public class AccountController {
     String photos(Model model,
                   @PathVariable String username,
                   @PathVariable long photoId,
-                  @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT) Pageable tweetPage) {
+                  @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT) Pageable commentPageable) {
         var account = accountService.getAccount(username);
         var currentAccount = current();
-        var photo = photoService.getPhoto(photoId);
+        var photo = photoService.getPhotoById(photoId);
         model.addAttribute("photo", photo);
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", currentAccount);
@@ -203,8 +192,9 @@ public class AccountController {
         model.addAttribute("reactionService", reactionService);
         model.addAttribute("view", "photos");
 
-        var page = commentService.findAllByTargetId(photoId, tweetPage.getPageNumber(), tweetPage.getPageSize());
-        doVoodoo(model, page);
+        var commentPage = commentService.findAllByTargetId(photoId, commentPageable.getPageNumber(), commentPageable.getPageSize());
+        model.addAttribute("page", commentPage);
+        model.addAttribute("pageSizes", PAGE_SIZES);
 
         return "pages/photo";
     }
@@ -213,7 +203,7 @@ public class AccountController {
     String uploadPhoto(@PathVariable String username,
                        @RequestParam MultipartFile file,
                        @RequestParam String description) throws Exception {
-        var uploader = authService.getAuthenticatedAccount();
+        var uploader = accountService.getAuthenticatedAccount();
         photoService.uploadPhoto(file, description, uploader);
         return "redirect:/accounts/{username}/photos";
     }
@@ -221,20 +211,51 @@ public class AccountController {
     @GetMapping(path = "/accounts/{username}/profile-picture", produces = "image/jpg")
     @ResponseBody
     public byte[] profilePicture(@PathVariable String username) {
-        var account = accountService.getAccount(username);
-        return account
+        return accountService
+                .getAccount(username)
                 .getProfilePicture()
                 .getContent();
     }
 
     @PostMapping("accounts/{username}/photos/{id}/react")
-    public String like(Model model,
+    public String react(Model model,
                        @PathVariable String username,
                        @PathVariable Long id,
                        @RequestParam ReactionType reactionType) {
-        var photo = photoService.getPhoto(id);
+        var photo = photoService.getPhotoById(id);
         reactionService.react(current(), photo, Instant.now(), reactionType);
         return "redirect:/accounts/{username}/photos";
+    }
+
+    private Stats populateStats(Account account) {
+        var pageableDefault = PageRequest.of(0,
+                PAGEABLE_DEFAULT_SIZE,
+                Sort
+                        .by("timestamp")
+                        .descending());
+        return Stats
+                .create()
+                .follows(
+                        followService
+                                .findAllBySender(account, pageableDefault)
+                                .getTotalElements(),
+                        followService
+                                .findAllByRecipient(account, pageableDefault)
+                                .getTotalElements()
+                )
+                .tweets(
+                        tweetService
+                                .findAllBySender(account, pageableDefault)
+                                .getTotalElements(),
+                        tweetService
+                                .findAllByRecipient(account, pageableDefault)
+                                .getTotalElements()
+                )
+                .photos(
+                        photoService
+                                .findAllByUploader(account, pageableDefault)
+                                .getTotalElements() 
+                );
     }
 
 }

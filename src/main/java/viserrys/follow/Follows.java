@@ -1,6 +1,8 @@
 package viserrys.follow;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
-public record Follows(List<Follow> sent, List<Follow> received) {
+public record Follows(Page<Follow> sent, Page<Follow> received) {
 }

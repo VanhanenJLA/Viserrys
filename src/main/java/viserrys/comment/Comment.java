@@ -24,7 +24,7 @@ public class Comment extends AbstractPersistable<Long> implements Comparable<Com
     private Account sender;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Photo target;
 
     @NotNull

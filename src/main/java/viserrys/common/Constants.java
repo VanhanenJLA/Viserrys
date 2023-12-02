@@ -2,9 +2,9 @@ package viserrys.common;
 
 import java.util.List;
 
-public class Constants 
+public final class Constants 
 {
-    public class Security {
+    public final class Security {
         public static final String LOGIN_URL = "/login";
         public static final String LOGOUT_URL = "/logout";
         public static final String REGISTER_URL = "/register";
@@ -32,12 +32,10 @@ public class Constants
 
     public static final int MB = 1024 * 1024;
 
-    public class Paging {
+    public final class Paging {
         public static final int PAGEABLE_DEFAULT_SIZE = 5;
         public static final String PAGEABLE_DEFAULT_SORT = "timestamp";
         public static final List<Integer> PAGE_SIZES = List.of(5, 10, 25, 50, 100);
     }
-
-    
 
 }

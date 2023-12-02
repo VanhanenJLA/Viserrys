@@ -20,11 +20,11 @@ import java.time.Instant;
 public class Reaction extends AbstractPersistable<Long> {
 
   @NotNull
-  @ManyToOne
+  @OneToOne
   Account sender;
 
   @NotNull
-  @ManyToOne
+  @OneToOne
   Photo target;
 
   Instant timestamp;

@@ -22,26 +22,9 @@ public class TweetService {
     public Tweet tweet(Account sender, Account recipient, Instant timestamp, String content) {
         return tweetRepository.save(new Tweet(sender, recipient, timestamp, content));
     }
-
-    public List<Tweet> findAllByRecipient(Account recipient) {
-        return tweetRepository.findAllByRecipient(recipient);
-    }
-
-    public List<Tweet> findAllBySender(Account sender) {
-        return tweetRepository.findAllBySender(sender);
-    }
-
-    //  public TweetsRecord getTweetsAssociatedWithAccount(Account sender) {
-//    return tweetRepository.findAllBySender(sender);
-//  }
-
-    public Page<Tweet> findAllByRecipient(Account recipient, int pageNumber, int pageSize) {
-        Pageable pageRequest = PageRequest.of(pageNumber,
-                pageSize,
-                Sort
-                        .by("timestamp")
-                        .descending());
-        return tweetRepository.findAllByRecipient(recipient, pageRequest);
+    
+    public Page<Tweet> findAllBySender(Account recipient, Pageable pageable) {
+        return tweetRepository.findAllBySender(recipient, pageable);
     }
 
     public Page<Tweet> findAllByRecipient(Account recipient, Pageable pageable) {

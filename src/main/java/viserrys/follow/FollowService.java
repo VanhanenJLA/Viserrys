@@ -1,6 +1,8 @@
 package viserrys.follow;
 
 import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import viserrys.account.Account;
 
@@ -41,23 +43,6 @@ public class FollowService {
                 .findBySenderAndRecipient(sender, recipient)
                 .ifPresent(follow -> followRepository.delete(follow));
     }
-
-    @SneakyThrows
-    public List<Follow> getFollowsBySender(Account sender) {
-        return followRepository
-                .findAllBySender(sender);
-    }
-
-    @SneakyThrows
-    public List<Follow> getFollowsByRecipient(Account recipient) {
-        return followRepository
-                .findAllBySender(recipient);
-    }
-    
-    public Follows getFollowCountsBy(Account account) {
-        Map<String, Long> countsMap = followRepository.countSentAndReceivedFollowsBy(account);
-        throw new java.lang.UnsupportedOperationException("Not implemented yet.");
-    }
     
     public boolean isFollowing(Account account, Account target) {
         return followRepository
@@ -65,13 +50,13 @@ public class FollowService {
                 .isPresent();
     }
 
-    public List<Follow> findAllByRecipient(Account recipient) {
+    public Page<Follow> findAllByRecipient(Account recipient, Pageable pageable) {
         return followRepository
-                .findAllByRecipient(recipient);
+                .findAllByRecipient(recipient, pageable);
     }
 
-    public List<Follow> findAllBySender(Account sender) {
+    public Page<Follow> findAllBySender(Account sender, Pageable pageable) {
         return followRepository
-                .findAllBySender(sender);
+                .findAllBySender(sender, pageable);
     }
 }

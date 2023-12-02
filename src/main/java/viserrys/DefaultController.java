@@ -12,12 +12,12 @@ public class DefaultController {
         this.authService = authService;
     }
 
-    @GetMapping("*")
-    public String home() {
-        var currentAccount = authService.getAuthenticatedAccount();
-        if (currentAccount == null)
-            return "redirect:/login";
-        return "redirect:/me";
-    }
+//    @GetMapping("*")
+//    public String home() {
+//        var currentAccount = authService.getAuthenticatedAccount();
+//        if (currentAccount == null)
+//            return "redirect:/login";
+//        return "redirect:/me";
+//    }
 
 }
