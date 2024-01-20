@@ -1,7 +1,5 @@
 package viserrys.account;
 
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,12 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import viserrys.auth.AuthService;
 import viserrys.comment.CommentService;
 import viserrys.follow.FollowService;
-import viserrys.follow.Follows;
 import viserrys.photo.PhotoService;
 import viserrys.reaction.ReactionService;
 import viserrys.reaction.ReactionType;
 import viserrys.tweet.TweetService;
-import viserrys.tweet.Tweets;
 
 import java.time.Instant;
 
