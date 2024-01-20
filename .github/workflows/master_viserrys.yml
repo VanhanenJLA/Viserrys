@@ -26,7 +26,7 @@ jobs:
         run: mvn clean install
 
       - name: Rename WebApp WAR as ROOT
-        run: mv ${GITHUB_WORKSPACE}/target/*.war ${GITHUB_WORKSPACE}/target/ROOT.war
+        run: Move-Item "${env:GITHUB_WORKSPACE}/target/*.war" "${env:GITHUB_WORKSPACE}/target/ROOT.war" -Force
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -55,3 +55,4 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C88AF448D00148B7979D8D2A6B5BF488 }}
           package: '*.war'
+          
