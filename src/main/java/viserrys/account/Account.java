@@ -1,9 +1,6 @@
 package viserrys.account;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,6 +10,7 @@ import viserrys.photo.Photo;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Data
@@ -29,7 +27,11 @@ public class Account extends AbstractPersistable<Long> {
     @NotEmpty
     String password;
 
+    @OneToMany(mappedBy = "uploader", cascade = CascadeType.ALL)
+    private List<Photo> photos;
+
     @OneToOne
+    @JoinColumn(name = "profile_picture_id")
     Photo profilePicture;
 
 }

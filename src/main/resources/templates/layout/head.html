@@ -13,4 +13,14 @@
     <link rel="stylesheet" href="/webjars/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/css/index.css">
+
+    <script>
+        // If it works, it works. 🚀
+        const handleTimestamps = () => Array
+            .from(document.getElementsByClassName('timestamp'))
+            .forEach(t => t.textContent = moment(t.textContent).fromNow());
+        
+        document.addEventListener('DOMContentLoaded', handleTimestamps);
+    </script>
+
 </head>

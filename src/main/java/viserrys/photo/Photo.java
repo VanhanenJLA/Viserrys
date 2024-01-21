@@ -22,10 +22,11 @@ import static viserrys.common.Constants.MB;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class Photo extends AbstractPersistable<Long> {
-    
-    @OneToOne
-    Account uploader;
 
+    @ManyToOne
+    @JoinColumn(name = "uploader_id")
+    private Account uploader;
+    
     @Length(max = 500)
     String description;
 
