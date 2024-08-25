@@ -1,6 +1,6 @@
 #FileLock
-#Mon Nov 20 21:03:05 EET 2023
-server=192.168.1.3\:58583
-hostName=DESKTOP-PRRQJBG
+#Sun Aug 25 22:02:19 EEST 2024
+server=192.168.1.2\:56403
+hostName=HUAWEI-MATEBOOK
 method=file
-id=18bee1d6559aeea64b1307d909a851c397209c594ee
+id=1918aeaf52c65a8e8bc1b7e695ca47fca50fafb3855
