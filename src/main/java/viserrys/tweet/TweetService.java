@@ -1,14 +1,11 @@
 package viserrys.tweet;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import viserrys.account.Account;
 
 import java.time.Instant;
-import java.util.List;
 
 @Service
 public class TweetService {

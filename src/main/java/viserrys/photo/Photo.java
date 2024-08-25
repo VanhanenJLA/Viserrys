@@ -1,17 +1,17 @@
 package viserrys.photo;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import viserrys.account.Account;
-import viserrys.comment.Comment;
 
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.List;
 
 import static viserrys.common.Constants.MB;
 

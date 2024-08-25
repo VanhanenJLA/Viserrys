@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import viserrys.photo.Photo;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -21,10 +21,11 @@ public class Account extends AbstractPersistable<Long> {
 
     @NotEmpty
     @Column(unique = true)
-    @Size(min = 3, max = 15)
+    @Size(min = 3, max = 24)
     String username;
 
     @NotEmpty
+    @Size(min = 8)
     String password;
 
     @OneToMany(mappedBy = "uploader", cascade = CascadeType.ALL)

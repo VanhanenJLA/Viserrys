@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import viserrys.account.Account;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class FollowService {
@@ -41,7 +39,7 @@ public class FollowService {
         ensureNotSelfFollow(sender, recipient);
         followRepository
                 .findBySenderAndRecipient(sender, recipient)
-                .ifPresent(follow -> followRepository.delete(follow));
+                .ifPresent(followRepository::delete);
     }
     
     public boolean isFollowing(Account account, Account target) {

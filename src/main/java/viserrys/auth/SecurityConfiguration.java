@@ -1,8 +1,8 @@
 package viserrys.auth;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -21,11 +21,17 @@ import static viserrys.common.Constants.Security.*;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    
+
+    public SecurityConfiguration(Environment environment) {
+        this.environment = environment;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    private final Environment environment;
 
     @Bean
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
@@ -33,9 +39,18 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
+    public SecurityFilterChain productionSecurityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         var antMatchers = createAntPathRequestMatchers(ANT_ENDPOINTS_WHITELIST);
         var mvcMatchers = createMvcRequestMatchers(mvc, MVC_ENDPOINTS_WHITELIST);
+
+        if (environment.acceptsProfiles("TEST")) {
+            http
+                    .csrf()
+                    .disable()
+                    .authorizeRequests(r -> r.anyRequest().permitAll());
+            return http.build();
+        }
+
         http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(antMatchers).permitAll()
@@ -54,6 +69,7 @@ public class SecurityConfiguration {
                 .logout(logout -> logout
                         .logoutUrl(LOGOUT_URL).permitAll()
                 );
+
         return http.build();
     }
 

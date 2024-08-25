@@ -1,5 +1,9 @@
 package viserrys.reaction;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,8 +12,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 import viserrys.account.Account;
 import viserrys.photo.Photo;
 
-import jakarta.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Entity
