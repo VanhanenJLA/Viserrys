@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,16 +24,26 @@ import static viserrys.common.Constants.Security.*;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    public SecurityConfiguration(Environment environment) {
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    private final Environment environment;
+
+    public SecurityConfiguration(Environment environment,
+                                 final CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         this.environment = environment;
+        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
+    }
+
+    public static AntPathRequestMatcher[] createAntPathRequestMatchers(String... patterns) {
+        return Stream
+                .of(patterns)
+                .map(AntPathRequestMatcher::new)
+                .toArray(AntPathRequestMatcher[]::new);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    private final Environment environment;
 
     @Bean
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
@@ -43,11 +55,10 @@ public class SecurityConfiguration {
         var antMatchers = createAntPathRequestMatchers(ANT_ENDPOINTS_WHITELIST);
         var mvcMatchers = createMvcRequestMatchers(mvc, MVC_ENDPOINTS_WHITELIST);
 
-        if (environment.acceptsProfiles("TEST")) {
+        if (environment.matchesProfiles("TEST")) {
             http
-                    .csrf()
-                    .disable()
-                    .authorizeRequests(r -> r.anyRequest().permitAll());
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests(r -> r.anyRequest().permitAll());
             return http.build();
         }
 
@@ -63,7 +74,7 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers(antMatcher(H2CONSOLE_URL)))
                 .formLogin(form -> form
                         .loginPage(LOGIN_URL).permitAll()
-                        .failureUrl(LOGIN_FAIL_URL).permitAll()
+                        .failureHandler(customAuthenticationFailureHandler)
                         .defaultSuccessUrl(DEFAULT_SUCCESS_URL, true)
                 )
                 .logout(logout -> logout
@@ -71,13 +82,6 @@ public class SecurityConfiguration {
                 );
 
         return http.build();
-    }
-
-    public static AntPathRequestMatcher[] createAntPathRequestMatchers(String... patterns) {
-        return Stream
-                .of(patterns)
-                .map(AntPathRequestMatcher::new)
-                .toArray(AntPathRequestMatcher[]::new);
     }
 
     public MvcRequestMatcher[] createMvcRequestMatchers(MvcRequestMatcher.Builder builder, String... patterns) {

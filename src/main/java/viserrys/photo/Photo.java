@@ -34,7 +34,7 @@ public class Photo extends AbstractPersistable<Long> {
     private Instant timestamp;
 
     @Lob
-    @Size(max = 1 * MB)
+    @Size(max = MB)
     byte[] content;
 
 //    @OneToMany(mappedBy = "target", fetch = FetchType.LAZY)
