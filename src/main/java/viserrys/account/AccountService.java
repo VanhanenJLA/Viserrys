@@ -1,6 +1,7 @@
 package viserrys.account;
 
 import lombok.SneakyThrows;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import viserrys.auth.AuthService;
@@ -54,7 +55,7 @@ public class AccountService {
     public Account getAccount(String username) {
         return accountRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new Exception("User not found: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
     public List<Account> getAccounts() {

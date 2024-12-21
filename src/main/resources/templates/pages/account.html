@@ -58,11 +58,11 @@
 
                 <new-tweet th:replace="components/new-tweet.html :: new-tweet"></new-tweet>
 
-                <div th:each="tweet : ${page}">
+                <div th:each="tweet : ${tweetPage}">
                     <tweet th:replace="components/tweet.html :: tweet(tweet=${tweet})"></tweet>
                 </div>
 
-                <pagination th:replace="components/pagination.html :: pagination(page=${page})"></pagination>
+                <pagination th:replace="components/pagination.html :: pagination(page=${tweetPage})"></pagination>
 
             </div>
 

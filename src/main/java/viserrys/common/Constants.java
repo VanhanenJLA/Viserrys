@@ -18,8 +18,9 @@ public final class Constants
                 REGISTER_URL,
         };
 
-        public static final String IMAGES_URL = "/img/*";
+        public static final String IMAGES_URL = "/img/**";
         public static final String STYLESHEETS_URL = "/css/**";
+        public static final String WEBJARS_URL = "/webjars/**";
         public static final String H2CONSOLE_URL = "/h2-console/**";
         public static final String FAVICON_URL = "/favicon.ico";
         public static final String[] ANT_ENDPOINTS_WHITELIST = {
@@ -27,6 +28,7 @@ public final class Constants
                 STYLESHEETS_URL,
                 IMAGES_URL,
                 FAVICON_URL,
+                WEBJARS_URL,
         };
     }
 
@@ -39,5 +41,8 @@ public final class Constants
         public static final String PAGEABLE_DEFAULT_SORT = "timestamp";
         public static final List<Integer> PAGE_SIZES = List.of(5, 10, 25, 50, 100);
     }
+    
+
+
 
 }

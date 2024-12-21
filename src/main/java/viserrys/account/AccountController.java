@@ -1,5 +1,6 @@
 package viserrys.account;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,11 +17,13 @@ import viserrys.reaction.ReactionService;
 import viserrys.reaction.ReactionType;
 import viserrys.tweet.TweetService;
 
+import java.text.MessageFormat;
 import java.time.Instant;
 
 import static viserrys.common.Constants.Paging.*;
 
 @Controller
+@Slf4j
 public class AccountController {
 
     private static final String ACTIVE_NAV_LINK = "activeNavLink";
@@ -63,21 +66,21 @@ public class AccountController {
     String myPhotos(Model model) {
         model.addAttribute(ACTIVE_NAV_LINK, "my-photos");
         var me = current().getUsername();
-        return "redirect:/accounts/" + me + "/photos";
+        return MessageFormat.format("redirect:/accounts/{0}/photos", me);
     }
 
     @PostMapping("/my-photos/set-profile-picture")
     public String setProfilePicture(Model model, @RequestParam long photoId) {
         accountService.setProfilePicture(current(), photoId);
         var me = current().getUsername();
-        return "redirect:/accounts/" + me + "/photos";
+        return MessageFormat.format("redirect:/accounts/{0}/photos", me);
     }
 
     @PostMapping("/my-photos/delete-picture")
     public String deletePicture(Model model, @RequestParam long photoId) {
         accountService.deletePhoto(current(), photoId);
         var me = current().getUsername();
-        return "redirect:/accounts/" + me + "/photos";
+        return MessageFormat.format("redirect:/accounts/{0}/photos", me);
     }
     
     @GetMapping("/accounts/{username}")
@@ -94,7 +97,7 @@ public class AccountController {
 
         var tweetPage = tweetService.findAllByRecipient(account, tweetPageable);
 
-        model.addAttribute("page", tweetPage);
+        model.addAttribute("tweetPage", tweetPage);
         model.addAttribute("pageSizes", PAGE_SIZES);
 
         model.addAttribute("isFollowing", isFollowing);
@@ -106,8 +109,6 @@ public class AccountController {
 
         return "pages/account";
     }
-
-
 
     @GetMapping("/others")
     String others(Model model) {
@@ -155,21 +156,23 @@ public class AccountController {
     }
 
     @GetMapping("/accounts/{username}/photos")
-    String photos(Model model, @PathVariable String username) {
+    String photos(Model model,
+                  @PathVariable String username,
+                  @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT) Pageable photoPageable) {
         var account = accountService.getAccount(username);
         var currentAccount = current();
-        var photos = photoService.findAllByUploader(account, null);
+        var photoPage = photoService.findAllByUploader(account, photoPageable);
 
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", currentAccount);
         model.addAttribute("reactionTypes", ReactionType.values());
-        model.addAttribute("photos", photos);
+        model.addAttribute("photoPage", photoPage);
         
-        var canAddPhoto = account == currentAccount && photos.getTotalElements() < 5;
+        var canAddPhoto = account == currentAccount && photoPage.getTotalElements() < 5;
         model.addAttribute("view", "photos");
         model.addAttribute("canAddPhoto", canAddPhoto);
         model.addAttribute("reactionService", reactionService);
-
+        
         return "pages/photos";
     }
 

@@ -6,7 +6,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,13 +54,6 @@ public class SecurityConfiguration {
         var antMatchers = createAntPathRequestMatchers(ANT_ENDPOINTS_WHITELIST);
         var mvcMatchers = createMvcRequestMatchers(mvc, MVC_ENDPOINTS_WHITELIST);
 
-        if (environment.matchesProfiles("TEST")) {
-            http
-                    .csrf(AbstractHttpConfigurer::disable)
-                    .authorizeHttpRequests(r -> r.anyRequest().permitAll());
-            return http.build();
-        }
-
         http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(antMatchers).permitAll()
@@ -80,6 +72,11 @@ public class SecurityConfiguration {
                 .logout(logout -> logout
                         .logoutUrl(LOGOUT_URL).permitAll()
                 );
+
+        if (environment.matchesProfiles("TEST")) {
+            http.csrf(AbstractHttpConfigurer::disable);
+            return http.build();
+        }
 
         return http.build();
     }

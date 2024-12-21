@@ -12,7 +12,7 @@
 
 <div class="container">
 
-    <div th:if="${#lists.isEmpty(photos) && account != currentAccount}">
+    <div th:if="${photoPage.isEmpty() && account != currentAccount}">
         <div class="alert alert-primary mb-3"
              role="alert">User hasn't uploaded any images!
         </div>
@@ -21,7 +21,7 @@
     <add-photo th:replace="components/add-photo.html :: add-photo"></add-photo>
 
 
-    <div th:each="photo : ${photos}">
+    <div th:each="photo : ${photoPage}">
         <div class="mt-5">
             <div class="row">
 
@@ -75,26 +75,28 @@
 
                 </div>
 
-                <div class="col-md-5">
-                    <h4>Comments</h4>
-                    <p th:if="${#lists.isEmpty(photo.comments)}">Photo hasn't been commented yet.</p>
+<!--                <div class="col-md-5">-->
+<!--                    <h4>Comments</h4>-->
+<!--                    <p th:if="${#lists.isEmpty(photo.comments)}">Photo hasn't been commented yet.</p>-->
 
-                    <button data-toggle="collapse"
-                            th:data-target="|#new-comment-${photo.id}|"
-                            class="btn btn-block btn-outline-primary mb-2">Leave a comment!
-                    </button>
-                    <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>
+<!--                    <button data-toggle="collapse"-->
+<!--                            th:data-target="|#new-comment-${photo.id}|"-->
+<!--                            class="btn btn-block btn-outline-primary mb-2">Leave a comment!-->
+<!--                    </button>-->
+<!--                    <new-comment th:replace="components/new-comment.html :: new-comment"></new-comment>-->
 
-                    <div th:each="comment : ${photo.comments}">
-                        <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>
-                    </div>
-                </div>
+<!--                    <div th:each="comment : ${photo.comments}">-->
+<!--                        <comment th:replace="components/comment.html :: comment(comment=${comment})"></comment>-->
+<!--                    </div>-->
+<!--                </div>-->
 
             </div>
 
         </div>
 
     </div>
+
+    <pagination th:replace="components/pagination.html :: pagination(page=${photoPage})"></pagination>
 
 </div>
 

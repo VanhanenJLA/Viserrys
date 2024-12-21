@@ -41,10 +41,6 @@ public class PhotoService {
     }
 
     public Page<Photo> findAllByUploader(Account uploader, Pageable pageable) {
-        if (pageable == null)
-            pageable = PageRequest.of(0, 5, Sort
-                    .by("timestamp")
-                    .descending());
         return photoRepository.findAllByUploader(uploader, pageable);
     }
 }

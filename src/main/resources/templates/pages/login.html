@@ -5,8 +5,7 @@
 <head lang="en">
     <title th:text="Login"></title>
     <meta charset="UTF-8"/>
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.3/css/bootstrap.min.css">
     <meta name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <link rel="stylesheet"
@@ -29,21 +28,24 @@
             Viserrys
         </h1>
 
-        <div th:if="${param.error}" class="alert alert-danger" role="alert">
-            <p th:text="${param.error}"></p>
-            <span th:if="${param.error.equals('bad_credentials')}">
-              Invalid username or password. Please try again.
-            </span>
-            <span th:if="${param.error == 'locked'}">
-              Your account is locked. Please contact support.
-            </span>
-            <span th:if="${param.error == 'expired'}">
-              Your session has expired. Please log in again.
-            </span>
-            <span th:if="${param.error == 'unknown'}">
-              Something unexpected happened. Please try again later.
-            </span>
+        <div th:if="${param.error}" class="alert alert-danger">
+            <div th:each="err : ${param.error}">
+        <span th:if="${err == T(viserrys.common.Exceptions).BAD_CREDENTIALS}">
+            [[${T(viserrys.common.Exceptions).MESSAGE_BAD_CREDENTIALS}]]
+        </span>
+                <span th:if="${err == T(viserrys.common.Exceptions).LOCKED}">
+            [[${T(viserrys.common.Exceptions).MESSAGE_LOCKED}]]
+        </span>
+                <span th:if="${err == T(viserrys.common.Exceptions).EXPIRED}">
+            [[${T(viserrys.common.Exceptions).MESSAGE_EXPIRED}]]
+        </span>
+                <span th:if="${err == T(viserrys.common.Exceptions).UNKNOWN}">
+            [[${T(viserrys.common.Exceptions).MESSAGE_UNKNOWN}]]
+        </span>
+            </div>
         </div>
+
+
 
         <div th:if="${param.logout}"
              class="alert alert-success"
@@ -75,7 +77,6 @@
                 Remember me?
             </label>
         </div>
-
 
         <button class="btn btn-block btn-lg btn-block btn-outline-primary"
                 type="submit">Sign in
