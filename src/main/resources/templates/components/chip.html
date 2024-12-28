@@ -40,6 +40,10 @@
     <img th:if="${account.profilePicture}"
          th:src="@{|/photos/${account.profilePicture.id}/content|}"
          th:text="${account.username}">
+    
+    <img th:if="${account.profilePicture == null}"
+         th:src="@{https://thispersondoesnotexist.com}"
+         th:text="${account.username}">
   </a>
 
 </chip>

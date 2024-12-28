@@ -6,9 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import viserrys.account.Account;
-import viserrys.photo.Photo;
-
-import java.time.Instant;
 
 @Service
 public class CommentService {
@@ -19,13 +16,19 @@ public class CommentService {
     this.commentRepository = commentRepository;
   }
 
-  public Comment comment(Account sender, Photo target, Instant timestamp, String content) {
-    return commentRepository.save(new Comment(sender, target, timestamp, content));
+  public Comment comment(Account sender, BaseCommentable target, String content) {
+    var c = Comment.builder()
+            .sender(sender)
+            .content(content)
+            .commentable(target)
+            .build();
+    
+    return commentRepository.save(c);
   }
 
   public Page<Comment> findAllByTargetId(long targetId, int pageNumber, int pageSize) {
     Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by("timestamp").descending());
-    return commentRepository.findAllByTargetId(targetId, paging);
+    return commentRepository.findAllByCommentable_Id(targetId, paging);
   }
 
 }

@@ -7,24 +7,23 @@ import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.jpa.domain.AbstractPersistable;
+import org.springframework.context.annotation.Lazy;
 import viserrys.account.Account;
+import viserrys.comment.BaseCommentable;
 import viserrys.comment.Comment;
-import viserrys.comment.Commentable;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 
 import static viserrys.common.Constants.MB;
 
 @Entity
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Photo extends AbstractPersistable<Long> implements Commentable {
+public class Photo extends BaseCommentable {
 
     @ManyToOne
     @NotNull
@@ -32,22 +31,25 @@ public class Photo extends AbstractPersistable<Long> implements Commentable {
     private Account uploader;
     
     @NotNull
+    @Size(min = 1)
     @Length(max = 500)
     String description;
 
     @NotNull
-    private Instant timestamp;
+    @Builder.Default
+    private Instant timestamp = Instant.now();
 
     @Lob
     @NotNull
     @Size(max = MB)
     byte[] content;
     
+    @NotNull
+    @Lazy
     @Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-    @OneToMany(mappedBy = "target")
+    @OneToMany(mappedBy = "commentable")
     @OrderBy("timestamp DESC")
-    List<Comment> comments = null;
+    @Builder.Default
+    List<Comment> comments = List.of();
     
 }
-
-

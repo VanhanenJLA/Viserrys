@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import viserrys.account.Account;
 
 import java.time.Instant;
+import java.util.List;
 
 import static viserrys.photo.FileType.ensureSupportedFileType;
 
@@ -25,15 +26,19 @@ public class PhotoService {
     public Photo uploadPhoto(MultipartFile file, String description, Account uploader) throws Exception {
         var type = file.getContentType();
         ensureSupportedFileType(type);
-        var photo = new Photo(uploader, description, Instant.now(), file.getBytes());
+        
+        var photo = Photo.builder()
+                .uploader(uploader)
+                .description(description)
+                .build();
+        
         return photoRepository.save(photo);
     }
 
-    @SneakyThrows
     public Photo getPhotoById(Long id) {
         return photoRepository
                 .findById(id)
-                .orElseThrow(() -> new Exception("Photo not found: " + id));
+                .orElseThrow(() -> new RuntimeException("Photo not found: " + id));
     }
 
     public void deleteById(Long id) {
@@ -42,6 +47,10 @@ public class PhotoService {
 
     public Page<Photo> findAllByUploader(Account uploader, Pageable pageable) {
         return photoRepository.findAllByUploader(uploader, pageable);
+    }
+
+    public long countUploadedPhotos(Account account) {
+        return photoRepository.countByUploader(account);
     }
 }
 

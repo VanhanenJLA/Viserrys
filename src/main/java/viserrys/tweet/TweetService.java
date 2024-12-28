@@ -19,12 +19,16 @@ public class TweetService {
     public Tweet tweet(Account sender, Account recipient, Instant timestamp, String content) {
         return tweetRepository.save(new Tweet(sender, recipient, timestamp, content));
     }
-    
-    public Page<Tweet> findAllBySender(Account recipient, Pageable pageable) {
-        return tweetRepository.findAllBySender(recipient, pageable);
-    }
 
     public Page<Tweet> findAllByRecipient(Account recipient, Pageable pageable) {
         return tweetRepository.findAllByRecipient(recipient, pageable);
+    }
+
+    public long countSentTweets(Account sender) {
+        return tweetRepository.countBySender(sender);
+    }
+    
+    public long countReceivedTweets(Account recipient) {
+        return tweetRepository.countByRecipient(recipient);
     }
 }

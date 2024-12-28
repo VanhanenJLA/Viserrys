@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
     Optional<Follow> findBySenderAndRecipient(Account sender, Account recipient);
-    Page<Follow> findAllBySender(Account sender, Pageable pageable);
-    Page<Follow> findAllByRecipient(Account recipient, Pageable pageable);
-    
+    long countBySender(Account sender);
+    long countByRecipient(Account recipient);
 }

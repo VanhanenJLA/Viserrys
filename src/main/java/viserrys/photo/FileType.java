@@ -17,9 +17,9 @@ public enum FileType {
 
     private static final EnumSet<FileType> supportedFileTypes = EnumSet.allOf(FileType.class);
 
-    public static void ensureSupportedFileType(String type) throws Exception {
+    public static void ensureSupportedFileType(String type) {
         if (supportedFileTypes.stream().noneMatch(ft -> ft.getMimeType().equals(type))) {
-            throw new Exception("Unsupported file type: " + type);
+            throw new RuntimeException("Unsupported file type: " + type);
         }
     }
     

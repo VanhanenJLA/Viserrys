@@ -2,32 +2,16 @@
 
   <tweet-header class="card-header py-1">
 
-    <style>
-      .tweet-profile-picture {
-        height: 50px;
-        min-height: 50px;
-        width: 50px;
-        min-width: 50px;
-      }
-    </style>
-
     <div class="row">
+
       <div class="col-auto">
-        <img th:if="${tweet.sender.profilePicture}"
-             class="img-fluid tweet-profile-picture"
-             th:src="@{|/photos/${tweet.sender.profilePicture.id}/content|}"
-             alt="profile-picture">
+        <chip th:replace="components/chip.html :: chip(account=${tweet.sender})"></chip>
       </div>
 
       <div class="col align-self-center">
         <div class="row justify-content-between">
 
-          <a class="col"
-             th:href="@{|/accounts/${tweet.sender.username}|}">
-            <span class="h5"
-                  th:text="${tweet.sender.username}">
-            </span>
-          </a>
+          <div class="col"></div>
 
           <span class="col-auto text-muted pr-3 timestamp"
                 th:text="${tweet.timestamp}"></span>
@@ -38,17 +22,8 @@
 
   </tweet-header>
 
-  <div class="card-body pb-1">
+  <div class="card-body">
     <span th:text="${tweet.content}"></span>
-
-    <div class="row">
-      <div class="col">
-        <div class="row justify-content-end pt-1">
-
-        </div>
-      </div>
-    </div>
-
   </div>
 
 </tweet>

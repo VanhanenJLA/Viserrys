@@ -17,15 +17,11 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Comment extends AbstractPersistable<Long> implements Comparable<Comment> {
+public class Comment extends AbstractPersistable<Long> {
 
     @NotNull
     @ManyToOne
     private Account sender;
-
-//    @NotNull
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Photo target;
 
     @NotNull
     @ManyToOne
@@ -33,15 +29,12 @@ public class Comment extends AbstractPersistable<Long> implements Comparable<Com
     BaseCommentable commentable;
 
     @NotNull
-    private Instant timestamp;
+    @Builder.Default
+    private Instant timestamp = Instant.now();
 
     @Lob
     @NotEmpty
     @Size(min = 1, max = 150)
     private String content;
     
-    @Override
-    public int compareTo(Comment o) {
-        return o.timestamp.compareTo(this.timestamp);
-    }
 }

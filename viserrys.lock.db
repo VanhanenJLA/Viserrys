@@ -1,6 +1,6 @@
 #FileLock
-#Sat Dec 28 13:00:20 EET 2024
-hostName=HUAWEI-MATEBOOK
-id=1940cec9b912dd3c2540affd89b51ce7dfda516fcd3
+#Sun Dec 29 00:08:23 EET 2024
+hostName=RAZER-BLADE
+id=1940f5039dcc33a49a3700f8d1153c842569524fdd8
 method=file
-server=192.168.166.44\:57983
+server=192.168.1.4\:55896

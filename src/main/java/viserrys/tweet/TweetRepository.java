@@ -8,5 +8,6 @@ import viserrys.account.Account;
 public interface TweetRepository extends JpaRepository<Tweet, Long> {
   Page<Tweet> findAllByRecipient(Account recipient, Pageable p);
   Page<Tweet> findAllBySender(Account sender, Pageable p);
-  
+  long countByRecipient(Account recipient);
+  long countBySender(Account sender);
 }

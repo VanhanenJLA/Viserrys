@@ -155,14 +155,17 @@ public class AccountController {
     String comment(Model model, @PathVariable String username, @PathVariable Long id, @RequestParam String content) {
         var sender = current();
         var photo = photoService.getPhotoById(id);
-        var comment = commentService.comment(sender, photo, Instant.now(), content);
+        var comment = commentService.comment(sender, photo, content);
         return "redirect:/accounts/{username}/photos";
     }
 
     @GetMapping("/accounts/{username}/photos")
     String photos(Model model,
                   @PathVariable String username,
-                  @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT) Pageable photoPageable) {
+                  @PageableDefault(
+                          size = PAGEABLE_DEFAULT_SIZE, 
+                          sort = PAGEABLE_DEFAULT_SORT) 
+                  Pageable photoPageable) {
         var account = accountService.getAccount(username);
         var currentAccount = current();
         var photoPage = photoService.findAllByUploader(account, photoPageable);
@@ -184,7 +187,10 @@ public class AccountController {
     String photos(Model model,
                   @PathVariable String username,
                   @PathVariable long photoId,
-                  @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT) Pageable commentPageable) {
+                  @PageableDefault(
+                          size = PAGEABLE_DEFAULT_SIZE,
+                          sort = PAGEABLE_DEFAULT_SORT)
+                  Pageable commentPageable) {
         var account = accountService.getAccount(username);
         var currentAccount = current();
         var photo = photoService.getPhotoById(photoId);
@@ -230,35 +236,22 @@ public class AccountController {
         return "redirect:/accounts/{username}/photos";
     }
 
+    
     private Stats populateStats(Account account) {
-        var pageableDefault = PageRequest.of(0,
-                PAGEABLE_DEFAULT_SIZE,
-                Sort
-                        .by("timestamp")
-                        .descending());
-        return Stats
-                .create()
-                .follows(
-                        followService
-                                .findAllBySender(account, pageableDefault)
-                                .getTotalElements(),
-                        followService
-                                .findAllByRecipient(account, pageableDefault)
-                                .getTotalElements()
+        return new Stats(
+                new Stats.Follows(
+                        followService.countSentFollows(account),
+                        followService.countReceivedFollows(account)
+                ),
+                new Stats.Tweets(
+                        tweetService.countSentTweets(account),
+                        tweetService.countReceivedTweets(account)
+                ),
+                new Stats.Photos(
+                        photoService.countUploadedPhotos(account)
                 )
-                .tweets(
-                        tweetService
-                                .findAllBySender(account, pageableDefault)
-                                .getTotalElements(),
-                        tweetService
-                                .findAllByRecipient(account, pageableDefault)
-                                .getTotalElements()
-                )
-                .photos(
-                        photoService
-                                .findAllByUploader(account, pageableDefault)
-                                .getTotalElements() 
-                );
+        );
     }
+
 
 }

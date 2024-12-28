@@ -6,7 +6,7 @@
         <div class="row">
 
             <div class="col-sm-auto">
-                <form method="GET">
+                <form th:if="page." method="GET">
                     <input type="hidden" name="page" th:value="${page.getNumber()}"/>
                     <select class="form-control mr-1"
                             name="size"
@@ -31,7 +31,7 @@
                         th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
                         <a class="page-link"
                            th:href="@{''(size=${page.getSize()}, page=${page.getNumber() - 1})}">
-                            &laquo; <!-- Left angle quote --> ;
+                            &laquo; <!-- Left angle quote -->
                         </a>
                     </li>
 
@@ -48,7 +48,7 @@
                         th:classappend="${page.hasNext()} ? '' : 'disabled'">
                         <a class="page-link"
                            th:href="@{''(size=${page.getSize()}, page=${page.getNumber() + 1})}">
-                            &raquo; <!-- Right angle quote --> ;
+                            &raquo; <!-- Right angle quote -->
                         </a>
                     </li>
                 </ul>

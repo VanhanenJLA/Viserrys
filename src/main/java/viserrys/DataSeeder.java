@@ -15,6 +15,7 @@ import viserrys.account.Account;
 import viserrys.account.AccountRepository;
 import viserrys.photo.Photo;
 import viserrys.photo.PhotoRepository;
+import viserrys.photo.PhotoService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -73,7 +74,7 @@ public class DataSeeder {
 
     @Bean
     @Order(2)
-    CommandLineRunner populatePhotos() {
+    CommandLineRunner populatePhotos(PhotoService photoService) {
         return args -> {
             log.info("Populating photos...");
             var Jouni = accountRepository.findByUsername("Jouni").orElseThrow();
@@ -92,7 +93,7 @@ public class DataSeeder {
                         }
                     })
                     .filter(bytes -> bytes.length > 0)
-                    .map(bytes -> new Photo(Jouni, "🖼", Instant.now(), bytes))
+                    .map(bytes -> Photo.builder().uploader(Jouni).content(bytes).description("🖼").build())
                     .toList();
 
             photoRepository.saveAll(kuvat);

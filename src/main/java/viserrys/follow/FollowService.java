@@ -48,13 +48,11 @@ public class FollowService {
                 .isPresent();
     }
 
-    public Page<Follow> findAllByRecipient(Account recipient, Pageable pageable) {
-        return followRepository
-                .findAllByRecipient(recipient, pageable);
+    public long countSentFollows(Account account) {
+        return followRepository.countBySender(account);
     }
-
-    public Page<Follow> findAllBySender(Account sender, Pageable pageable) {
-        return followRepository
-                .findAllBySender(sender, pageable);
+    
+    public long countReceivedFollows(Account account) {
+        return followRepository.countByRecipient(account);
     }
 }
