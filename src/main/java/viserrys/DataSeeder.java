@@ -42,19 +42,20 @@ public class DataSeeder {
         this.photoRepository = photoRepository;
     }
     
-//    @Bean
-//    CommandLineRunner wipeDatabase() {
-//        return args -> {
-//            log.info("Wiping database...");
-//            var beanNames = applicationContext.getBeanNamesForType(JpaRepository.class);
-//            for (var name : beanNames) {
-//                var repository = (JpaRepository<?, ?>) applicationContext.getBean(name);
-//                log.info("Wiping repository '{}'", name);
-//                repository.deleteAll();
-//            }
-//            log.info("Database wiped.");
-//        };
-//    }
+    @Bean
+    @Profile("WIPE")
+    CommandLineRunner wipeDatabase() {
+        return args -> {
+            log.info("Wiping database...");
+            var beanNames = applicationContext.getBeanNamesForType(JpaRepository.class);
+            for (var name : beanNames) {
+                var repository = (JpaRepository<?, ?>) applicationContext.getBean(name);
+                log.info("Wiping repository '{}'", name);
+                repository.deleteAll();
+            }
+            log.info("Database wiped.");
+        };
+    }
 
     @Bean
     @Order(1)
@@ -77,7 +78,7 @@ public class DataSeeder {
             log.info("Populating photos...");
             var Jouni = accountRepository.findByUsername("Jouni").orElseThrow();
             var dir = new ClassPathResource("static/img/seed/jouni").getFile();
-            
+
             var photos = dir.listFiles((f, name) -> name.toLowerCase().endsWith(".webp"));
 
             var kuvat = Arrays

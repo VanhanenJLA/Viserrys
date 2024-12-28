@@ -86,7 +86,11 @@ public class AccountController {
     @GetMapping("/accounts/{username}")
     String account(Model model,
                    @PathVariable String username,
-                   @PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = PAGEABLE_DEFAULT_SORT, direction = Sort.Direction.DESC) Pageable tweetPageable) {
+                   @PageableDefault(
+                           size = PAGEABLE_DEFAULT_SIZE,
+                           sort = PAGEABLE_DEFAULT_SORT,
+                           direction = Sort.Direction.DESC) 
+                   Pageable tweetPageable) {
 
         var account = accountService.getAccount(username);
         
