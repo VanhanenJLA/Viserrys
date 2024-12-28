@@ -17,6 +17,9 @@
                                 th:text="${size}">
                         </option>
                     </select>
+<!--                    <input type="hidden" th:each="param : ${#httpServletRequest.getParameterMap()}"-->
+<!--                           th:name="${param.key}"-->
+<!--                           th:value="${param.value}" />-->
                 </form>
             </div>
 
@@ -28,7 +31,7 @@
                         th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
                         <a class="page-link"
                            th:href="@{''(size=${page.getSize()}, page=${page.getNumber() - 1})}">
-                            &laquo;
+                            &laquo; <!-- Left angle quote --> ;
                         </a>
                     </li>
 
@@ -45,7 +48,7 @@
                         th:classappend="${page.hasNext()} ? '' : 'disabled'">
                         <a class="page-link"
                            th:href="@{''(size=${page.getSize()}, page=${page.getNumber() + 1})}">
-                            &raquo;
+                            &raquo; <!-- Right angle quote --> ;
                         </a>
                     </li>
                 </ul>

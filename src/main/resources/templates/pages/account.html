@@ -52,11 +52,11 @@
                 <h2>Tweets</h2>
 
                 <button data-toggle="collapse"
-                        data-target="new-tweet"
+                        data-target="#new-tweet"
                         class="btn btn-block btn-outline-primary mb-2">Leave a tweet!
                 </button>
 
-                <new-tweet th:replace="components/new-tweet.html :: new-tweet"></new-tweet>
+                <div th:replace="components/new-tweet.html :: new-tweet"></div>
 
                 <div th:each="tweet : ${tweetPage}">
                     <tweet th:replace="components/tweet.html :: tweet(tweet=${tweet})"></tweet>
