@@ -1,9 +1,6 @@
 package viserrys.comment;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import viserrys.account.Account;
@@ -14,21 +11,26 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.Instant;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@Builder
 public class Comment extends AbstractPersistable<Long> implements Comparable<Comment> {
 
     @NotNull
     @ManyToOne
     private Account sender;
 
+//    @NotNull
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Photo target;
+
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Photo target;
+    @ManyToOne
+    @JoinColumn(name = "commentable_id")
+    BaseCommentable commentable;
 
     @NotNull
     private Instant timestamp;

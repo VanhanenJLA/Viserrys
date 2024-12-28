@@ -28,7 +28,7 @@ public class Account extends AbstractPersistable<Long> {
     @Size(min = 8)
     String password;
 
-    @OneToMany(mappedBy = "uploader", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "uploader", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos;
 
     @OneToOne

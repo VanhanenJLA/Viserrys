@@ -1,6 +1,6 @@
 #FileLock
-#Sun Aug 25 22:02:19 EEST 2024
-server=192.168.1.2\:56403
+#Sat Dec 28 13:00:20 EET 2024
 hostName=HUAWEI-MATEBOOK
+id=1940cec9b912dd3c2540affd89b51ce7dfda516fcd3
 method=file
-id=1918aeaf52c65a8e8bc1b7e695ca47fca50fafb3855
+server=192.168.166.44\:57983
