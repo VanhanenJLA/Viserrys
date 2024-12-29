@@ -20,13 +20,13 @@ import viserrys.tweet.TweetService;
 import java.text.MessageFormat;
 import java.time.Instant;
 
+import static viserrys.common.Constants.ACTIVE_NAV_LINK;
 import static viserrys.common.Constants.Paging.*;
 
 @Controller
 @Slf4j
 public class AccountController {
-
-    private static final String ACTIVE_NAV_LINK = "activeNavLink";
+    
     final AccountService accountService;
     final AuthService authService;
     final PhotoService photoService;
@@ -172,13 +172,21 @@ public class AccountController {
 
         model.addAttribute("account", account);
         model.addAttribute("currentAccount", currentAccount);
-        model.addAttribute("reactionTypes", ReactionType.values());
         model.addAttribute("photoPage", photoPage);
-        
-        var canAddPhoto = account == currentAccount && photoPage.getTotalElements() < 5;
-        model.addAttribute("view", "photos");
+        var canAddPhoto = account == currentAccount && photoPage.getTotalElements() < 50;
         model.addAttribute("canAddPhoto", canAddPhoto);
-        model.addAttribute("reactionService", reactionService);
+
+        // Reactions
+        var hasReacted = reactionService.getHasReactedMap(currentAccount, photo);
+        var reactionCounts = reactionService.getReactionCounts(photo);
+        var latestReactions = reactionService.getLatestReactions(5, photo);
+        
+        model.addAttribute("reactionTypes", ReactionType.values());
+        model.addAttribute("hasReacted", hasReacted);
+        model.addAttribute("reactionCounts", reactionCounts);
+        model.addAttribute("latestReactions", latestReactions);
+        
+        model.addAttribute("view", "photos");
         
         return "pages/photos";
     }
@@ -235,7 +243,6 @@ public class AccountController {
         reactionService.react(current(), photo, Instant.now(), reactionType);
         return "redirect:/accounts/{username}/photos";
     }
-
     
     private Stats populateStats(Account account) {
         return new Stats(
@@ -252,6 +259,5 @@ public class AccountController {
                 )
         );
     }
-
 
 }

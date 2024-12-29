@@ -41,8 +41,7 @@ public final class Constants
         public static final String PAGEABLE_DEFAULT_SORT = "timestamp";
         public static final List<Integer> PAGE_SIZES = List.of(5, 10, 25, 50, 100);
     }
-    
 
-
+    public static final String ACTIVE_NAV_LINK = "activeNavLink";
 
 }
