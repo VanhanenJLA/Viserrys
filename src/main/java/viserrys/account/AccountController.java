@@ -1,9 +1,9 @@
 package viserrys.account;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -166,6 +166,8 @@ public class AccountController {
                           size = PAGEABLE_DEFAULT_SIZE, 
                           sort = PAGEABLE_DEFAULT_SORT) 
                   Pageable photoPageable) {
+        model.addAttribute("view", "photos");
+        
         var account = accountService.getAccount(username);
         var currentAccount = current();
         var photoPage = photoService.findAllByUploader(account, photoPageable);
@@ -175,18 +177,18 @@ public class AccountController {
         model.addAttribute("photoPage", photoPage);
         var canAddPhoto = account == currentAccount && photoPage.getTotalElements() < 50;
         model.addAttribute("canAddPhoto", canAddPhoto);
-
+        
         // Reactions
-        var hasReacted = reactionService.getHasReactedMap(currentAccount, photo);
-        var reactionCounts = reactionService.getReactionCounts(photo);
-        var latestReactions = reactionService.getLatestReactions(5, photo);
         
-        model.addAttribute("reactionTypes", ReactionType.values());
-        model.addAttribute("hasReacted", hasReacted);
+        var photoIds = photoPage.stream().map(AbstractPersistable::getId).toList();
+        var reactionCounts = reactionService.getReactionCountsBy(photoIds);
+        var reactionsByMe = reactionService.getReactions(currentAccount, photoIds);
+//      var latestReactions = reactionService.getLatestReactions(5, photo);
+//        
+//        model.addAttribute("reactionTypes", ReactionType.values());
+//        model.addAttribute("reactionsByMe", reactionsByMe);
         model.addAttribute("reactionCounts", reactionCounts);
-        model.addAttribute("latestReactions", latestReactions);
-        
-        model.addAttribute("view", "photos");
+//        model.addAttribute("latestReactions", latestReactions);
         
         return "pages/photos";
     }

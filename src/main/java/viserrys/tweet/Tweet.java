@@ -14,6 +14,8 @@ import viserrys.account.Account;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import viserrys.reaction.Reactible;
+
 import java.time.Instant;
 
 @Entity
@@ -21,7 +23,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet> {
+public class Tweet extends AbstractPersistable<Long> implements Reactible {
 
     @NotNull
     @ManyToOne
@@ -40,13 +42,7 @@ public class Tweet extends AbstractPersistable<Long> implements Comparable<Tweet
     private String content;
 
     @Override
-    public int compareTo(Tweet o) {
-        if (timestamp.isAfter(o.timestamp))
-            return -1;
-
-        if (timestamp.isBefore(o.timestamp))
-            return 1;
-
-        return 0;
+    public String getType() {
+        return getClass().getSimpleName();
     }
 }

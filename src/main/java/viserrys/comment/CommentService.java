@@ -16,11 +16,12 @@ public class CommentService {
     this.commentRepository = commentRepository;
   }
 
-  public Comment comment(Account sender, BaseCommentable target, String content) {
+  public Comment comment(Account sender, Commentable commentable, String content) {
     var c = Comment.builder()
             .sender(sender)
             .content(content)
-            .commentable(target)
+            .commentableId(commentable.getId())
+            .commentableType(commentable.getType())
             .build();
     
     return commentRepository.save(c);
@@ -28,7 +29,7 @@ public class CommentService {
 
   public Page<Comment> findAllByTargetId(long targetId, int pageNumber, int pageSize) {
     Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by("timestamp").descending());
-    return commentRepository.findAllByCommentable_Id(targetId, paging);
+    return commentRepository.findAllByCommentableId(targetId, paging);
   }
 
 }

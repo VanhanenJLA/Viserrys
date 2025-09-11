@@ -1,5 +1,8 @@
 package viserrys.comment;
 
+import jakarta.validation.constraints.NotNull;
+
 public interface Commentable {
-    Long getId();
+    @NotNull Long getId();
+    @NotNull String getType();
 }

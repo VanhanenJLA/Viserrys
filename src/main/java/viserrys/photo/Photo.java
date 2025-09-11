@@ -8,9 +8,12 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 import viserrys.account.Account;
-import viserrys.comment.BaseCommentable;
 import viserrys.comment.Comment;
+import viserrys.comment.Commentable;
+import viserrys.common.BaseEntity;
+import viserrys.reaction.Reactible;
 
 import java.time.Instant;
 import java.util.List;
@@ -23,7 +26,7 @@ import static viserrys.common.Constants.MB;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Photo extends BaseCommentable {
+public class Photo extends AbstractPersistable<Long> implements Commentable, Reactible {
 
     @ManyToOne
     @NotNull
@@ -47,9 +50,13 @@ public class Photo extends BaseCommentable {
     @NotNull
     @Lazy
     @Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-    @OneToMany(mappedBy = "commentable")
+    @OneToMany(mappedBy = "commentableId")
     @OrderBy("timestamp DESC")
     @Builder.Default
     List<Comment> comments = List.of();
-    
+
+    @Override
+    public String getType() {
+        return getClass().getSimpleName();
+    }
 }

@@ -12,7 +12,7 @@
                 name="reactionType"
                 class="btn btn-outline-secondary emoji"
                 th:text="${reactionType.emoji}"
-                th:classappend="${reactionService.hasReacted(currentAccount, photo, reactionType) ? 'active' : ''}">
+                th:classappend="${reactionsByMe.contains(reactionType) ? 'active' : ''}">
         </button>
       </div>
 

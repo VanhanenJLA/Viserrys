@@ -24,9 +24,10 @@ public class Comment extends AbstractPersistable<Long> {
     private Account sender;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(name = "commentable_id")
-    BaseCommentable commentable;
+    private Long commentableId;
+
+    @NotNull
+    private String commentableType;
 
     @NotNull
     @Builder.Default
